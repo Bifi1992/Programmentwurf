@@ -1,0 +1,7 @@
+#ignore IntelliJ stuff
+.idea/*
+
+#ignore compiled class files
+out
+
+

@@ -16,12 +16,19 @@ import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
+import java.util.Map;
+
 /**
  * Created by y.brisch on 11.05.17.
  */
 public class Interface extends Application {
   public static void main(String[] args) {
-    Interface.launch(args);
+    GeneticLearningAbstract mylearner = new GeneticLearningAbstract();
+    mylearner.createPopulationRandom();
+    for(Integer i = 0; i <= 100; i++) {
+      mylearner.getFitness();
+      mylearner.manipulateParents();
+    }
   }
 
   @Override

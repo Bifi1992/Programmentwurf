@@ -1,93 +1,103 @@
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
-import javafx.geometry.Insets;
-import javafx.geometry.Pos;
 import javafx.scene.control.*;
 import javafx.scene.Scene;
-import javafx.scene.input.DragEvent;
-import javafx.scene.input.MouseDragEvent;
-import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
-import javafx.scene.layout.StackPane;
-import javafx.scene.text.Font;
-import javafx.scene.text.FontWeight;
-import javafx.scene.text.Text;
+import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
-
-import java.util.Map;
 
 /**
  * Created by y.brisch on 11.05.17.
  */
 public class Interface extends Application {
-  public static void main(String[] args) {
-    GeneticLearningAbstract mylearner = new GeneticLearningAbstract();
-    mylearner.createPopulationRandom();
-    for(Integer i = 0; i <= 100; i++) {
-      mylearner.getFitness();
-      mylearner.manipulateParents();
+
+  public TextArea mTextArea = new TextArea();
+  ChoiceBox<Planet> mPlanetDropDown = new ChoiceBox<>();
+  Button mStartButton = new Button();
+  Button mExitButton = new Button();
+  private static Interface mInterface;
+
+  /**
+   *  synchronized Singleton
+   */
+  public Interface() {}
+  public static synchronized Interface getInstance() {
+    if (mInterface == null) {
+      mInterface = new Interface();
     }
+    return mInterface;
   }
 
   @Override
-  public void start(Stage primaryStage) {
-    GridPane gridPane = new GridPane();
-    gridPane.setAlignment(Pos.TOP_LEFT);
-    gridPane.setHgap(10);
-    gridPane.setVgap(10);
-    gridPane.setPadding(new Insets(5, 5, 5, 5));
+  public void start(Stage primaryStage) throws Exception{
+    displayStartScene(primaryStage);
+  }
 
-    Text scenetitle = new Text("Welcome");
-    scenetitle.setFont(Font.font("Tahoma", FontWeight.NORMAL, 20));
-    gridPane.add(scenetitle, 10, 0, 2, 1);
+  private void displayStartScene(Stage stage) {
+    for (Planet p : Planet.values()) {
+      mPlanetDropDown.getItems().add(p);
+    }
+    mPlanetDropDown.setValue(Planet.MOON);
 
-    Label userName = new Label("User Name:");
-    gridPane.add(userName, 10, 1);
-
-    TextField userTextField = new TextField();
-    gridPane.add(userTextField, 11, 1);
-
-    Label pw = new Label("Password:");
-    gridPane.add(pw, 10, 2);
-
-    PasswordField pwBox = new PasswordField();
-    gridPane.add(pwBox, 11, 2);
-
-    Button sBtn = new Button("Sign in");
-    HBox hbBtn = new HBox(10);
-    hbBtn.setAlignment(Pos.BOTTOM_RIGHT);
-    hbBtn.getChildren().add(sBtn);
-    gridPane.add(hbBtn, 11, 4);
-
-    Slider slider = new Slider(0,20,10);
-    slider.setOnMouseReleased(new EventHandler<MouseEvent>() {
-      @Override
-      public void handle(MouseEvent event) {
-        System.out.println("slider value: " + slider.getValue());
-      }
-    });
-
-    //Open menu via click or ESC button
-    Button btn = new Button();
-    btn.setText("CLOSE");
-    btn.setCancelButton(true);
-    btn.setOnAction(new EventHandler<ActionEvent>() {
+    //close via click or ESC button
+    mExitButton.setText("Exit");
+    mExitButton.setCancelButton(true);
+    mExitButton.setOnAction(new EventHandler<ActionEvent>() {
 
       @Override
       public void handle(ActionEvent event) {
-        System.out.println("btn");
-        primaryStage.close();
+        Platform.exit();
       }
     });
 
-    gridPane.add(btn, 0, 20);
-    gridPane.add(slider, 1, 0);
+    mStartButton.setText("Start");
+    mStartButton.setOnAction(new EventHandler<ActionEvent>() {
+      @Override
+      public void handle(ActionEvent event) {
+        startCalculations();
+      }
+    });
 
-    Scene scene = new Scene(gridPane, 800, 400);
-    primaryStage.setTitle("Planet Lander");
-    primaryStage.setScene(scene);
-    primaryStage.show();
+    Label planetLabel = new Label("Planet");
+    Label rocketLabel = new Label("Rocket");
+
+    HBox buttonBox = new HBox(5, mPlanetDropDown, mStartButton, mExitButton);
+
+    VBox planetBox = new VBox(10, planetLabel);
+    VBox rocketBox = new VBox(10, rocketLabel);
+    HBox sliderBox = new HBox(5, planetBox, rocketBox);
+
+    VBox root = new VBox(10, buttonBox, sliderBox, mTextArea);
+
+    root.setStyle(
+        "-fx-padding: 10;" +
+            "-fx-border-style: solid inside;" +
+            "-fx-border-width: 2;" +
+            "-fx-border-insets: 5;" +
+            "-fx-border-radius: 5;" +
+            "-fx-border-color: blue;"
+    );
+
+
+
+
+    Scene scene = new Scene(root, 800, 400);
+    stage.setTitle("Planet Lander");
+    stage.setScene(scene);
+    stage.show();
+  }
+
+  private void startCalculations() {
+    Rocket testRocket = new Rocket(new Coordinate2D(20, 1), 1,0 ,0);
+    Planet testPlanet = Planet.MOON;
+    Thread rocket1 = new Thread(new RocketRunnable(testRocket, testPlanet, mTextArea));
+    rocket1.setDaemon(true);
+    rocket1.start();
+  }
+
+  public TextArea getTextArea() {
+    return mTextArea;
   }
 }

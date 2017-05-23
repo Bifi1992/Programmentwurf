@@ -5,22 +5,12 @@ public class Rocket {
   /**
    * the initial speed
    */
-  public final float mInitSpeed;
+  public final Coordinate2D mInitSpeed;
 
   /**
    * the current speed
    */
-  private float mCurSpeed;
-
-  /**
-   * the initial distance to the planet
-   */
-  public final long mInitDistance;
-
-  /**
-   * the current distance to the planet
-   */
-  private long mCurDistance;
+  private Coordinate2D mCurSpeed;
 
   /**
    * the initial fuel level
@@ -35,47 +25,44 @@ public class Rocket {
   /**
    * the maximum speed for a successful landing
    */
-  private final long MAX_LANDING_SPEED=20;
+  private static final Coordinate2D MAX_LANDING_SPEED = new Coordinate2D(20, 20);
 
   public final Coordinate2D mInitCoordinates;
   private Coordinate2D mCurCoordinates;
 
-  public Rocket(float pInitSpeed, long pInitDistance, float pInitFuelLevel, Coordinate2D pCoordinates) {
+  public Rocket(Coordinate2D pInitSpeed, float pInitFuelLevel, Coordinate2D pCoordinates) {
     mInitSpeed = pInitSpeed;
     mCurSpeed = pInitSpeed;
-    mInitDistance = pInitDistance;
-    mCurDistance = pInitDistance;
     mInitFuelLevel = pInitFuelLevel;
     mCurFuelLevel = pInitFuelLevel;
     mInitCoordinates = pCoordinates;
     mCurCoordinates = pCoordinates;
   }
 
-  public Rocket(float pInitSpeed, long pInitDistance, float pInitFuelLevel, int pX, int pY) {
+  public Rocket(Coordinate2D pInitSpeed, float pInitFuelLevel, double pX, double pY) {
     mInitSpeed = pInitSpeed;
     mCurSpeed = pInitSpeed;
-    mInitDistance = pInitDistance;
-    mCurDistance = pInitDistance;
     mInitFuelLevel = pInitFuelLevel;
     mCurFuelLevel = pInitFuelLevel;
     mInitCoordinates = new Coordinate2D(pX, pY);
     mCurCoordinates = new Coordinate2D(pX, pY);
   }
 
-  public float getCurSpeed() {
+  public Rocket(double pSpeedX, double pSpeedY, float pInitFuelLevel, double pCoordX, double pCoordY) {
+    mInitSpeed = new Coordinate2D(pSpeedX, pCoordY);
+    mCurSpeed = new Coordinate2D(pSpeedX, pCoordY);
+    mInitFuelLevel = pInitFuelLevel;
+    mCurFuelLevel = pInitFuelLevel;
+    mInitCoordinates = new Coordinate2D(pCoordX, pCoordY);
+    mCurCoordinates = new Coordinate2D(pCoordX, pCoordY);
+  }
+
+  public Coordinate2D getCurSpeed() {
     return mCurSpeed;
   }
 
-  public void setCurSpeed(float mCurSpeed) {
+  public void setCurSpeed(Coordinate2D mCurSpeed) {
     this.mCurSpeed = mCurSpeed;
-  }
-
-  public long getCurDistance() {
-    return mCurDistance;
-  }
-
-  public void setCurDistance(long mCurDistance) {
-    this.mCurDistance = mCurDistance;
   }
 
   public float getCurFuelLevel() {
@@ -86,11 +73,15 @@ public class Rocket {
     this.mCurFuelLevel = mCurFuelLevel;
   }
 
-  public long getMAX_LANDING_SPEED() {
-    return MAX_LANDING_SPEED;
-  }
-
   public Coordinate2D getCurCoordinates() {
     return mCurCoordinates;
+  }
+
+  public void setCurCoordinates(double pX, double pY) {
+    this.mCurCoordinates = new Coordinate2D(pX, pY);
+  }
+
+  public void setCurCoordinates(Coordinate2D pCoord) {
+    this.mCurCoordinates = pCoord;
   }
 }

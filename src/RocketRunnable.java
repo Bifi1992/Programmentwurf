@@ -1,3 +1,6 @@
+import javafx.application.Platform;
+import javafx.scene.control.TextArea;
+
 /**
  * Created by y.brisch on 17.05.17.
  */
@@ -5,25 +8,42 @@ public class RocketRunnable implements Runnable {
 
   Rocket mRocket;
   Planet mPlanet;
+  //Interface mInterface = Interface.getInstance();
 
-  public RocketRunnable(Rocket pRocket, Planet pPlanet){
+  /**
+   * Holds the passed textarea
+   */
+  TextArea mTextArea;
+
+  public RocketRunnable(Rocket pRocket, Planet pPlanet, TextArea pTextArea){
     mRocket = pRocket;
     mPlanet = pPlanet;
+    mTextArea = pTextArea;
   }
 
   @Override
   public void run() {
-    //TODO timelimit
-    while (mRocket.getCurCoordinates().getY() > 0) {
-      calcNewCoordinates();
-      System.out.println();
+    //TODO timelimit, correct condition
+    while (mRocket.getCurCoordinates().getY() < 800) {
+      Platform.runLater( () -> {
+        mTextArea.appendText(mRocket.getCurCoordinates().getX() + " : " +
+            mRocket.getCurCoordinates().getY() + "\n");
+        calcNewCoordinates();
+      });
+
+      /*
+      try {
+        Thread.sleep(500);
+      } catch (InterruptedException e) {
+        mTextArea.appendText(e.getMessage());
+      }
+      //*/
+
     }
-    System.out.println("Test");
   }
 
   /**
    * The mass of the Rocket is not accounted for in this calculation
-   * //TODO calc acceleration not force
    *  F = (G * m * M)/r^2
    *  F = m * a
    *  => a = (G * M)/r^2 || (m^3 * kg)/(kg * s^2 * m^2) => m/s^2
@@ -31,8 +51,7 @@ public class RocketRunnable implements Runnable {
    */
   public double calculateGravitationalAcceleration(){
     double distance = calcDistance();
-    double gForce = (Planet.GRAVITATIONAL_CONSTANT * mPlanet.mMass)/(distance * distance);
-    return 0;
+    return (Planet.GRAVITATIONAL_CONSTANT * mPlanet.getMass())/(distance * distance);
   }
 
   /**
@@ -41,17 +60,18 @@ public class RocketRunnable implements Runnable {
    * @return
    */
   public double calcDistance() {
-    return mRocket.getCurCoordinates().getY() + mPlanet.mRadius;
+    return mRocket.getCurCoordinates().getY() + mPlanet.getRadius();
   }
 
   /**
    * s = 0,5 · a · t^2 + v0 · t + s0
    */
-  public Coordinate2D calcNewCoordinates() {
-    double newX = (0.5 * calculateGravitationalAcceleration() *  1 + mRocket.getCurSpeed() * 1 +
+  public void calcNewCoordinates() {
+    double newX = (0.5 * calculateGravitationalAcceleration() *  1 + mRocket.getCurSpeed().getX() * 1 +
         mRocket.getCurCoordinates().getX());
-    double newY = (0.5 * calculateGravitationalAcceleration() *  1 + mRocket.getCurSpeed() * 1 +
+    double newY = (0.5 * calculateGravitationalAcceleration() *  1 + mRocket.getCurSpeed().getY() * 1 +
         mRocket.getCurCoordinates().getY());
-    return new Coordinate2D(newX, newY);
+    mRocket.setCurCoordinates(newX, newY);
+
   }
 }

@@ -1,41 +1,58 @@
 import javafx.application.Application;
 import javafx.application.Platform;
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
+import javafx.scene.canvas.Canvas;
+import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.*;
 import javafx.scene.Scene;
+import javafx.scene.control.Button;
+import javafx.scene.control.Label;
+import javafx.scene.control.TextArea;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
+import javafx.scene.paint.Color;
 import javafx.stage.Stage;
+
+import java.awt.*;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 /**
  * Created by y.brisch on 11.05.17.
  */
 public class Interface extends Application {
 
-  public TextArea mTextArea = new TextArea();
+  Scene mStartScene;
+  Scene mSimScene;
+  Stage mPrimaryStage;
+  TextArea mTextArea = new TextArea();
   ChoiceBox<Planet> mPlanetDropDown = new ChoiceBox<>();
   Button mStartButton = new Button();
   Button mExitButton = new Button();
-  private static Interface mInterface;
+  final Canvas mCanvas = new Canvas();
+  GraphicsContext mGC = mCanvas.getGraphicsContext2D();
+  Dimension mScreenRes = Toolkit.getDefaultToolkit().getScreenSize();
+  Double mInitDistance = SLIDER_INIT_DIST_MIN / SLIDER_INIT_DIST_MAX;
+  private static final double SLIDER_INIT_DIST_MIN = 100000;
+  private static final double SLIDER_INIT_DIST_MAX = 2000000;
 
   /**
-   *  synchronized Singleton
+   * ThreadPool
    */
-  public Interface() {}
-  public static synchronized Interface getInstance() {
-    if (mInterface == null) {
-      mInterface = new Interface();
-    }
-    return mInterface;
-  }
+  ExecutorService mThreadPool = Executors.newCachedThreadPool();
+
 
   @Override
-  public void start(Stage primaryStage) throws Exception{
-    displayStartScene(primaryStage);
+  public void start(Stage pPrimaryStage) throws Exception{
+    mPrimaryStage = pPrimaryStage;
+    mStartScene = getStartScene();
+    mSimScene = getSimScene();
+    mPrimaryStage.setTitle("Planet Lander");
+    mPrimaryStage.setScene(mStartScene);
+    mPrimaryStage.show();
   }
 
-  private void displayStartScene(Stage stage) {
+  private Scene getStartScene() {
     for (Planet p : Planet.values()) {
       mPlanetDropDown.getItems().add(p);
     }
@@ -44,60 +61,83 @@ public class Interface extends Application {
     //close via click or ESC button
     mExitButton.setText("Exit");
     mExitButton.setCancelButton(true);
-    mExitButton.setOnAction(new EventHandler<ActionEvent>() {
-
-      @Override
-      public void handle(ActionEvent event) {
-        Platform.exit();
-      }
-    });
+    mExitButton.setOnAction(e -> Platform.exit());
 
     mStartButton.setText("Start");
-    mStartButton.setOnAction(new EventHandler<ActionEvent>() {
-      @Override
-      public void handle(ActionEvent event) {
-        startCalculations();
-      }
+    mStartButton.setDefaultButton(true);
+    mStartButton.setOnAction(e -> {
+      mPrimaryStage.setScene(mSimScene);
+      startCalculations();
     });
 
     Label planetLabel = new Label("Planet");
+    Slider sliderInitDistance = new Slider();
+    sliderInitDistance.setMin(SLIDER_INIT_DIST_MIN);
+    sliderInitDistance.setMax(SLIDER_INIT_DIST_MAX);
+    sliderInitDistance.setValue(SLIDER_INIT_DIST_MIN / SLIDER_INIT_DIST_MAX);
+    sliderInitDistance.setOnMouseReleased(e -> mInitDistance = sliderInitDistance.getValue());
     Label rocketLabel = new Label("Rocket");
 
-    HBox buttonBox = new HBox(5, mPlanetDropDown, mStartButton, mExitButton);
+    HBox topBox = new HBox(5, mPlanetDropDown, mStartButton, mExitButton);
 
     VBox planetBox = new VBox(10, planetLabel);
-    VBox rocketBox = new VBox(10, rocketLabel);
+    planetBox.setPrefSize(mScreenRes.getWidth() * 0.5, mScreenRes.getHeight() * 0.4);
+    VBox rocketBox = new VBox(10, rocketLabel, sliderInitDistance);
+    rocketBox.setPrefSize(mScreenRes.getWidth() * 0.5, mScreenRes.getHeight() * 0.4);
     HBox sliderBox = new HBox(5, planetBox, rocketBox);
 
-    VBox root = new VBox(10, buttonBox, sliderBox, mTextArea);
 
-    root.setStyle(
+    VBox root = new VBox(10, topBox, sliderBox);
+
+    /*root.setStyle(
         "-fx-padding: 10;" +
             "-fx-border-style: solid inside;" +
             "-fx-border-width: 2;" +
             "-fx-border-insets: 5;" +
             "-fx-border-radius: 5;" +
             "-fx-border-color: blue;"
-    );
+    );*/
 
 
 
 
-    Scene scene = new Scene(root, 800, 400);
-    stage.setTitle("Planet Lander");
-    stage.setScene(scene);
-    stage.show();
+    mStartScene = new Scene(root, mScreenRes.getWidth(), mScreenRes.getHeight());
+    return mStartScene;
+  }
+
+  private Scene getSimScene() {
+    mCanvas.setHeight(mScreenRes.getHeight() * 0.7);
+    mCanvas.setWidth(mScreenRes.getWidth() * 0.8);
+    mGC.setStroke(Color.BLUE);
+    mGC.setFill(Color.BLUE);
+    StackPane canvasContainer = new StackPane(mCanvas);
+    canvasContainer.setStyle(
+        "-fx-background-color: blue, white;" +
+            "    -fx-background-insets: 0, 2;" +
+            "    -fx-padding: 2;");
+
+    mTextArea.setPrefHeight(mScreenRes.getHeight() * 0.2);
+
+    VBox root = new VBox(10, canvasContainer, mTextArea);
+
+    /*root.setStyle(
+        "-fx-padding: 10;" +
+            "-fx-border-style: solid inside;" +
+            "-fx-border-width: 2;" +
+            "-fx-border-insets: 5;" +
+            "-fx-border-radius: 5;" +
+            "-fx-border-color: blue;"
+    );*/
+    mSimScene = new Scene(root, mScreenRes.getWidth(), mScreenRes.getHeight());
+    return mSimScene;
   }
 
   private void startCalculations() {
-    Rocket testRocket = new Rocket(new Coordinate2D(20, 1), 1,0 ,0);
-    Planet testPlanet = Planet.MOON;
-    Thread rocket1 = new Thread(new RocketRunnable(testRocket, testPlanet, mTextArea));
-    rocket1.setDaemon(true);
-    rocket1.start();
-  }
+    Rocket testRocket1 = new Rocket(new Coordinate2D(100, 0), 1,0 ,0, mInitDistance);
+    Planet testPlanet = mPlanetDropDown.getValue();
+    Rocket testRocket2 = new Rocket(new Coordinate2D(200, 0), 1,0 ,0, mInitDistance);
 
-  public TextArea getTextArea() {
-    return mTextArea;
+    mThreadPool.execute(new RocketRunnable(testRocket1, testPlanet, mTextArea, mCanvas, mGC));
+    mThreadPool.execute(new RocketRunnable(testRocket1, testPlanet, mTextArea, mCanvas, mGC));
   }
 }

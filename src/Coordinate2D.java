@@ -19,15 +19,27 @@ public class Coordinate2D {
     return mX;
   }
 
-  public void setX(double mX) {
-    this.mX = mX;
+  public void setX(double pX) {
+    this.mX = pX;
   }
 
   public double getY() {
     return mY;
   }
 
-  public void setY(double mY) {
-    this.mY = mY;
+  public void setY(double pY) {
+    this.mY = pY;
+  }
+
+  public Coordinate2D getRounded(Coordinate2D pCoord) {
+    return new Coordinate2D(Math.round(pCoord.getX()), Math.round(pCoord.getY()));
+  }
+
+  public double getAngleXAxis() {
+    return Math.atan((mY/mX));
+  }
+
+  public double abs() {
+    return Math.sqrt(mX*mX+mY*mY);
   }
 }

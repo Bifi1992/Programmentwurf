@@ -137,9 +137,9 @@ public class Interface extends Application {
     Planet testPlanet = mPlanetDropDown.getValue();
     Rocket testRocket2 = new Rocket(new Coordinate2D(200, 0), 1,0 ,0, mInitDistance);
 
-    GeneticLearningAbstract learner = new GeneticLearningAbstract();
+    GeneticLearningAbstract learner = new GeneticLearningAbstract(testPlanet, mTextArea, mCanvas, mGC);
     learner.createPopulationRandom();
-    mThreadPool.execute(new RocketRunnable(testRocket1, testPlanet, mTextArea, mCanvas, mGC));
+    //mThreadPool.execute(new RocketRunnable(testRocket1, testPlanet, mTextArea, mCanvas, mGC));
     //mThreadPool.execute(new RocketRunnable(testRocket2, testPlanet, mTextArea, mCanvas, mGC));
   }
 }

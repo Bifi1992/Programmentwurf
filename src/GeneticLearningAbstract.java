@@ -1,5 +1,11 @@
+import javafx.scene.canvas.Canvas;
+import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.control.TextArea;
+
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 /**
  * Created by ludwig on 17.05.17.
@@ -9,6 +15,7 @@ import java.util.List;
  * THIS IS A PROTOTYPE CLASS FOR UNDERSTANDING GENETIC ALGORITHM's
  */
 public class GeneticLearningAbstract {
+  ExecutorService mThreadPool = Executors.newCachedThreadPool();
   double mutation = 0.01;
   int distance = 100;
   /**
@@ -25,25 +32,38 @@ public class GeneticLearningAbstract {
   float weightTime = 0.2f;
   // Fuel consumption per time
   float fuelConsumption = 10f;
+  Planet mPlanet;
+  final Canvas mCanvas;
+  GraphicsContext mGC;
+  TextArea mTextArea;
 
   List<Rocket> population = new ArrayList<Rocket>();
   List<Double> parents = new ArrayList<Double>();
-
+  public GeneticLearningAbstract(Planet pPlanet, TextArea pTextArea, Canvas pCanvas, GraphicsContext pGC){
+    this.mPlanet = pPlanet;
+    this.mTextArea = pTextArea;
+    this.mCanvas = pCanvas;
+    this.mGC = pGC;
+  }
   /**
    * Create random population and values of rockets
    */
   public void createPopulationRandom() {
     for (Integer i = 0; i < 4; i++) {
-      this.population.add(
-        new Rocket(
-          (float) (Math.random() * ((100) + 1)),
-          (float) (Math.random() * ((100) + 1)),
-          (float) (Math.random() * ((100) + 1)),
-          100,
-          100,
-          100));
+      Rocket rocket = new Rocket(
+        //Math.random() * ((100) + 1)
+        (float) (Math.random() * ((100) + 1)),
+        (float) (Math.random() * ((100) + 1)),
+        (float) (1),
+        50,
+        50,
+        1000000);
+      mThreadPool.execute(new RocketRunnable(rocket,mPlanet, mTextArea, mCanvas, mGC));
+      this.population.add(rocket);
+      printPopulation();
     }
-    printPopulation();
+
+
     //getFitness();
   }
 

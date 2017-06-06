@@ -146,6 +146,7 @@ public class GeneticLearningAbstract {
       System.out.println("Rocket" + j + "|| Speed: " + population.get(j).getCurSpeed() + "  Fuel:  " + population.get(j).getCurFuelLevel());
     }
   }
+  //Test
 
   /*public void simulateFly() {
     Rocket currentRocket;

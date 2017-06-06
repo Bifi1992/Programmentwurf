@@ -30,8 +30,14 @@ public class Rocket {
   private double mInitDistance;
 
   /**
+   * the used time
+   */
+  private float mTime;
+
+  /**
    * the maximum speed for a successful landing
    */
+
   private static final Coordinate2D MAX_LANDING_SPEED = new Coordinate2D(20, 20);
 
   public final Coordinate2D mInitCoordinates;

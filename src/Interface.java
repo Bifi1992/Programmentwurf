@@ -32,8 +32,8 @@ public class Interface extends Application {
   final Canvas mCanvas = new Canvas();
   GraphicsContext mGC = mCanvas.getGraphicsContext2D();
   Dimension mScreenRes = Toolkit.getDefaultToolkit().getScreenSize();
-  Double mInitDistance = SLIDER_INIT_DIST_MIN / SLIDER_INIT_DIST_MAX;
-  private static final double SLIDER_INIT_DIST_MIN = 100000;
+  Double mInitDistance = (SLIDER_INIT_DIST_MAX - SLIDER_INIT_DIST_MIN) / 2;
+  private static final double SLIDER_INIT_DIST_MIN = 1000000;
   private static final double SLIDER_INIT_DIST_MAX = 2000000;
 
   /**
@@ -118,7 +118,7 @@ public class Interface extends Application {
 
     mTextArea.setPrefHeight(mScreenRes.getHeight() * 0.2);
 
-    VBox root = new VBox(10, canvasContainer, mTextArea);
+    VBox root = new VBox(10, mTextArea, canvasContainer);
 
     /*root.setStyle(
         "-fx-padding: 10;" +
@@ -133,11 +133,11 @@ public class Interface extends Application {
   }
 
   private void startCalculations() {
-    Rocket testRocket1 = new Rocket(new Coordinate2D(100, 0), 1,0 ,0, mInitDistance);
+    Rocket testRocket1 = new Rocket(new Coordinate2D(100, 0), 1,300 ,0, mInitDistance);
     Planet testPlanet = mPlanetDropDown.getValue();
     Rocket testRocket2 = new Rocket(new Coordinate2D(200, 0), 1,0 ,0, mInitDistance);
 
     mThreadPool.execute(new RocketRunnable(testRocket1, testPlanet, mTextArea, mCanvas, mGC));
-    mThreadPool.execute(new RocketRunnable(testRocket1, testPlanet, mTextArea, mCanvas, mGC));
+    //mThreadPool.execute(new RocketRunnable(testRocket2, testPlanet, mTextArea, mCanvas, mGC));
   }
 }

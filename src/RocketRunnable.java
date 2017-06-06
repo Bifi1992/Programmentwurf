@@ -32,7 +32,7 @@ public class RocketRunnable implements Runnable {
    */
   private static int mTime = 0;
 
-  private static double initDist;
+  private static double mInitDist;
   //Interface mInterface = Interface.getInstance();
 
   /**
@@ -52,22 +52,22 @@ public class RocketRunnable implements Runnable {
     mGC = pGC;
     mCanvas = pCanvas;
     COORD_Y_FACTOR = pCanvas.getHeight()/pRocket.getInitDistance();
+    System.out.println(pCanvas.getHeight()/pRocket.getInitDistance() + " = " + COORD_Y_FACTOR);
   }
 
   @Override
   public void run() {
     //TODO timelimit, correct condition
-    initDist = calcDistance();
-    System.out.println(mCanvas.getWidth() + " : " + mCanvas.getHeight());
+    mInitDist = calcDistance();
     while (mRocket.getCurCoordinates().getY() < mRocket.getInitDistance()) {
       Platform.runLater( () -> {
         Coordinate2D oldCoord = mRocket.getCurCoordinates();
         Coordinate2D newCoord = calcNewCoordinates();
-        //mTextArea.appendText(oldCoord.getX() + " : " + oldCoord.getY() + "\n");
         mGC.strokeLine(oldCoord.getX()/COORD_X_FACTOR, oldCoord.getY() * COORD_Y_FACTOR,
             newCoord.getX()/COORD_X_FACTOR, newCoord.getY() * COORD_Y_FACTOR);
+        //System.out.println(oldCoord.getX()/COORD_X_FACTOR + " : " + oldCoord.getY() * COORD_Y_FACTOR);
         if (mTime % 10 == 0) {
-          mGC.strokeText("" + (initDist - calcDistance()),
+          mGC.strokeText("" + (mInitDist - calcDistance()),
               newCoord.getX() / COORD_X_FACTOR, newCoord.getY() * COORD_Y_FACTOR);
         }
       });
@@ -108,16 +108,9 @@ public class RocketRunnable implements Runnable {
   }
 
   /**
-   * TODO Kepler Bahn
    * s = 0,5 · a · t^2 + v0 · t + s0
    */
   public Coordinate2D calcNewCoordinates() {
-    /*double newX = (0.5 * calculateGravitationalAcceleration() *  TIME_INTERVAL + mRocket.getCurSpeed().getX() * TIME_INTERVAL +
-        mRocket.getCurCoordinates().getX());
-    double newY = (0.5 * calculateGravitationalAcceleration() *  TIME_INTERVAL * TIME_INTERVAL + mRocket.getCurSpeed().getY() * TIME_INTERVAL +
-        mRocket.getCurCoordinates().getY());*/
-    //double newX = mRocket.getCurSpeed().getX() * mTime;
-    //double newY = 0.5 * calculateGravitationalAcceleration() *  mTime * mTime;
     double newX = mRocket.getCurSpeed().abs() * mTime * Math.cos(Math.toRadians(mRocket.getCurSpeed().getAngleXAxis()));
     double newY = mRocket.getCurSpeed().abs() * mTime * Math.sin(Math.toRadians(mRocket.getCurSpeed().getAngleXAxis()))
         + 0.5 * calculateGravitationalAcceleration() *  mTime * mTime;

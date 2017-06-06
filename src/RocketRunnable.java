@@ -32,8 +32,6 @@ public class RocketRunnable implements Runnable {
    */
   private static int mTime = 0;
 
-  private static double mInitDist;
-  //Interface mInterface = Interface.getInstance();
 
   /**
    * Holds the passed textarea
@@ -52,22 +50,19 @@ public class RocketRunnable implements Runnable {
     mGC = pGC;
     mCanvas = pCanvas;
     COORD_Y_FACTOR = pCanvas.getHeight()/pRocket.getInitDistance();
-    System.out.println(pCanvas.getHeight()/pRocket.getInitDistance() + " = " + COORD_Y_FACTOR);
   }
 
   @Override
   public void run() {
     //TODO timelimit, correct condition
-    mInitDist = calcDistance();
     while (mRocket.getCurCoordinates().getY() < mRocket.getInitDistance()) {
       Platform.runLater( () -> {
         Coordinate2D oldCoord = mRocket.getCurCoordinates();
         Coordinate2D newCoord = calcNewCoordinates();
         mGC.strokeLine(oldCoord.getX()/COORD_X_FACTOR, oldCoord.getY() * COORD_Y_FACTOR,
             newCoord.getX()/COORD_X_FACTOR, newCoord.getY() * COORD_Y_FACTOR);
-        //System.out.println(oldCoord.getX()/COORD_X_FACTOR + " : " + oldCoord.getY() * COORD_Y_FACTOR);
         if (mTime % 10 == 0) {
-          mGC.strokeText("" + (mInitDist - calcDistance()),
+          mGC.strokeText("" + (mRocket.getInitDistance() - calcDistance()),
               newCoord.getX() / COORD_X_FACTOR, newCoord.getY() * COORD_Y_FACTOR);
         }
       });
@@ -81,9 +76,10 @@ public class RocketRunnable implements Runnable {
       //*/
       mTime += TIME_INTERVAL;
     }
-
-    mTextArea.appendText("landing time:" + mTime + "\n");
-    mTextArea.appendText(mPlanet.name() + "\n");
+    Platform.runLater( () -> {
+      mTextArea.appendText("landing time:" + mTime + "\n");
+      mTextArea.appendText(mPlanet.name() + "\n");
+    });
   }
 
   /**

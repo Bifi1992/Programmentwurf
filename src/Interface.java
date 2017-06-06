@@ -116,7 +116,14 @@ public class Interface extends Application {
             "    -fx-background-insets: 0, 2;" +
             "    -fx-padding: 2;");
 
+    //close via click or ESC button
+    mExitButton.setText("Exit");
+    mExitButton.setCancelButton(true);
+    mExitButton.setOnAction(e -> Platform.exit());
+
     mTextArea.setPrefHeight(mScreenRes.getHeight() * 0.2);
+
+    HBox textAndButtons = new HBox(5, mTextArea);
 
     VBox root = new VBox(10, mTextArea, canvasContainer);
 

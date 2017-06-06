@@ -50,7 +50,6 @@ public class RocketRunnable implements Runnable {
     mGC = pGC;
     mCanvas = pCanvas;
     COORD_Y_FACTOR = pCanvas.getHeight()/pRocket.getInitDistance();
-    System.out.println(pCanvas.getHeight()/pRocket.getInitDistance() + " = " + COORD_Y_FACTOR);
   }
 
   @Override
@@ -77,9 +76,10 @@ public class RocketRunnable implements Runnable {
       //*/
       mTime += TIME_INTERVAL;
     }
-
-    mTextArea.appendText("landing time:" + mTime + "\n");
-    mTextArea.appendText(mPlanet.name() + "\n");
+    Platform.runLater( () -> {
+      mTextArea.appendText("landing time:" + mTime + "\n");
+      mTextArea.appendText(mPlanet.name() + "\n");
+    });
   }
 
   /**

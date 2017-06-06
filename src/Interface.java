@@ -29,6 +29,7 @@ public class Interface extends Application {
   ChoiceBox<Planet> mPlanetDropDown = new ChoiceBox<>();
   Button mStartButton = new Button();
   Button mExitButton = new Button();
+  Button mReturnButton = new Button();
   final Canvas mCanvas = new Canvas();
   GraphicsContext mGC = mCanvas.getGraphicsContext2D();
   Dimension mScreenRes = Toolkit.getDefaultToolkit().getScreenSize();
@@ -62,6 +63,7 @@ public class Interface extends Application {
     mExitButton.setText("Exit");
     mExitButton.setCancelButton(true);
     mExitButton.setOnAction(e -> Platform.exit());
+    mExitButton.setPrefWidth(mScreenRes.getWidth() * 0.1);
 
     mStartButton.setText("Start");
     mStartButton.setDefaultButton(true);
@@ -69,6 +71,7 @@ public class Interface extends Application {
       mPrimaryStage.setScene(mSimScene);
       startCalculations();
     });
+    mStartButton.setPrefWidth(mScreenRes.getWidth() * 0.1);
 
     Label planetLabel = new Label("Planet");
     Slider sliderInitDistance = new Slider();
@@ -120,12 +123,25 @@ public class Interface extends Application {
     mExitButton.setText("Exit");
     mExitButton.setCancelButton(true);
     mExitButton.setOnAction(e -> Platform.exit());
+    mExitButton.setPrefWidth(mScreenRes.getWidth() * 0.1);
+
+    //return to StartScene
+    mReturnButton.setText("Return");
+    mReturnButton.setDefaultButton(true);
+    mReturnButton.setOnAction(e -> {
+      mPrimaryStage.setScene(mStartScene);
+      mGC.clearRect(0, 0, mCanvas.getWidth(), mCanvas.getHeight());
+    });
+    mReturnButton.setPrefWidth(mScreenRes.getWidth() * 0.1);
+
+    VBox ButtonBox = new VBox(5, mExitButton, mReturnButton);
 
     mTextArea.setPrefHeight(mScreenRes.getHeight() * 0.2);
+    mTextArea.setPrefWidth(mScreenRes.getWidth() * 0.8);
 
-    HBox textAndButtons = new HBox(5, mTextArea);
+    HBox textAndButtonsBox = new HBox(5, mTextArea, ButtonBox);
 
-    VBox root = new VBox(10, mTextArea, canvasContainer);
+    VBox root = new VBox(10, textAndButtonsBox, canvasContainer);
 
     /*root.setStyle(
         "-fx-padding: 10;" +
@@ -147,6 +163,6 @@ public class Interface extends Application {
     GeneticLearningAbstract learner = new GeneticLearningAbstract();
     learner.createPopulationRandom();
     mThreadPool.execute(new RocketRunnable(testRocket1, testPlanet, mTextArea, mCanvas, mGC));
-    //mThreadPool.execute(new RocketRunnable(testRocket2, testPlanet, mTextArea, mCanvas, mGC));
+    mThreadPool.execute(new RocketRunnable(testRocket2, testPlanet, mTextArea, mCanvas, mGC));
   }
 }

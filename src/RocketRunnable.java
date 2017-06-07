@@ -62,7 +62,7 @@ public class RocketRunnable implements Runnable {
         mGC.strokeLine(oldCoord.getX()/COORD_X_FACTOR, oldCoord.getY() * COORD_Y_FACTOR,
             newCoord.getX()/COORD_X_FACTOR, newCoord.getY() * COORD_Y_FACTOR);
         if (mTime % 10 == 0) {
-          mGC.strokeText("" + (mRocket.getInitDistance() - calcDistance()),
+          mGC.strokeText("" + String.format("%6.3e",(mRocket.getInitDistance() - calcDistance())),
               newCoord.getX() / COORD_X_FACTOR, newCoord.getY() * COORD_Y_FACTOR);
         }
       });

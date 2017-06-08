@@ -115,8 +115,9 @@ public class RocketRunnable implements Runnable {
     double newX = mRocket.getCurSpeed().abs() * mTime * Math.cos(Math.toRadians(mRocket.getCurSpeed().getAngleXAxis()));
     double newY = mRocket.getCurSpeed().abs() * mTime * Math.sin(Math.toRadians(mRocket.getCurSpeed().getAngleXAxis()))
         + 0.5 * calculateGravitationalAcceleration() *  mTime * mTime;
-    mRocket.setCurSpeed(new Coordinate2D(newX, newY));
     mRocket.setCurCoordinates(newX, newY);
+    
+    System.out.println(mRocket.getCurSpeed().abs());
     return new Coordinate2D(newX, newY);
   }
 }

@@ -28,7 +28,8 @@ public class Interface extends Application {
   TextArea mTextArea = new TextArea();
   ChoiceBox<Planet> mPlanetDropDown = new ChoiceBox<>();
   Button mStartButton = new Button();
-  Button mExitButton = new Button();
+  Button mStartExitButton = new Button();
+  Button mSimExitButton = new Button();
   Button mReturnButton = new Button();
   final Canvas mCanvas = new Canvas();
   GraphicsContext mGC = mCanvas.getGraphicsContext2D();
@@ -60,10 +61,10 @@ public class Interface extends Application {
     mPlanetDropDown.setValue(Planet.MOON);
 
     //close via click or ESC button
-    mExitButton.setText("Exit");
-    mExitButton.setCancelButton(true);
-    mExitButton.setOnAction(e -> Platform.exit());
-    mExitButton.setPrefWidth(mScreenRes.getWidth() * 0.1);
+    mStartExitButton.setText("Exit");
+    mStartExitButton.setCancelButton(true);
+    mStartExitButton.setOnAction(e -> Platform.exit());
+    mStartExitButton.setPrefWidth(mScreenRes.getWidth() * 0.1);
 
     mStartButton.setText("Start");
     mStartButton.setDefaultButton(true);
@@ -81,7 +82,8 @@ public class Interface extends Application {
     sliderInitDistance.setOnMouseReleased(e -> mInitDistance = sliderInitDistance.getValue());
     Label rocketLabel = new Label("Rocket");
 
-    HBox topBox = new HBox(5, mPlanetDropDown, mStartButton, mExitButton);
+    HBox buttonBox = new HBox(5, mStartExitButton);
+    HBox topBox = new HBox(5, mPlanetDropDown, mStartExitButton);
 
     VBox planetBox = new VBox(10, planetLabel);
     planetBox.setPrefSize(mScreenRes.getWidth() * 0.5, mScreenRes.getHeight() * 0.4);
@@ -120,10 +122,10 @@ public class Interface extends Application {
             "    -fx-padding: 2;");
 
     //close via click or ESC button
-    mExitButton.setText("Exit");
-    mExitButton.setCancelButton(true);
-    mExitButton.setOnAction(e -> Platform.exit());
-    mExitButton.setPrefWidth(mScreenRes.getWidth() * 0.1);
+    mSimExitButton.setText("Exit");
+    mSimExitButton.setCancelButton(true);
+    mSimExitButton.setOnAction(e -> Platform.exit());
+    mSimExitButton.setPrefWidth(mScreenRes.getWidth() * 0.1);
 
     //return to StartScene
     mReturnButton.setText("Return");
@@ -134,7 +136,7 @@ public class Interface extends Application {
     });
     mReturnButton.setPrefWidth(mScreenRes.getWidth() * 0.1);
 
-    VBox ButtonBox = new VBox(5, mExitButton, mReturnButton);
+    VBox ButtonBox = new VBox(5, mStartExitButton, mReturnButton);
 
     mTextArea.setPrefHeight(mScreenRes.getHeight() * 0.2);
     mTextArea.setPrefWidth(mScreenRes.getWidth() * 0.8);
@@ -156,9 +158,9 @@ public class Interface extends Application {
   }
 
   private void startCalculations() {
-    Rocket testRocket1 = new Rocket(new Coordinate2D(100, 0), 1,300 ,0, mInitDistance);
+    Rocket testRocket1 = new Rocket(1, 1, new Coordinate2D(100, 0), 1,mInitDistance);
     Planet testPlanet = mPlanetDropDown.getValue();
-    Rocket testRocket2 = new Rocket(new Coordinate2D(200, 0), 1,0 ,0, mInitDistance);
+    Rocket testRocket2 = new Rocket(1, 2, new Coordinate2D(200, 0), 1,mInitDistance);
 
     GeneticLearningAbstract learner = new GeneticLearningAbstract(testPlanet, mTextArea, mCanvas, mGC);
     learner.createPopulationRandom();

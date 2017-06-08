@@ -3,76 +3,116 @@
  */
 public class Rocket {
   /**
-   * the initial speed
+   * holds the corresponding generation id of the rocket
+   */
+  public final int mGenerationId;
+
+
+  /**
+   * holds the rocket id
+   */
+  public final int mRocketId;
+
+  /**
+   * holds the initial speed of the rocket
    */
   public final Coordinate2D mInitSpeed;
 
   //TODO Anflugwinkel
 
   /**
-   * the current speed
+   * holds the current speed of the rocket
    */
   private Coordinate2D mCurSpeed;
 
   /**
-   * the initial fuel level
+   * holds the initial acceleration of the rocket
+   */
+  public final Coordinate2D mInitAcceleration;
+
+  /**
+   * holds the current acceleration of the rocket
+   */
+  private Coordinate2D mCurAcceleration;
+
+  /**
+   * holds the initial fuel level of the rocket
    */
   public final float mInitFuelLevel;
 
   /**
-   * the current fuel level
+   * holds the current fuel level of the rocket
    */
   private float mCurFuelLevel;
 
   /**
-   * golds the initial distance of the rocket to the planet's surface
+   * holds the initial distance of the rocket to the planet's surface
    */
   private double mInitDistance;
 
   /**
-   * the used time
+   * holds the used passed flight time of the rocket
    */
   private float mTime;
 
   /**
-   * the maximum speed for a successful landing
+   * holds the initial coordinates of the rocket
    */
-
-  private static final Coordinate2D MAX_LANDING_SPEED = new Coordinate2D(20, 20);
-
   public final Coordinate2D mInitCoordinates;
+
+  /**
+   * holds the current coordinates of the Rocket
+   */
   private Coordinate2D mCurCoordinates;
 
-  public Rocket(Coordinate2D pInitSpeed, float pInitFuelLevel, Coordinate2D pCoordinates, double pInitDistance) {
+  /**
+   * constructor for rocket
+   * @param pGenerationId the generation id of the Rocket
+   * @param pRocketId the id of the rocket
+   * @param pInitSpeed the initial speed of the rocket
+   * @param pInitFuelLevel the initial fuel level of the rocket
+   * @param pInitDistance the initial distance to the surface of the rocket
+   */
+  public Rocket(int pGenerationId, int pRocketId, Coordinate2D pInitSpeed, float pInitFuelLevel, double pInitDistance) {
+    mGenerationId = pGenerationId;
+    mRocketId = pRocketId;
     mInitSpeed = pInitSpeed;
     mCurSpeed = pInitSpeed;
     mInitFuelLevel = pInitFuelLevel;
     mCurFuelLevel = pInitFuelLevel;
-    mInitCoordinates = pCoordinates;
-    mCurCoordinates = pCoordinates;
+    mInitCoordinates = RocketConstants.INIT_COORDINATES;
+    mCurCoordinates = RocketConstants.INIT_COORDINATES;
     mInitDistance = pInitDistance;
+    mInitAcceleration = RocketConstants.INIT_ACCELERATION;
+    mCurAcceleration = RocketConstants.INIT_ACCELERATION;
   }
 
-  public Rocket(Coordinate2D pInitSpeed, float pInitFuelLevel, double pX, double pY, double pInitDistance) {
-    mInitSpeed = pInitSpeed;
-    mCurSpeed = pInitSpeed;
-    mInitFuelLevel = pInitFuelLevel;
-    mCurFuelLevel = pInitFuelLevel;
-    mInitCoordinates = new Coordinate2D(pX, pY);
-    mCurCoordinates = new Coordinate2D(pX, pY);
-    mInitDistance = pInitDistance;
-  }
-
-  public Rocket(double pSpeedX, double pSpeedY, float pInitFuelLevel, double pCoordX, double pCoordY, double pInitDistance) {
+  /**
+   * constructor for rocket
+   * @param pGenerationId the generation id of the Rocket
+   * @param pRocketId the id of the rocket
+   * @param pSpeedX the initial x speed of the rocket
+   * @param pSpeedY the initial y speed of the rocket
+   * @param pInitFuelLevel the initial fuel level of the rocket
+   * @param pInitDistance the initial distance to the surface of the rocket
+   */
+  public Rocket(int pGenerationId, int pRocketId, double pSpeedX, double pSpeedY, float pInitFuelLevel, double pInitDistance) {
+    mGenerationId = pGenerationId;
+    mRocketId = pRocketId;
     mInitSpeed = new Coordinate2D(pSpeedX, pSpeedY);
     mCurSpeed = new Coordinate2D(pSpeedX, pSpeedY);
     mInitFuelLevel = pInitFuelLevel;
     mCurFuelLevel = pInitFuelLevel;
-    mInitCoordinates = new Coordinate2D(pCoordX, pCoordY);
-    mCurCoordinates = new Coordinate2D(pCoordX, pCoordY);
+    mInitCoordinates = RocketConstants.INIT_COORDINATES;
+    mCurCoordinates = RocketConstants.INIT_COORDINATES;
     mInitDistance = pInitDistance;
+    mInitAcceleration = RocketConstants.INIT_ACCELERATION;
+    mCurAcceleration = RocketConstants.INIT_ACCELERATION;
   }
 
+  /**
+   * getters and setters for rocket member variables
+   */
   public Coordinate2D getCurSpeed() {
     return mCurSpeed;
   }
@@ -103,5 +143,9 @@ public class Rocket {
 
   public double getInitDistance() {
     return this.mInitDistance;
+  }
+
+  public Coordinate2D getCurAcceleration() {
+    return this.mCurAcceleration;
   }
 }

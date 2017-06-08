@@ -49,14 +49,14 @@ public class GeneticLearningAbstract {
    * Create random population and values of rockets
    */
   public void createPopulationRandom() {
-    for (Integer i = 0; i < 4; i++) {
+    for (int i = 0; i < 4; i++) {
       Rocket rocket = new Rocket(
+          1,
+          i,
         //Math.random() * ((100) + 1)
         (float) (Math.random() * ((100) + 1)),
         (float) (Math.random() * ((100) + 1)),
         (float) (1),
-        50,
-        50,
         1000000);
       mThreadPool.execute(new RocketRunnable(rocket,mPlanet, mTextArea, mCanvas, mGC));
       this.population.add(rocket);

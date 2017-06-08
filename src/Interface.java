@@ -82,8 +82,8 @@ public class Interface extends Application {
     sliderInitDistance.setOnMouseReleased(e -> mInitDistance = sliderInitDistance.getValue());
     Label rocketLabel = new Label("Rocket");
 
-    HBox buttonBox = new HBox(5, mStartExitButton);
-    HBox topBox = new HBox(5, mPlanetDropDown, mStartExitButton);
+    HBox buttonBox = new HBox(5, mStartButton, mStartExitButton);
+    HBox topBox = new HBox(5, mPlanetDropDown, buttonBox);
 
     VBox planetBox = new VBox(10, planetLabel);
     planetBox.setPrefSize(mScreenRes.getWidth() * 0.5, mScreenRes.getHeight() * 0.4);

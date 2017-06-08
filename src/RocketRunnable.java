@@ -75,6 +75,11 @@ public class RocketRunnable implements Runnable {
       }
       //*/
       mTime += TIME_INTERVAL;
+      mRocket.setTime(mTime);
+      mRocket.setProcessSpeed();
+    }
+    for (int key: mRocket.getProcessSpeed().keySet()) {
+      System.out.println(key + " " + mRocket.getProcessSpeed().get(key).abs());
     }
     Platform.runLater( () -> {
       mTextArea.appendText("landing time:" + mTime + "\n");
@@ -110,6 +115,7 @@ public class RocketRunnable implements Runnable {
     double newX = mRocket.getCurSpeed().abs() * mTime * Math.cos(Math.toRadians(mRocket.getCurSpeed().getAngleXAxis()));
     double newY = mRocket.getCurSpeed().abs() * mTime * Math.sin(Math.toRadians(mRocket.getCurSpeed().getAngleXAxis()))
         + 0.5 * calculateGravitationalAcceleration() *  mTime * mTime;
+    mRocket.setCurSpeed(new Coordinate2D(newX, newY));
     mRocket.setCurCoordinates(newX, newY);
     return new Coordinate2D(newX, newY);
   }

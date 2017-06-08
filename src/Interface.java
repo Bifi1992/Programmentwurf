@@ -162,12 +162,8 @@ public class Interface extends Application {
 
     GeneticLearningAbstract learner = new GeneticLearningAbstract(testPlanet, mTextArea, mCanvas, mGC);
     learner.createPopulationRandom();
-<<<<<<< HEAD
-    //mThreadPool.execute(new RocketRunnable(testRocket1, testPlanet, mTextArea, mCanvas, mGC));
-    //mThreadPool.execute(new RocketRunnable(testRocket2, testPlanet, mTextArea, mCanvas, mGC));
-=======
+
     mThreadPool.execute(new RocketRunnable(testRocket1, testPlanet, mTextArea, mCanvas, mGC));
     mThreadPool.execute(new RocketRunnable(testRocket2, testPlanet, mTextArea, mCanvas, mGC));
->>>>>>> 6536ec0ed5e1d74a1243ec54c5da65ca21d60a4d
   }
 }

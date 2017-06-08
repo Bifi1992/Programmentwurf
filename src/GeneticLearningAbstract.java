@@ -60,11 +60,10 @@ public class GeneticLearningAbstract {
         1000000);
       mThreadPool.execute(new RocketRunnable(rocket,mPlanet, mTextArea, mCanvas, mGC));
       this.population.add(rocket);
-      printPopulation();
+
     }
-
-
     //getFitness();
+    printPopulation();
   }
 
 
@@ -143,7 +142,7 @@ public class GeneticLearningAbstract {
   public void printPopulation() {
     System.out.println("Current Population:");
     for (int j = 0; j < this.population.size(); j++) {
-      System.out.println("Rocket" + j + "|| Speed: " + population.get(j).getCurSpeed() + "  Fuel:  " + population.get(j).getCurFuelLevel());
+      System.out.println("Rocket" + j + "|| Speed: " + population.get(j).getCurSpeed().abs() + "  Fuel:  " + population.get(j).getCurFuelLevel());
     }
   }
   //Test

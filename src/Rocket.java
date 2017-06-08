@@ -1,3 +1,7 @@
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.Map;
+
 /**
  * Created by y.brisch on 11.05.17.
  */
@@ -32,13 +36,18 @@ public class Rocket {
   /**
    * the used time
    */
-  private float mTime;
+  private int mTime;
 
   /**
    * the maximum speed for a successful landing
    */
 
   private static final Coordinate2D MAX_LANDING_SPEED = new Coordinate2D(20, 20);
+
+  /**
+   * A Map of the speed process per second <Second, Speed>
+   */
+  private Map<Integer, Coordinate2D> mProcessSpeed = new LinkedHashMap<>();
 
   public final Coordinate2D mInitCoordinates;
   private Coordinate2D mCurCoordinates;
@@ -104,4 +113,22 @@ public class Rocket {
   public double getInitDistance() {
     return this.mInitDistance;
   }
+
+  public void setProcessSpeed() {
+    this.mProcessSpeed.put(this.mTime, this.mCurSpeed);
+  }
+
+  public Map<Integer, Coordinate2D> getProcessSpeed() {
+    return this.mProcessSpeed;
+  }
+
+  public int getTime() {
+    return mTime;
+  }
+
+  public void setTime(int mTime) {
+    this.mTime = mTime;
+  }
+
+
 }

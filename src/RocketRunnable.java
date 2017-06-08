@@ -56,14 +56,14 @@ public class RocketRunnable implements Runnable {
   public void run() {
     //TODO timelimit, correct condition
     while (mRocket.getCurCoordinates().getY() < mRocket.getInitDistance()) {
-      Platform.runLater( () -> {
+      Platform.runLater(() -> {
         Coordinate2D oldCoord = mRocket.getCurCoordinates();
         Coordinate2D newCoord = calcNewCoordinates();
-        mGC.strokeLine(oldCoord.getX()/COORD_X_FACTOR, oldCoord.getY() * COORD_Y_FACTOR,
-            newCoord.getX()/COORD_X_FACTOR, newCoord.getY() * COORD_Y_FACTOR);
+        mGC.strokeLine(oldCoord.getX() / COORD_X_FACTOR, oldCoord.getY() * COORD_Y_FACTOR,
+          newCoord.getX() / COORD_X_FACTOR, newCoord.getY() * COORD_Y_FACTOR);
         if (mTime % 10 == 0) {
-          mGC.strokeText("" + String.format("%6.3e",(mRocket.getInitDistance() - calcDistance())),
-              newCoord.getX() / COORD_X_FACTOR, newCoord.getY() * COORD_Y_FACTOR);
+          mGC.strokeText("" + String.format("%6.3e", (mRocket.getInitDistance() - calcDistance())),
+            newCoord.getX() / COORD_X_FACTOR, newCoord.getY() * COORD_Y_FACTOR);
         }
       });
 
@@ -76,6 +76,7 @@ public class RocketRunnable implements Runnable {
       //*/
       mTime += TIME_INTERVAL;
       mRocket.setTime(mTime);
+
       mRocket.setProcessSpeed();
     }
     for (int key: mRocket.getProcessSpeed().keySet()) {

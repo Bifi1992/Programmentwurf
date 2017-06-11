@@ -49,10 +49,10 @@ public class GeneticLearningAbstract {
    * Create random population and values of rockets
    */
   public void createPopulationRandom() {
-    for (int i = 0; i < 4; i++) {
+    for (int i = 0; i < 5; i++) {
       Rocket rocket = new Rocket(
           1,
-          i,
+          i + 1,
         //Math.random() * ((100) + 1)
         (float) (Math.random() * ((100) + 1)),
         (float) (Math.random() * ((100) + 1)),

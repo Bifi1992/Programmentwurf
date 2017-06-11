@@ -160,12 +160,11 @@ public class Interface extends Application {
   private void startCalculations() {
     Rocket testRocket1 = new Rocket(1, 1, new Coordinate2D(100, 0), 1,mInitDistance);
     Planet testPlanet = mPlanetDropDown.getValue();
-    Rocket testRocket2 = new Rocket(1, 2, new Coordinate2D(200, 0), 1,mInitDistance);
+    Rocket testRocket2 = new Rocket(1, 2, new Coordinate2D(100, 0), 1,mInitDistance);
 
     GeneticLearningAbstract learner = new GeneticLearningAbstract(testPlanet, mTextArea, mCanvas, mGC);
     learner.createPopulationRandom();
-
-    mThreadPool.execute(new RocketRunnable(testRocket1, testPlanet, mTextArea, mCanvas, mGC));
-    mThreadPool.execute(new RocketRunnable(testRocket2, testPlanet, mTextArea, mCanvas, mGC));
+    //mThreadPool.execute(new RocketRunnable(testRocket1, testPlanet, mTextArea, mCanvas, mGC));
+    //mThreadPool.execute(new RocketRunnable(testRocket2, testPlanet, mTextArea, mCanvas, mGC));
   }
 }

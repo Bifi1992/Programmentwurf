@@ -14,7 +14,7 @@ public final class RocketConstants {
   /**
    * holds the initial coordinates of all rockets
    */
-  public static final Coordinate2D INIT_COORDINATES = new Coordinate2D(5, 5);
+  public static final Coordinate2D INIT_COORDINATES = new Coordinate2D(0, 10000);
 
   /**
    * holds the initial acceleration of all rockets

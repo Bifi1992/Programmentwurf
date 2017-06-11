@@ -57,7 +57,7 @@ public class Rocket {
   /**
    * holds the used passed flight time of the rocket
    */
-  private int mTime;
+  public int mTime;
 
   /**
    * holds the initial coordinates of the rocket
@@ -94,6 +94,7 @@ public class Rocket {
     mInitDistance = pInitDistance;
     mInitAcceleration = RocketConstants.INIT_ACCELERATION;
     mCurAcceleration = RocketConstants.INIT_ACCELERATION;
+    mTime = 0;
   }
 
   /**
@@ -117,6 +118,7 @@ public class Rocket {
     mInitDistance = pInitDistance;
     mInitAcceleration = RocketConstants.INIT_ACCELERATION;
     mCurAcceleration = RocketConstants.INIT_ACCELERATION;
+    mTime = 0;
   }
 
   /**

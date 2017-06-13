@@ -3,6 +3,8 @@ import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.TextArea;
 
+import java.util.concurrent.CountDownLatch;
+
 /**
  * Created by y.brisch on 17.05.17.
  */
@@ -66,7 +68,6 @@ public class RocketRunnable implements Runnable {
             newCoord.getX() / COORD_X_FACTOR, newCoord.getY() * COORD_Y_FACTOR);
         }
       });
-
       // Sleep for a few ms to not spam the program with runnables
       try {
         Thread.sleep(5);
@@ -76,12 +77,11 @@ public class RocketRunnable implements Runnable {
       //*/
       mTime += TIME_INTERVAL;
       mRocket.setTime(mTime);
-
+      //mRocket.setCurSpeed();
+      // Setting process speed on every secound
       mRocket.setProcessSpeed();
     }
-    for (int key: mRocket.getProcessSpeed().keySet()) {
-      System.out.println(key + " " + mRocket.getProcessSpeed().get(key).abs());
-    }
+    System.out.println("Finished");
     Platform.runLater( () -> {
       mTextArea.appendText("landing time:" + mTime + "\n");
       mTextArea.appendText(mPlanet.name() + "\n");
@@ -117,8 +117,9 @@ public class RocketRunnable implements Runnable {
     double newY = mRocket.getCurSpeed().abs() * mTime * Math.sin(Math.toRadians(mRocket.getCurSpeed().getAngleXAxis()))
         + 0.5 * calculateGravitationalAcceleration() *  mTime * mTime;
     mRocket.setCurCoordinates(newX, newY);
-    
-    System.out.println(mRocket.getCurSpeed().abs());
+    System.out.println("Koord x: " + newX + "Koord y:" + newY + " Speed: " + new Coordinate2D(newX, newY).abs());
+    System.out.println("Speed Of Rocket ID:" + mRocket.getRocketID() + "Speed: " + mRocket.getCurSpeed().abs());
     return new Coordinate2D(newX, newY);
   }
+
 }

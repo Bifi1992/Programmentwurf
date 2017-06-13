@@ -1,12 +1,14 @@
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.TextArea;
+import javafx.util.Callback;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
+import java.rmi.server.ExportException;
+import java.time.Duration;
+import java.util.*;
+import java.util.concurrent.*;
+import java.lang.Thread.*;
 /**
  * Created by ludwig on 17.05.17.
  */
@@ -15,7 +17,10 @@ import java.util.concurrent.Executors;
  * THIS IS A PROTOTYPE CLASS FOR UNDERSTANDING GENETIC ALGORITHM's
  */
 public class GeneticLearningAbstract {
+  CountDownLatch latch = new CountDownLatch(1);
   ExecutorService mThreadPool = Executors.newCachedThreadPool();
+  final Duration timeout = Duration.ofSeconds(30);
+  ExecutorService executor = Executors.newSingleThreadExecutor();
   double mutation = 0.01;
   int distance = 100;
   /**
@@ -49,62 +54,67 @@ public class GeneticLearningAbstract {
    * Create random population and values of rockets
    */
   public void createPopulationRandom() {
-    for (int i = 0; i < 5; i++) {
+
+    boolean flag = true;
+    boolean ready2 = false;
+    for (int i = 0; i < 4; i++) {
       Rocket rocket = new Rocket(
-          1,
-          i + 1,
+        1,
+        i,
         //Math.random() * ((100) + 1)
         (float) (Math.random() * ((100) + 1)),
         (float) (Math.random() * ((100) + 1)),
         (float) (1),
         1000000);
-      mThreadPool.execute(new RocketRunnable(rocket,mPlanet, mTextArea, mCanvas, mGC));
+      mThreadPool.execute(new RocketRunnable(rocket, mPlanet, mTextArea, mCanvas, mGC));
+      printPopulation();
       this.population.add(rocket);
-
     }
-    //getFitness();
-    printPopulation();
-  }
+    Thread t = new Thread (new Runnable() {
+      @Override
+      public void run() {
+          try{
+            Thread.sleep(2300);
+          } catch(InterruptedException ec){
+          }
+        getFitness();
+        printPopulation();
+      }
+    });
+    t.start();
 
+
+  }
 
   /**
    * Calculate fitness of population
    */
-//     public void getFitness(){
-//        List<Double> sub = new ArrayList<Double>();
-//        Double min = 0.0;
-//        Double secndmin = 0.0;
-//        Double item = 0.0;
-//        Double itemorig = 0.0;
-//        /**
-//         * Choose best items of pupulation depending on their distance to the goal value.
-//         //*/
-//        for (Integer j = 0; j < this.population.size(); j++) {
-//            item = (double)Math.abs(goal - population.get(j));
-//            itemorig =  (double)population.get(j);
-//            if(j == 0){
-//                min = itemorig;
-//                secndmin = itemorig;
-//            }
-//            else if(Math.abs(goal-min) > item){
-//                secndmin = min;
-//                min = itemorig;
-//
-//            }else if(Math.abs(goal-secndmin) > item){
-//                secndmin = itemorig;
-//            }
-//            //System.out.println("Sub:  " + item);
-//            //sub.add(item);
-//        }
-//        System.out.println("Best Values ||  Min 1:  " + min + "  Min: 2  " + secndmin);
-//        /**
-//         * Set Parents
-//         //*/
-//        parents.clear();
-//        parents.add(min);
-//        parents.add(secndmin);
-//    }
-//
+     public void getFitness(){
+        List<Double> sub = new ArrayList<Double>();
+        Double min = population.get(1).getCurSpeed().abs();
+        Double secndmin = 0.0;
+
+        Rocket currRocket;
+
+        /**
+         * Choose best items of pupulation depending on their distance to the goal value.
+         //*/
+        for (Integer j = 0; j < this.population.size(); j++) {
+            currRocket = population.get(j);
+            System.out.println(currRocket);
+            if(currRocket.getCurSpeed().abs() < min){
+              min = currRocket.getCurSpeed().abs();
+            }
+        }
+        System.out.println("Best Values ||  Min 1:  " + min + "  Min: 2  " + secndmin);
+        /**
+         * Set Parents
+         //*/
+        parents.clear();
+        parents.add(min);
+        parents.add(secndmin);
+    }
+
 //    /**
 //     * Optimize parents for new population
 //     */
@@ -135,14 +145,14 @@ public class GeneticLearningAbstract {
 //        }
 //        printPopulation();
 //    }
-//
+
   /**
    * Print out current population
    //*/
   public void printPopulation() {
     System.out.println("Current Population:");
     for (int j = 0; j < this.population.size(); j++) {
-      System.out.println("Rocket" + j + "|| Speed: " + population.get(j).getCurSpeed().abs() + "  Fuel:  " + population.get(j).getCurFuelLevel());
+      System.out.println("Koordx" + population.get(j).getCurCoordinates().getX() + " KoordY: " + population.get(j).getCurCoordinates().getY() +  "Rocket" + j + "|| Speed: " + population.get(j).getCurSpeed().abs() + "  Fuel:  " + population.get(j).getCurFuelLevel());
     }
   }
   //Test

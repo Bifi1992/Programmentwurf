@@ -3,6 +3,8 @@ import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.TextArea;
 
+import java.util.concurrent.CountDownLatch;
+
 /**
  * Created by y.brisch on 17.05.17.
  */
@@ -70,7 +72,7 @@ public class RocketRunnable implements Runnable {
   public void run() {
     //TODO timelimit, correct condition
     while (mRocket.getCurCoordinates().getY() < mRocket.getInitDistance()) {
-      Platform.runLater( () -> {
+      Platform.runLater(() -> {
         Coordinate2D oldCoord = mRocket.getCurCoordinates();
         Coordinate2D newCoord = calcNewCoordinates();
         mGC.strokeLine(oldCoord.getX()/COORD_X_FACTOR, oldCoord.getY() * COORD_Y_FACTOR,
@@ -86,17 +88,17 @@ public class RocketRunnable implements Runnable {
         mRocket.setTime(mRocket.mTime);
         mRocket.setProcessSpeed();
       });
-
       // Sleep for a few ms to not spam the program with runnables
       try {
         Thread.sleep(5);
       } catch (InterruptedException e) {
         mTextArea.appendText(e.getMessage());
       }
+      //mRocket.setCurSpeed();
+      // Setting process speed on every secound
+      mRocket.setProcessSpeed();
     }
-    for (int key: mRocket.getProcessSpeed().keySet()) {
-      System.out.println(key + " " + mRocket.getProcessSpeed().get(key).abs());
-    }
+    System.out.println("Finished");
     Platform.runLater( () -> {
       mTextArea.appendText("landing time:" + mRocket.mTime + "\n");
       mTextArea.appendText(mPlanet.name() + "\n");
@@ -136,10 +138,16 @@ public class RocketRunnable implements Runnable {
         * Math.sin(Math.toRadians(mRocket.getCurSpeed().getAngleXAxis()))
         + 0.5 * ag *  mRocket.mTime * mRocket.mTime;
     mRocket.setCurCoordinates(newX, newY);
+
     mRocket.setCurSpeed(new Coordinate2D(mRocket.getCurSpeed().getX(),
         mRocket.getCurSpeed().getY() + (ag * TIME_INTERVAL)));
 
     System.out.println("rocket" + mRocket.mRocketId + ": " + mRocket.mTime + "s : " + mRocket.getCurSpeed().abs() + "m/s");
+
+    System.out.println("Koord x: " + newX + "Koord y:" + newY + " Speed: " + new Coordinate2D(newX, newY).abs());
+    System.out.println("Speed Of Rocket ID:" + mRocket.getRocketID() + "Speed: " + mRocket.getCurSpeed().abs());
+
     return new Coordinate2D(newX, newY);
   }
+
 }

@@ -175,4 +175,10 @@ public class Rocket {
   public Coordinate2D getCurAcceleration() {
     return this.mCurAcceleration;
   }
+  public int getRocketID() {
+    return this.mRocketId;
+  }
+  public int getGenerationId(){
+    return this.mGenerationId;
+  }
 }

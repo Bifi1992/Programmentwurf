@@ -78,8 +78,9 @@ public class Interface extends Application {
     Slider sliderInitDistance = new Slider();
     sliderInitDistance.setMin(SLIDER_INIT_DIST_MIN);
     sliderInitDistance.setMax(SLIDER_INIT_DIST_MAX);
-    sliderInitDistance.setValue(SLIDER_INIT_DIST_MIN / SLIDER_INIT_DIST_MAX);
+    sliderInitDistance.setValue(SLIDER_INIT_DIST_MIN + (SLIDER_INIT_DIST_MAX - SLIDER_INIT_DIST_MIN) * 0.5);
     sliderInitDistance.setOnMouseReleased(e -> mInitDistance = sliderInitDistance.getValue());
+
     Label rocketLabel = new Label("Rocket");
 
     HBox buttonBox = new HBox(5, mStartButton, mStartExitButton);
@@ -112,7 +113,7 @@ public class Interface extends Application {
 
   private Scene getSimScene() {
     mCanvas.setHeight(mScreenRes.getHeight() * 0.7);
-    mCanvas.setWidth(mScreenRes.getWidth() * 0.8);
+    mCanvas.setWidth(mScreenRes.getWidth());
     mGC.setStroke(Color.BLUE);
     mGC.setFill(Color.BLUE);
     StackPane canvasContainer = new StackPane(mCanvas);

@@ -145,25 +145,34 @@ public class RocketRunnable implements Runnable {
    * this method calculates and sets the new coordinates and speed of the rocket
    */
   public void calcNewCoordinates() {
+    // Variables for the calculation of speed and coordinates
+    // gravitational acceleration
     double g = calculateGravitationalAcceleration();
+    // inherent acceleration in x direction
+    double aX = mRocket.getCurAcceleration().getX();
+    // inherent acceleration in y direction
+    double aY = mRocket.getCurAcceleration().getY();
+    // current speed
     double v = mRocket.getCurSpeed().abs();
+    // time to calculate new speed and coordinates for
     double t = mRocket.mTime;
+    // cosine of angle to x-axis
     double cosAlpha = Math.cos(Math.toRadians(mRocket.getCurSpeed().getAngleXAxis()));
+    // sinus of angle to x-axis
     double sinAlpha = Math.sin(Math.toRadians(mRocket.getCurSpeed().getAngleXAxis()));
 
-    // v * cos(alpha) * t
-    double newXCoord = v * t * cosAlpha;
-    // v * sin(alpha) * t + 0,5 * g * t^2
-    double newYCoord = v * t * sinAlpha + 0.5 * g *  t * t;
+    // Calculation of the new Coordinates
+    // v * cos(alpha) * t + 0.5 * aX * t^2
+    double newXCoord = v * t * cosAlpha + 0.5 * aX * t * t;
+    // v * sin(alpha) * t + 0.5 * (g + aY) * t^2
+    double newYCoord = v * t * sinAlpha + 0.5 * (g + aY) * t * t;
     mRocket.setCurCoordinates(newXCoord, newYCoord);
 
-    // v * cos(alpha)
-    double newXSpeed = v * cosAlpha;
-    // v * sin(alpha) + g * t
-    double newYSpeed = v * sinAlpha + g * t;
+    // Calculation of the new Speed
+    // v * cos(alpha) + aX * t
+    double newXSpeed = v * cosAlpha + aX * t;
+    // v * sin(alpha) + (g + aY) * t
+    double newYSpeed = v * sinAlpha + (g  + aY)* t;
     mRocket.setCurSpeed(new Coordinate2D(newXSpeed, newYSpeed));
-
-    //System.out.println("rocket" + mRocket.mRocketId + ": " + mRocket.mTime + "s : " + mRocket.getCurSpeed().abs() + "m/s");
   }
-
 }

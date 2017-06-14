@@ -23,7 +23,7 @@ public class RocketRunnable implements Runnable {
   /**
    * holds the value for adjustment of x coordinates
    */
-  private static final int COORD_X_FACTOR = 600;
+  private static final int COORD_X_FACTOR = 11000;
 
   /**
    * Holds the passed textarea
@@ -74,15 +74,22 @@ public class RocketRunnable implements Runnable {
     while (mRocket.getCurCoordinates().getY() < mRocket.getInitDistance()) {
       Platform.runLater(() -> {
         Coordinate2D oldCoord = mRocket.getCurCoordinates();
-        Coordinate2D newCoord = calcNewCoordinates();
-        mGC.strokeLine(oldCoord.getX()/COORD_X_FACTOR, oldCoord.getY() * COORD_Y_FACTOR,
+        calcNewCoordinates();
+        Coordinate2D newCoord = mRocket.getCurCoordinates();
+            mGC.strokeLine(oldCoord.getX()/COORD_X_FACTOR, oldCoord.getY() * COORD_Y_FACTOR,
             newCoord.getX()/COORD_X_FACTOR, newCoord.getY() * COORD_Y_FACTOR);
         if (mRocket.mTime % 20 == 0) {
+          mGC.strokeText("(" + String.format("%6.2e",newCoord.getX()) + ", " + String.format("%6.2e",newCoord.getY()) + ")",
+              newCoord.getX() / COORD_X_FACTOR, newCoord.getY() * COORD_Y_FACTOR);
+          /*
           mGC.strokeText("" + String.format("%6.3e",(calcDistance() - mPlanet.getRadius())),
               newCoord.getX() / COORD_X_FACTOR, newCoord.getY() * COORD_Y_FACTOR);
+           */
+          /*
           mTextArea.appendText("mRocket.getInitDistance() = " + mRocket.getInitDistance()
               + "calcDistance() = " + calcDistance()
               + " -> " + String.format("%6.3e",(mRocket.getInitDistance() - calcDistance())) + "\n");
+          */
         }
         mRocket.mTime += TIME_INTERVAL;
         mRocket.setTime(mRocket.mTime);
@@ -99,6 +106,13 @@ public class RocketRunnable implements Runnable {
       mRocket.setProcessSpeed();
     }
     System.out.println("Finished");
+
+    //TODO use Concurrent Hashmap or synchronized Hashmap, would use Cache -> ConcurrentModificationException  thrown
+    /*
+    for (int key: mRocket.getProcessSpeed().keySet()) {
+      System.out.println(key + " " + mRocket.getProcessSpeed().get(key).abs());
+    }
+    */
     Platform.runLater( () -> {
       mTextArea.appendText("landing time:" + mRocket.mTime + "\n");
       mTextArea.appendText(mPlanet.name() + "\n");
@@ -130,6 +144,7 @@ public class RocketRunnable implements Runnable {
    * TODO implement variable rocket acceleration
    * this method calculates and sets the new coordinates and speed of the rocket
    */
+<<<<<<< HEAD
   public Coordinate2D calcNewCoordinates() {
     double ag = calculateGravitationalAcceleration();
     double newX = mRocket.getCurSpeed().abs() * mRocket.mTime
@@ -148,6 +163,28 @@ public class RocketRunnable implements Runnable {
     System.out.println("Speed Of Rocket ID:" + mRocket.getRocketID() + "Speed: " + mRocket.getCurSpeed().abs());
 
     return new Coordinate2D(newX, newY);
+=======
+  public void calcNewCoordinates() {
+    double g = calculateGravitationalAcceleration();
+    double v = mRocket.getCurSpeed().abs();
+    double t = mRocket.mTime;
+    double cosAlpha = Math.cos(Math.toRadians(mRocket.getCurSpeed().getAngleXAxis()));
+    double sinAlpha = Math.sin(Math.toRadians(mRocket.getCurSpeed().getAngleXAxis()));
+
+    // v * cos(alpha) * t
+    double newXCoord = v * t * cosAlpha;
+    // v * sin(alpha) * t + 0,5 * g * t^2
+    double newYCoord = v * t * sinAlpha + 0.5 * g *  t * t;
+    mRocket.setCurCoordinates(newXCoord, newYCoord);
+
+    // v * cos(alpha)
+    double newXSpeed = v * cosAlpha;
+    // v * sin(alpha) + g * t
+    double newYSpeed = v * sinAlpha + g * t;
+    mRocket.setCurSpeed(new Coordinate2D(newXSpeed, newYSpeed));
+
+    //System.out.println("rocket" + mRocket.mRocketId + ": " + mRocket.mTime + "s : " + mRocket.getCurSpeed().abs() + "m/s");
+>>>>>>> develop
   }
 
 }

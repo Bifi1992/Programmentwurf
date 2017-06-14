@@ -91,7 +91,7 @@ public class GeneticLearningAbstract {
    */
      public void getFitness(){
         List<Double> sub = new ArrayList<Double>();
-        Double min = population.get(1).getCurSpeed().abs();
+        Double min = population.get(0).getCurSpeed().abs();
         Double secndmin = 0.0;
 
         Rocket currRocket;

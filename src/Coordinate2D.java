@@ -42,4 +42,12 @@ public class Coordinate2D {
   public double abs() {
     return Math.sqrt(mX*mX+mY*mY);
   }
+
+  @Override
+  public String toString() {
+    return "Coordinate2D{" +
+        "mX=" + mX +
+        ", mY=" + mY +
+        '}';
+  }
 }

@@ -51,6 +51,11 @@ public class RocketRunnable implements Runnable {
   Canvas mCanvas;
 
   /**
+   * counter variable
+   */
+  int i;
+
+  /**
    * The constructor for {@link RocketRunnable}
    * @param pRocket the rocket which is to be calculated
    * @param pPlanet the planet to land on
@@ -70,6 +75,7 @@ public class RocketRunnable implements Runnable {
 
   @Override
   public void run() {
+    i = 0;
     //TODO timelimit, correct condition
     while (mRocket.getCurCoordinates().getY() < mRocket.getInitDistance()) {
       Platform.runLater(() -> {
@@ -107,12 +113,10 @@ public class RocketRunnable implements Runnable {
     }
     System.out.println("Finished");
 
-    //TODO use Concurrent Hashmap or synchronized Hashmap, would use Cache -> ConcurrentModificationException  thrown
-    /*
-    for (int key: mRocket.getProcessSpeed().keySet()) {
-      System.out.println(key + " " + mRocket.getProcessSpeed().get(key).abs());
-    }
-    */
+    /*for (int key: mRocket.getProcessSpeed().keySet()) {
+      System.out.println("id: " + mRocket.getRocketID() + " Key: " + key + " " + mRocket.getProcessSpeed().get(key).abs());
+    }*/
+
     Platform.runLater( () -> {
       mTextArea.appendText("landing time:" + mRocket.mTime + "\n");
       mTextArea.appendText(mPlanet.name() + "\n");

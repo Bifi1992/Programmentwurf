@@ -1,6 +1,8 @@
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * Created by y.brisch on 11.05.17.
@@ -67,7 +69,12 @@ public class Rocket {
   /**
    * A Map of the speed process per second <Second, Speed>
    */
-  private Map<Integer, Coordinate2D> mProcessSpeed = new LinkedHashMap<>();
+  private ConcurrentHashMap<Integer, Coordinate2D> mProcessSpeed = new ConcurrentHashMap<>();
+
+  /**
+   * A ArrayList of the acceleration process <acceleration>
+   */
+  private ArrayList<Coordinate2D> mProcessAcc = new ArrayList<>();
 
   /**
    * holds the current coordinates of the Rocket
@@ -106,7 +113,7 @@ public class Rocket {
    * @param pInitFuelLevel the initial fuel level of the rocket
    * @param pInitDistance the initial distance to the surface of the rocket
    */
-  public Rocket(int pGenerationId, int pRocketId, double pSpeedX, double pSpeedY, float pInitFuelLevel, double pInitDistance) {
+  public Rocket(int pGenerationId, int pRocketId, double pSpeedX, double pSpeedY, float pInitFuelLevel, double pInitDistance, ArrayList<Coordinate2D> pProcessAcc) {
     mGenerationId = pGenerationId;
     mRocketId = pRocketId;
     mInitSpeed = new Coordinate2D(pSpeedX, pSpeedY);
@@ -119,6 +126,7 @@ public class Rocket {
     mInitAcceleration = RocketConstants.INIT_ACCELERATION;
     mCurAcceleration = RocketConstants.INIT_ACCELERATION;
     mTime = 0;
+    mProcessAcc = pProcessAcc;
   }
 
   /**
@@ -160,7 +168,15 @@ public class Rocket {
     this.mProcessSpeed.put(this.mTime, this.mCurSpeed);
   }
 
-  public Map<Integer, Coordinate2D> getProcessSpeed() {
+  public void setProcessAcc() {
+    this.mProcessAcc.add(this.mCurAcceleration);
+  }
+
+  public ArrayList<Coordinate2D> getProcessAcc(){
+    return mProcessAcc;
+  }
+
+  public ConcurrentHashMap<Integer, Coordinate2D> getProcessSpeed() {
     return this.mProcessSpeed;
   }
 

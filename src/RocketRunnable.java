@@ -3,7 +3,6 @@ import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.TextArea;
 
-import java.util.concurrent.CountDownLatch;
 
 /**
  * Created by y.brisch on 17.05.17.
@@ -13,7 +12,7 @@ public class RocketRunnable implements Runnable {
   /**
    * holds the time difference between every calculation
    */
-  private static final int TIME_INTERVAL = 1;
+  private static final int TIME_INTERVAL = 10;
 
   /**
    * holds the value for adjustment of y coordinates
@@ -23,7 +22,7 @@ public class RocketRunnable implements Runnable {
   /**
    * holds the value for adjustment of x coordinates
    */
-  private static final int COORD_X_FACTOR = 11000;
+  private static final double COORD_X_FACTOR = 1500;
 
   /**
    * Holds the passed textarea
@@ -80,7 +79,7 @@ public class RocketRunnable implements Runnable {
         Coordinate2D newCoord = mRocket.getCurCoordinates();
             mGC.strokeLine(oldCoord.getX()/COORD_X_FACTOR, oldCoord.getY() * COORD_Y_FACTOR,
             newCoord.getX()/COORD_X_FACTOR, newCoord.getY() * COORD_Y_FACTOR);
-        if (mRocket.mTime % 20 == 0) {
+        if (mRocket.mTime % 500 == 0) {
           mGC.strokeText("(" + String.format("%6.2e",newCoord.getX()) + ", " + String.format("%6.2e",newCoord.getY()) + ")",
               newCoord.getX() / COORD_X_FACTOR, newCoord.getY() * COORD_Y_FACTOR);
           /*
@@ -99,7 +98,7 @@ public class RocketRunnable implements Runnable {
       });
       // Sleep for a few ms to not spam the program with runnables
       try {
-        Thread.sleep(5);
+        Thread.sleep(1);
       } catch (InterruptedException e) {
         mTextArea.appendText(e.getMessage());
       }
@@ -165,10 +164,10 @@ public class RocketRunnable implements Runnable {
     double aX = mRocket.getCurAcceleration().getX();
     // inherent acceleration in y direction
     double aY = mRocket.getCurAcceleration().getY();
-    // current speed
-    double v = mRocket.getCurSpeed().abs();
-    // time to calculate new speed and coordinates for
-    double t = mRocket.mTime;
+    // current speed in x-direction
+    double vX = mRocket.getCurSpeed().getX();
+    // current speed in y-direction
+    double vY = mRocket.getCurSpeed().getY();
     // cosine of angle to x-axis
     double cosAlpha = Math.cos(Math.toRadians(mRocket.getCurSpeed().getAngleXAxis()));
     // sinus of angle to x-axis
@@ -176,16 +175,19 @@ public class RocketRunnable implements Runnable {
 
     // Calculation of the new Coordinates
     // v * cos(alpha) * t + 0.5 * aX * t^2
-    double newXCoord = v * t * cosAlpha + 0.5 * aX * t * t;
+    double newXCoord = mRocket.getCurCoordinates().getX() + vX * TIME_INTERVAL * cosAlpha + 0.5 * aX * TIME_INTERVAL * TIME_INTERVAL;
     // v * sin(alpha) * t + 0.5 * (g + aY) * t^2
-    double newYCoord = v * t * sinAlpha + 0.5 * (g + aY) * t * t;
+    double newYCoord = mRocket.getCurCoordinates().getY() + vY * TIME_INTERVAL * sinAlpha + 0.5 * (g + aY) * TIME_INTERVAL * TIME_INTERVAL;
     mRocket.setCurCoordinates(newXCoord, newYCoord);
+    System.out.println(mRocket.getCurCoordinates().toString());
 
     // Calculation of the new Speed
     // v * cos(alpha) + aX * t
-    double newXSpeed = v * cosAlpha + aX * t;
+    double newXSpeed = vX * cosAlpha + aX * TIME_INTERVAL;
     // v * sin(alpha) + (g + aY) * t
-    double newYSpeed = v * sinAlpha + (g  + aY)* t;
+    double newYSpeed = vY * sinAlpha + (g  + aY) * TIME_INTERVAL;
     mRocket.setCurSpeed(new Coordinate2D(newXSpeed, newYSpeed));
+
+    int t = mRocket.mTime;
   }
 }

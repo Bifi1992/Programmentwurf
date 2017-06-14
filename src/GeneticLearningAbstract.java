@@ -61,7 +61,7 @@ public class GeneticLearningAbstract {
     for (int i = 0; i < 4; i++) {
       processAcc.clear();
       for(i = 0; i <= 100; i++){
-        processAcc.add(new Coordinate2D(Math.random() * ((100) + 1) , Math.random() * ((100) + 1)));
+        processAcc.add(new Coordinate2D(Math.random() * ((1) + 1) , Math.random() * ((1) + 1)));
       }
       Rocket rocket = new Rocket(
         1,

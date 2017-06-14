@@ -144,26 +144,6 @@ public class RocketRunnable implements Runnable {
    * TODO implement variable rocket acceleration
    * this method calculates and sets the new coordinates and speed of the rocket
    */
-<<<<<<< HEAD
-  public Coordinate2D calcNewCoordinates() {
-    double ag = calculateGravitationalAcceleration();
-    double newX = mRocket.getCurSpeed().abs() * mRocket.mTime
-        * Math.cos(Math.toRadians(mRocket.getCurSpeed().getAngleXAxis()));
-    double newY = mRocket.getCurSpeed().abs() * mRocket.mTime
-        * Math.sin(Math.toRadians(mRocket.getCurSpeed().getAngleXAxis()))
-        + 0.5 * ag *  mRocket.mTime * mRocket.mTime;
-    mRocket.setCurCoordinates(newX, newY);
-
-    mRocket.setCurSpeed(new Coordinate2D(mRocket.getCurSpeed().getX(),
-        mRocket.getCurSpeed().getY() + (ag * TIME_INTERVAL)));
-
-    System.out.println("rocket" + mRocket.mRocketId + ": " + mRocket.mTime + "s : " + mRocket.getCurSpeed().abs() + "m/s");
-
-    System.out.println("Koord x: " + newX + "Koord y:" + newY + " Speed: " + new Coordinate2D(newX, newY).abs());
-    System.out.println("Speed Of Rocket ID:" + mRocket.getRocketID() + "Speed: " + mRocket.getCurSpeed().abs());
-
-    return new Coordinate2D(newX, newY);
-=======
   public void calcNewCoordinates() {
     double g = calculateGravitationalAcceleration();
     double v = mRocket.getCurSpeed().abs();
@@ -184,7 +164,6 @@ public class RocketRunnable implements Runnable {
     mRocket.setCurSpeed(new Coordinate2D(newXSpeed, newYSpeed));
 
     //System.out.println("rocket" + mRocket.mRocketId + ": " + mRocket.mTime + "s : " + mRocket.getCurSpeed().abs() + "m/s");
->>>>>>> develop
   }
 
 }

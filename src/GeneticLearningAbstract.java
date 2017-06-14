@@ -57,7 +57,7 @@ public class GeneticLearningAbstract {
 
     boolean flag = true;
     boolean ready2 = false;
-    for (int i = 0; i < 4; i++) {
+    for (int i = 0; i < 1; i++) {
       Rocket rocket = new Rocket(
         1,
         i,

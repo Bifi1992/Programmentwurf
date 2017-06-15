@@ -58,10 +58,10 @@ public class GeneticLearningAbstract {
     boolean flag = true;
     boolean ready2 = false;
     ArrayList<Coordinate2D> processAcc= new ArrayList<>();
-    for (int i = 0; i < 4; i++) {
+    for (int i = 0; i < 4; i++){
       processAcc.clear();
-      for(i = 0; i <= 100; i++){
-        processAcc.add(new Coordinate2D(Math.random() * ((100)  -50) , Math.random() * ((100) -50)));
+      for(int d = 0; d <= 300; d++){
+        processAcc.add(new Coordinate2D(Math.random() * ((100)) - 50 , Math.random() * ((100)) - 50));
       }
       Rocket rocket = new Rocket(
         1,
@@ -75,6 +75,7 @@ public class GeneticLearningAbstract {
         1000000,
         processAcc
       );
+      System.out.println("Rocket ID: " + rocket.getRocketID());
       mThreadPool.execute(new RocketRunnable(rocket, mPlanet, mTextArea, mCanvas, mGC));
       printPopulation();
       this.population.add(rocket);

@@ -68,9 +68,10 @@ public class RocketRunnable implements Runnable {
     mGC = pGC;
     mCanvas = pCanvas;
     COORD_Y_FACTOR = pCanvas.getHeight()/pRocket.getInitDistance();
-    COORD_X_FACTOR = mRocket.getCurSpeed().getX() == 0 ? 1 :
+    /*COORD_X_FACTOR = mRocket.getCurSpeed().getX() == 0 ? 1 :
         (pCanvas.getWidth() / 3) / (mRocket.getCurSpeed().getX() *
-            Math.cos(Math.toRadians(mRocket.getCurSpeed().getAngleXAxis())) * mPlanet.getApproxLandingTimeTime());
+            Math.cos(Math.toRadians(mRocket.getCurSpeed().getAngleXAxis())) * mPlanet.getApproxLandingTimeTime());*/
+    COORD_X_FACTOR = 0.00001;
     DISPLAY_INTERVAL = pPlanet.getApproxLandingTimeTime()/10;
     System.out.println(COORD_X_FACTOR);
   }
@@ -78,7 +79,7 @@ public class RocketRunnable implements Runnable {
   @Override
   public void run() {
     Platform.runLater(() -> {
-      displayGrid(10, 10);
+      displayGrid(30, 30);
       mTextArea.appendText("initSpeed: " + mRocket.getCurSpeed().toString() + "\n" +
       "initAngle: " + mRocket.getCurSpeed().getAngleXAxis() + "°\n" +
       "initCoords: " + mRocket.getCurCoordinates().toString() + "\n");
@@ -165,10 +166,10 @@ public class RocketRunnable implements Runnable {
   public void calcCurAcceleration(){
     if(mRocket.mTime < mRocket.getProcessAcc().size()) {
       mRocket.setCurAcceleration(mRocket.getProcessAcc().get(mRocket.mTime));
-      System.out.println(mRocket.getProcessAcc().get(mRocket.mTime).abs());
+      System.out.println("Rocket Acc: abs" + mRocket.getProcessAcc().get(mRocket.mTime).abs());
     }
     else{
-      mRocket.setCurAcceleration(new Coordinate2D(Math.random() * ((75) - 50), Math.random() * ((75) - 50)));
+      mRocket.setCurAcceleration(new Coordinate2D((Math.random() * ((100)) - 50), Math.random() * ((100))-50));
     }
   }
 

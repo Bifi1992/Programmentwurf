@@ -12,7 +12,9 @@ public class RocketRunnable implements Runnable {
   /**
    * holds the time difference between every calculation
    */
-  private static final int TIME_INTERVAL = 10;
+  private static final int TIME_INTERVAL = 5;
+  private static int DISPLAY_INTERVAL;
+
 
   /**
    * holds the value for adjustment of y coordinates
@@ -22,7 +24,7 @@ public class RocketRunnable implements Runnable {
   /**
    * holds the value for adjustment of x coordinates
    */
-  private static final double COORD_X_FACTOR = 1500;
+  private static double COORD_X_FACTOR;
 
   /**
    * Holds the passed textarea
@@ -70,22 +72,40 @@ public class RocketRunnable implements Runnable {
     mGC = pGC;
     mCanvas = pCanvas;
     COORD_Y_FACTOR = pCanvas.getHeight()/pRocket.getInitDistance();
+    COORD_X_FACTOR = mRocket.getCurSpeed().getX() == 0 ? 1 :
+        (pCanvas.getWidth() / 3) / (mRocket.getCurSpeed().getX() *
+            Math.cos(Math.toRadians(mRocket.getCurSpeed().getAngleXAxis())) * mPlanet.getApproxLandingTimeTime());
+    DISPLAY_INTERVAL = pPlanet.getApproxLandingTimeTime()/10;
+    System.out.println(COORD_X_FACTOR);
   }
 
   @Override
   public void run() {
     i = 0;
+    Platform.runLater(() -> {
+      displayGrid(10, 10);
+      mTextArea.appendText("initSpeed: " + mRocket.getCurSpeed().toString() + "\n" +
+      "initAngle: " + mRocket.getCurSpeed().getAngleXAxis() + "°\n" +
+      "initCoords: " + mRocket.getCurCoordinates().toString() + "\n");
+    });
+
     //TODO timelimit, correct condition
     while (mRocket.getCurCoordinates().getY() < mRocket.getInitDistance()) {
       Platform.runLater(() -> {
         Coordinate2D oldCoord = mRocket.getCurCoordinates();
+        if (mRocket.mTime <= 100) {
+          System.out.println(mRocket.mTime + "s: " + oldCoord.getX() * COORD_X_FACTOR + ", " + oldCoord.getY() * COORD_Y_FACTOR);
+        }
         calcNewCoordinates();
         Coordinate2D newCoord = mRocket.getCurCoordinates();
-            mGC.strokeLine(oldCoord.getX()/COORD_X_FACTOR, oldCoord.getY() * COORD_Y_FACTOR,
-            newCoord.getX()/COORD_X_FACTOR, newCoord.getY() * COORD_Y_FACTOR);
-        if (mRocket.mTime % 500 == 0) {
+            mGC.strokeLine(oldCoord.getX() * COORD_X_FACTOR, oldCoord.getY() * COORD_Y_FACTOR,
+            newCoord.getX() * COORD_X_FACTOR, newCoord.getY() * COORD_Y_FACTOR);
+        if (mRocket.mTime != 0 && mRocket.mTime % DISPLAY_INTERVAL == 0) {
+          mGC.strokeText("" + mRocket.mTime, newCoord.getX() * COORD_X_FACTOR, newCoord.getY() * COORD_Y_FACTOR);
+          /*
           mGC.strokeText("(" + String.format("%6.2e",newCoord.getX()) + ", " + String.format("%6.2e",newCoord.getY()) + ")",
-              newCoord.getX() / COORD_X_FACTOR, newCoord.getY() * COORD_Y_FACTOR);
+              newCoord.getX() * COORD_X_FACTOR, newCoord.getY() * COORD_Y_FACTOR);
+          */
           /*
           mGC.strokeText("" + String.format("%6.3e",(calcDistance() - mPlanet.getRadius())),
               newCoord.getX() / COORD_X_FACTOR, newCoord.getY() * COORD_Y_FACTOR);
@@ -170,7 +190,6 @@ public class RocketRunnable implements Runnable {
     // v * sin(alpha) * t + 0.5 * (g + aY) * t^2
     double newYCoord = mRocket.getCurCoordinates().getY() + vY * TIME_INTERVAL * sinAlpha + 0.5 * (g + aY) * TIME_INTERVAL * TIME_INTERVAL;
     mRocket.setCurCoordinates(newXCoord, newYCoord);
-    System.out.println(mRocket.getCurCoordinates().toString());
 
     // Calculation of the new Speed
     // v * cos(alpha) + aX * t
@@ -178,7 +197,17 @@ public class RocketRunnable implements Runnable {
     // v * sin(alpha) + (g + aY) * t
     double newYSpeed = vY * sinAlpha + (g  + aY) * TIME_INTERVAL;
     mRocket.setCurSpeed(new Coordinate2D(newXSpeed, newYSpeed));
+  }
 
-    int t = mRocket.mTime;
+  /**
+   * This method generates a grid with mash size of x*y
+   */
+  private void displayGrid(double pX, double pY) {
+    for (double i = pX; i < mCanvas.getWidth(); i += pX) {
+      mGC.strokeLine(i, 0, i, mCanvas.getHeight());
+    }
+    for (double i = pY; i < mCanvas.getHeight(); i += pY) {
+      mGC.strokeLine(0, i, mCanvas.getWidth(), i);
+    }
   }
 }

@@ -67,8 +67,10 @@ public class GeneticLearningAbstract {
         1,
         i,
         //Math.random() * ((100) + 1)
-        (float) (Math.random() * ((100) + 1)),
-        (float) (Math.random() * ((100) + 1)),
+          //TODO get initial speed from interface sliders
+        //(float) (Math.random() * ((100) + 1)),
+        //(float) (Math.random() * ((100) + 1)),
+          100, 0,
         (float) (1),
         1000000,
         processAcc

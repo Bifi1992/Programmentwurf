@@ -14,10 +14,20 @@ public final class RocketConstants {
   /**
    * holds the initial coordinates of all rockets
    */
-  public static final Coordinate2D INIT_COORDINATES = new Coordinate2D(0, 10000);
+  public static final Coordinate2D INIT_COORDINATES = new Coordinate2D(0, 0);
 
   /**
    * holds the initial acceleration of all rockets
    */
   public static final Coordinate2D INIT_ACCELERATION = new Coordinate2D(0, 0);
+
+  /**
+   * holds the minimal initial distance of a rocket
+   */
+  public static final double MIN_INIT_DIST = 1000000;
+
+  /**
+   * holds the maximal initial distance of a rocket
+   */
+  public static final double MAX_INIT_DIST = 2000000;
 }

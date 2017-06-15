@@ -34,9 +34,9 @@ public class Interface extends Application {
   final Canvas mCanvas = new Canvas();
   GraphicsContext mGC = mCanvas.getGraphicsContext2D();
   Dimension mScreenRes = Toolkit.getDefaultToolkit().getScreenSize();
-  Double mInitDistance = (SLIDER_INIT_DIST_MAX - SLIDER_INIT_DIST_MIN) / 2;
-  private static final double SLIDER_INIT_DIST_MIN = 1000000;
-  private static final double SLIDER_INIT_DIST_MAX = 2000000;
+
+  Double mInitDistance = RocketConstants.MIN_INIT_DIST + (RocketConstants.MAX_INIT_DIST - RocketConstants.MIN_INIT_DIST) * 0.5;
+  Slider mSliderInitDistance = new Slider(RocketConstants.MIN_INIT_DIST, RocketConstants.MAX_INIT_DIST, mInitDistance);
 
   /**
    * ThreadPool
@@ -75,11 +75,7 @@ public class Interface extends Application {
     mStartButton.setPrefWidth(mScreenRes.getWidth() * 0.1);
 
     Label planetLabel = new Label("Planet");
-    Slider sliderInitDistance = new Slider();
-    sliderInitDistance.setMin(SLIDER_INIT_DIST_MIN);
-    sliderInitDistance.setMax(SLIDER_INIT_DIST_MAX);
-    sliderInitDistance.setValue(SLIDER_INIT_DIST_MIN + (SLIDER_INIT_DIST_MAX - SLIDER_INIT_DIST_MIN) * 0.5);
-    sliderInitDistance.setOnMouseReleased(e -> mInitDistance = sliderInitDistance.getValue());
+    CustomSliderVBox initDistanceSliderBox = new CustomSliderVBox(5, "Initial Distance: ", mSliderInitDistance);
 
     Label rocketLabel = new Label("Rocket");
 
@@ -88,7 +84,7 @@ public class Interface extends Application {
 
     VBox planetBox = new VBox(10, planetLabel);
     planetBox.setPrefSize(mScreenRes.getWidth() * 0.5, mScreenRes.getHeight() * 0.4);
-    VBox rocketBox = new VBox(10, rocketLabel, sliderInitDistance);
+    VBox rocketBox = new VBox(10, rocketLabel, initDistanceSliderBox);
     rocketBox.setPrefSize(mScreenRes.getWidth() * 0.5, mScreenRes.getHeight() * 0.4);
     HBox sliderBox = new HBox(5, planetBox, rocketBox);
 

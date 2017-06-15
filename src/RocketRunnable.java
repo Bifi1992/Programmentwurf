@@ -68,10 +68,9 @@ public class RocketRunnable implements Runnable {
     mGC = pGC;
     mCanvas = pCanvas;
     COORD_Y_FACTOR = pCanvas.getHeight()/pRocket.getInitDistance();
-    /*COORD_X_FACTOR = mRocket.getCurSpeed().getX() == 0 ? 1 :
+    COORD_X_FACTOR = mRocket.getCurSpeed().getX() == 0 ? 1 :
         (pCanvas.getWidth() / 3) / (mRocket.getCurSpeed().getX() *
-            Math.cos(Math.toRadians(mRocket.getCurSpeed().getAngleXAxis())) * mPlanet.getApproxLandingTimeTime());*/
-    COORD_X_FACTOR = 0.00001;
+            Math.cos(Math.toRadians(mRocket.getCurSpeed().getAngleXAxis())) * mPlanet.getApproxLandingTimeTime());
     DISPLAY_INTERVAL = pPlanet.getApproxLandingTimeTime()/10;
     System.out.println(COORD_X_FACTOR);
   }
@@ -88,9 +87,8 @@ public class RocketRunnable implements Runnable {
     while (mRocket.getCurCoordinates().getY() < mRocket.getInitDistance()) {
       Platform.runLater(() -> {
         Coordinate2D oldCoord = mRocket.getCurCoordinates();
-
         if (mRocket.mTime <= 100) {
-          System.out.println(mRocket.mTime + "s: " + oldCoord.getX() * COORD_X_FACTOR + ", " + oldCoord.getY() * COORD_Y_FACTOR);
+          //System.out.println(mRocket.mTime + "s: " + oldCoord.getX() * COORD_X_FACTOR + ", " + oldCoord.getY() * COORD_Y_FACTOR);
         }
         calcCurAcceleration();
         calcNewCoordinates();
@@ -163,14 +161,13 @@ public class RocketRunnable implements Runnable {
   /**
    * Calculate acceleration by getting processAcceleration value
    */
-  public void calcCurAcceleration(){
-    if(mRocket.mTime < mRocket.getProcessAcc().size()) {
-      mRocket.setCurAcceleration(mRocket.getProcessAcc().get(mRocket.mTime));
-      System.out.println("Rocket Acc: abs" + mRocket.getProcessAcc().get(mRocket.mTime).abs());
-    }
-    else{
-      mRocket.setCurAcceleration(new Coordinate2D((Math.random() * ((100)) - 50), Math.random() * ((100))-50));
-    }
+   public void calcCurAcceleration() {
+      if (mRocket.mTime < mRocket.getProcessAcc().size()) {
+          mRocket.setCurAcceleration(mRocket.getProcessAcc().get(mRocket.mTime));
+          System.out.println("Time: " + mRocket.mTime + "Rocket ID: " + mRocket.getRocketID() + "Rocket Acc: abs " + mRocket.getProcessAcc().get(mRocket.mTime).abs() + "Rocket Acc x: " + mRocket.getProcessAcc().get(mRocket.mTime).getX());
+      } else {
+        mRocket.setCurAcceleration(new Coordinate2D((Math.random() * ((20)) - 10), Math.random() * ((600)) - 300));
+      }
   }
 
   /**

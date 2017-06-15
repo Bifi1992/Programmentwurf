@@ -57,11 +57,11 @@ public class GeneticLearningAbstract {
 
     boolean flag = true;
     boolean ready2 = false;
-    ArrayList<Coordinate2D> processAcc= new ArrayList<>();
+    ArrayList<Coordinate2D> processAcc;
     for (int i = 0; i < 4; i++){
-      processAcc.clear();
+      processAcc = new ArrayList<>();
       for(int d = 0; d <= 300; d++){
-        processAcc.add(new Coordinate2D(Math.random() * ((100)) - 50 , Math.random() * ((100)) - 50));
+        processAcc.add(new Coordinate2D((Math.random() * ((20)) - 10), Math.random() * ((600)) - 300));
       }
       Rocket rocket = new Rocket(
         1,
@@ -70,7 +70,7 @@ public class GeneticLearningAbstract {
           //TODO get initial speed from interface sliders
         //(float) (Math.random() * ((100) + 1)),
         //(float) (Math.random() * ((100) + 1)),
-          100, 0,
+          1000, 0,
         (float) (1),
         1000000,
         processAcc
@@ -79,6 +79,7 @@ public class GeneticLearningAbstract {
       mThreadPool.execute(new RocketRunnable(rocket, mPlanet, mTextArea, mCanvas, mGC));
       printPopulation();
       this.population.add(rocket);
+      System.out.println("Process: " + processAcc + "lenght: " + processAcc.size());
     }
     Thread t = new Thread (new Runnable() {
       @Override

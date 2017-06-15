@@ -183,6 +183,10 @@ public class Rocket {
     this.mTime = mTime;
   }
 
+  public void setCurAcceleration(Coordinate2D pCurAcceleration){
+    this.mCurAcceleration = pCurAcceleration;
+  }
+
   public Coordinate2D getCurAcceleration() {
     return this.mCurAcceleration;
   }

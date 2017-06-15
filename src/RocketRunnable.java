@@ -148,7 +148,7 @@ public class RocketRunnable implements Runnable {
       System.out.println(mRocket.getProcessAcc().get(mRocket.mTime).abs());
     }
     else{
-      mRocket.setCurAcceleration(new Coordinate2D(Math.random() * ((100) + 1), Math.random() * ((100) + 1)));
+      mRocket.setCurAcceleration(new Coordinate2D(Math.random() * ((75) - 50), Math.random() * ((75) - 50)));
     }
   }
 

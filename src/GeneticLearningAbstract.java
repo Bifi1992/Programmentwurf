@@ -41,14 +41,17 @@ public class GeneticLearningAbstract {
   final Canvas mCanvas;
   GraphicsContext mGC;
   TextArea mTextArea;
+  Interface mInterface;
 
   List<Rocket> population = new ArrayList<Rocket>();
   List<Double> parents = new ArrayList<Double>();
-  public GeneticLearningAbstract(Planet pPlanet, TextArea pTextArea, Canvas pCanvas, GraphicsContext pGC){
-    this.mPlanet = pPlanet;
-    this.mTextArea = pTextArea;
-    this.mCanvas = pCanvas;
-    this.mGC = pGC;
+
+  public GeneticLearningAbstract(Interface pInterface){
+    mInterface = pInterface;
+    mPlanet = pInterface.mPlanetDropDown.getValue();
+    mTextArea = pInterface.mTextArea;
+    mCanvas = pInterface.mCanvas;
+    mGC = pInterface.mGC;
   }
   /**
    * Create random population and values of rockets
@@ -71,11 +74,11 @@ public class GeneticLearningAbstract {
         //(float) (Math.random() * ((100) + 1)),
         //(float) (Math.random() * ((100) + 1)),
           100, 0,
-        (float) (1),
-        1000000,
+        mInterface.mSliderInitFuelLevel.getValue(),
+        mInterface.mSliderInitDistance.getValue(),
         processAcc
       );
-      mThreadPool.execute(new RocketRunnable(rocket, mPlanet, mTextArea, mCanvas, mGC));
+      mThreadPool.execute(new RocketRunnable(rocket, mInterface));
       printPopulation();
       this.population.add(rocket);
     }

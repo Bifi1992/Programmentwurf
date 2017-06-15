@@ -1,7 +1,4 @@
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
@@ -24,8 +21,6 @@ public class Rocket {
    */
   public final Coordinate2D mInitSpeed;
 
-  //TODO Anflugwinkel
-
   /**
    * holds the current speed of the rocket
    */
@@ -44,12 +39,12 @@ public class Rocket {
   /**
    * holds the initial fuel level of the rocket
    */
-  public final float mInitFuelLevel;
+  public final double mInitFuelLevel;
 
   /**
    * holds the current fuel level of the rocket
    */
-  private float mCurFuelLevel;
+  private double mCurFuelLevel;
 
   /**
    * holds the initial distance of the rocket to the planet's surface
@@ -113,7 +108,7 @@ public class Rocket {
    * @param pInitFuelLevel the initial fuel level of the rocket
    * @param pInitDistance the initial distance to the surface of the rocket
    */
-  public Rocket(int pGenerationId, int pRocketId, double pSpeedX, double pSpeedY, float pInitFuelLevel, double pInitDistance, ArrayList<Coordinate2D> pProcessAcc) {
+  public Rocket(int pGenerationId, int pRocketId, double pSpeedX, double pSpeedY, double pInitFuelLevel, double pInitDistance, ArrayList<Coordinate2D> pProcessAcc) {
     mGenerationId = pGenerationId;
     mRocketId = pRocketId;
     mInitSpeed = new Coordinate2D(pSpeedX, pSpeedY);
@@ -140,7 +135,7 @@ public class Rocket {
     this.mCurSpeed = mCurSpeed;
   }
 
-  public float getCurFuelLevel() {
+  public double getCurFuelLevel() {
     return mCurFuelLevel;
   }
 

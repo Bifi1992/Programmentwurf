@@ -35,14 +35,27 @@ public class Interface extends Application {
   GraphicsContext mGC = mCanvas.getGraphicsContext2D();
   Dimension mScreenRes = Toolkit.getDefaultToolkit().getScreenSize();
 
+  /**
+   * holds the initial distance chosen via the slider
+   */
   Double mInitDistance = RocketConstants.MIN_INIT_DIST + (RocketConstants.MAX_INIT_DIST - RocketConstants.MIN_INIT_DIST) * 0.5;
+
+  /**
+   * holds the slider for the initial distance
+   */
   Slider mSliderInitDistance = new Slider(RocketConstants.MIN_INIT_DIST, RocketConstants.MAX_INIT_DIST, mInitDistance);
 
   /**
-   * ThreadPool
+   * holds the initial fuel level chosen via the slider
    */
-  ExecutorService mThreadPool = Executors.newCachedThreadPool();
+  Double mInitFuelLevel = RocketConstants.MIN_INIT_FUEL_LEVEL +
+      (RocketConstants.MAX_INIT_FUEL_LEVEL - RocketConstants.MIN_INIT_FUEL_LEVEL) * 0.5;
 
+  /**
+   * holds the slider for the initial fuel level
+   */
+  Slider mSliderInitFuelLevel = new Slider(RocketConstants.MIN_INIT_FUEL_LEVEL, RocketConstants.MAX_INIT_FUEL_LEVEL,
+      mInitFuelLevel);
 
   @Override
   public void start(Stage pPrimaryStage) throws Exception{
@@ -50,6 +63,10 @@ public class Interface extends Application {
     mStartScene = getStartScene();
     mSimScene = getSimScene();
     mPrimaryStage.setTitle("Planet Lander");
+    mPrimaryStage.setOnCloseRequest(e -> {
+        e.consume();
+        closeProgram();
+    });
     mPrimaryStage.setScene(mStartScene);
     mPrimaryStage.show();
   }
@@ -63,7 +80,7 @@ public class Interface extends Application {
     //close via click or ESC button
     mStartExitButton.setText("Exit");
     mStartExitButton.setCancelButton(true);
-    mStartExitButton.setOnAction(e -> Platform.exit());
+    mStartExitButton.setOnAction(e -> closeProgram());
     mStartExitButton.setPrefWidth(mScreenRes.getWidth() * 0.1);
 
     mStartButton.setText("Start");
@@ -76,6 +93,7 @@ public class Interface extends Application {
 
     Label planetLabel = new Label("Planet");
     CustomSliderVBox initDistanceSliderBox = new CustomSliderVBox(5, "Initial Distance: ", mSliderInitDistance);
+    CustomSliderVBox initFuelLevelSliderBox = new CustomSliderVBox(5, "Initial Fuel Level: ", mSliderInitFuelLevel);
 
     Label rocketLabel = new Label("Rocket");
 
@@ -84,7 +102,7 @@ public class Interface extends Application {
 
     VBox planetBox = new VBox(10, planetLabel);
     planetBox.setPrefSize(mScreenRes.getWidth() * 0.5, mScreenRes.getHeight() * 0.4);
-    VBox rocketBox = new VBox(10, rocketLabel, initDistanceSliderBox);
+    VBox rocketBox = new VBox(10, rocketLabel, initDistanceSliderBox, initFuelLevelSliderBox);
     rocketBox.setPrefSize(mScreenRes.getWidth() * 0.5, mScreenRes.getHeight() * 0.4);
     HBox sliderBox = new HBox(5, planetBox, rocketBox);
 
@@ -121,12 +139,13 @@ public class Interface extends Application {
     //close via click or ESC button
     mSimExitButton.setText("Exit");
     mSimExitButton.setCancelButton(true);
-    mSimExitButton.setOnAction(e -> Platform.exit());
+    mSimExitButton.setOnAction(e -> closeProgram());
     mSimExitButton.setPrefWidth(mScreenRes.getWidth() * 0.1);
 
     //return to StartScene
     mReturnButton.setText("Return");
     mReturnButton.setDefaultButton(true);
+    //TODO cancel all RocketThreads when returning
     mReturnButton.setOnAction(e -> {
       mPrimaryStage.setScene(mStartScene);
       mGC.clearRect(0, 0, mCanvas.getWidth(), mCanvas.getHeight());
@@ -155,13 +174,14 @@ public class Interface extends Application {
   }
 
   private void startCalculations() {
-    Rocket testRocket1 = new Rocket(1, 1, new Coordinate2D(100, 0), 1,mInitDistance);
-    Planet testPlanet = mPlanetDropDown.getValue();
-    Rocket testRocket2 = new Rocket(1, 2, new Coordinate2D(100, 0), 1,mInitDistance);
-
-    GeneticLearningAbstract learner = new GeneticLearningAbstract(testPlanet, mTextArea, mCanvas, mGC);
+    GeneticLearningAbstract learner = new GeneticLearningAbstract(this);
     learner.createPopulationRandom();
-    //mThreadPool.execute(new RocketRunnable(testRocket1, testPlanet, mTextArea, mCanvas, mGC));
-    //mThreadPool.execute(new RocketRunnable(testRocket2, testPlanet, mTextArea, mCanvas, mGC));
+  }
+
+  private void closeProgram() {
+    boolean close = ConfirmBox.display("Close Program", "Are you sure you want to close the application?");
+    if (close) {
+      mPrimaryStage.close();
+    }
   }
 }

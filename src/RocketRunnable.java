@@ -59,23 +59,20 @@ public class RocketRunnable implements Runnable {
   /**
    * The constructor for {@link RocketRunnable}
    * @param pRocket the rocket which is to be calculated
-   * @param pPlanet the planet to land on
-   * @param pTextArea the textarea of the simscene
-   * @param pCanvas the canvas of the simscene
-   * @param pGC the graphics context of the simscene canvas
+   * @param pInterface holds all nodes of the application interface
    */
 
-  public RocketRunnable(Rocket pRocket, Planet pPlanet, TextArea pTextArea, Canvas pCanvas, GraphicsContext pGC){
+  public RocketRunnable(Rocket pRocket, Interface pInterface){
     mRocket = pRocket;
-    mPlanet = pPlanet;
-    mTextArea = pTextArea;
-    mGC = pGC;
-    mCanvas = pCanvas;
-    COORD_Y_FACTOR = pCanvas.getHeight()/pRocket.getInitDistance();
+    mPlanet = pInterface.mPlanetDropDown.getValue();
+    mTextArea = pInterface.mTextArea;
+    mGC = pInterface.mGC;
+    mCanvas = pInterface.mCanvas;
+    COORD_Y_FACTOR = mCanvas.getHeight()/pRocket.getInitDistance();
     COORD_X_FACTOR = mRocket.getCurSpeed().getX() == 0 ? 1 :
-        (pCanvas.getWidth() / 3) / (mRocket.getCurSpeed().getX() *
+        (mCanvas.getWidth() / 3) / (mRocket.getCurSpeed().getX() *
             Math.cos(Math.toRadians(mRocket.getCurSpeed().getAngleXAxis())) * mPlanet.getApproxLandingTimeTime());
-    DISPLAY_INTERVAL = pPlanet.getApproxLandingTimeTime()/10;
+    DISPLAY_INTERVAL = mPlanet.getApproxLandingTimeTime()/10;
     System.out.println(COORD_X_FACTOR);
   }
 

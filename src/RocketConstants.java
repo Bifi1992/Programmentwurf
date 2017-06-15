@@ -30,4 +30,14 @@ public final class RocketConstants {
    * holds the maximal initial distance of a rocket
    */
   public static final double MAX_INIT_DIST = 2000000;
+
+    /**
+   * holds the minimal initial fuel level of a rocket
+   */
+  public static final double MIN_INIT_FUEL_LEVEL = 1000000;
+
+  /**
+   * holds the maximal initial fuel level of a rocket
+   */
+  public static final double MAX_INIT_FUEL_LEVEL = 2000000;
 }

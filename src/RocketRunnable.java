@@ -51,10 +51,6 @@ public class RocketRunnable implements Runnable {
    */
   Canvas mCanvas;
 
-  /**
-   * counter variable
-   */
-  int i;
 
   /**
    * The constructor for {@link RocketRunnable}
@@ -81,21 +77,21 @@ public class RocketRunnable implements Runnable {
 
   @Override
   public void run() {
-    i = 0;
     Platform.runLater(() -> {
       displayGrid(10, 10);
       mTextArea.appendText("initSpeed: " + mRocket.getCurSpeed().toString() + "\n" +
       "initAngle: " + mRocket.getCurSpeed().getAngleXAxis() + "°\n" +
       "initCoords: " + mRocket.getCurCoordinates().toString() + "\n");
     });
-
     //TODO timelimit, correct condition
     while (mRocket.getCurCoordinates().getY() < mRocket.getInitDistance()) {
       Platform.runLater(() -> {
         Coordinate2D oldCoord = mRocket.getCurCoordinates();
+
         if (mRocket.mTime <= 100) {
           System.out.println(mRocket.mTime + "s: " + oldCoord.getX() * COORD_X_FACTOR + ", " + oldCoord.getY() * COORD_Y_FACTOR);
         }
+        calcCurAcceleration();
         calcNewCoordinates();
         Coordinate2D newCoord = mRocket.getCurCoordinates();
             mGC.strokeLine(oldCoord.getX() * COORD_X_FACTOR, oldCoord.getY() * COORD_Y_FACTOR,
@@ -161,6 +157,19 @@ public class RocketRunnable implements Runnable {
    */
   public double calcDistance() {
     return mRocket.getInitDistance() - mRocket.getCurCoordinates().getY() + mPlanet.getRadius();
+  }
+
+  /**
+   * Calculate acceleration by getting processAcceleration value
+   */
+  public void calcCurAcceleration(){
+    if(mRocket.mTime < mRocket.getProcessAcc().size()) {
+      mRocket.setCurAcceleration(mRocket.getProcessAcc().get(mRocket.mTime));
+      System.out.println(mRocket.getProcessAcc().get(mRocket.mTime).abs());
+    }
+    else{
+      mRocket.setCurAcceleration(new Coordinate2D(Math.random() * ((75) - 50), Math.random() * ((75) - 50)));
+    }
   }
 
   /**

@@ -126,7 +126,6 @@ public class RocketRunnable implements Runnable {
       mRocket.setProcessSpeed();
     }
     System.out.println("Finished");
-
     /*for (int key: mRocket.getProcessSpeed().keySet()) {
       System.out.println("id: " + mRocket.getRocketID() + " Key: " + key + " " + mRocket.getProcessSpeed().get(key).abs());
     }*/
@@ -164,7 +163,6 @@ public class RocketRunnable implements Runnable {
    public void calcCurAcceleration() {
       if (mRocket.mTime < mRocket.getProcessAcc().size()) {
           mRocket.setCurAcceleration(mRocket.getProcessAcc().get(mRocket.mTime));
-          System.out.println("Time: " + mRocket.mTime + "Rocket ID: " + mRocket.getRocketID() + "Rocket Acc: abs " + mRocket.getProcessAcc().get(mRocket.mTime).abs() + "Rocket Acc x: " + mRocket.getProcessAcc().get(mRocket.mTime).getX());
       } else {
         mRocket.setCurAcceleration(new Coordinate2D((Math.random() * ((20)) - 10), Math.random() * ((600)) - 300));
       }

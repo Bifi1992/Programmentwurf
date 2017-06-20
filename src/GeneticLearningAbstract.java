@@ -83,13 +83,13 @@ public class GeneticLearningAbstract {
     }
     mThreadPool.shutdown();
 // Wait for everything to finish.
-    try{
+    /*try{
       mThreadPool.awaitTermination(10, TimeUnit.SECONDS);
       System.out.println("Wait");
       }
       catch (Exception e) {
         throw new RuntimeException();
-      }
+      }*/
     getFitness();
     printPopulation();
 

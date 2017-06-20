@@ -57,7 +57,6 @@ public class GeneticLearningAbstract {
    * Create random population and values of rockets
    */
   public void createPopulationRandom() {
-
     boolean flag = true;
     boolean ready2 = false;
     ArrayList<Coordinate2D> processAcc;
@@ -81,20 +80,18 @@ public class GeneticLearningAbstract {
       mThreadPool.execute(new RocketRunnable(rocket, mInterface));
       printPopulation();
       this.population.add(rocket);
-      System.out.println("Process: " + processAcc + "lenght: " + processAcc.size());
     }
-    Thread t = new Thread (new Runnable() {
-      @Override
-      public void run() {
-          try{
-            Thread.sleep(2300);
-          } catch(InterruptedException ec){
-          }
-        getFitness();
-        printPopulation();
+    mThreadPool.shutdown();
+// Wait for everything to finish.
+    try{
+      mThreadPool.awaitTermination(10, TimeUnit.SECONDS);
+      System.out.println("Wait");
       }
-    });
-    t.start();
+      catch (Exception e) {
+        throw new RuntimeException();
+      }
+    getFitness();
+    printPopulation();
 
 
   }
@@ -203,7 +200,7 @@ public class GeneticLearningAbstract {
       fitnessTime = 1 - (this.population.get(j).getmTime() / timeSum);
       fitnessFuel = this.population.get(j).getFuelLeft() / fuelSum;
       fitnessAll = weightEndFuel * fitnessFuel + weightTime * fitnessTime;
-      System.out.println("Rakete " + j +
+      System.out.println("Rakete  " + j +
         " Fitness Zeit: " + (((fitnessTime)) * 100) + "%" +
         " Fitness Sprit: " + ((fitnessFuel) * 100) + "%" +
         " Fitness Combined: " + (fitnessAll * 100) + "%");

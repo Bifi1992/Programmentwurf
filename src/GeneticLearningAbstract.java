@@ -79,28 +79,20 @@ public class GeneticLearningAbstract {
       mThreadPool.execute(new RocketRunnable(rocket, mInterface));
       this.population.add(rocket);
     }
-    try {
-      mThreadPool.stop();
-      // TODO awaitTermination crashes program...
-      if (false) {
-        mThreadPool.awaitTermination();
-      }
-      System.out.println("Threads terminated!");
-    } catch (TimeoutException e) {
-      e.printStackTrace(System.err);
-    }
-
     Thread t = new Thread (new Runnable() {
       @Override
       public void run() {
         try {
-          Thread.sleep(2300);
-        } catch (InterruptedException ec) {
+          mThreadPool.stop();
+            mThreadPool.awaitTermination();
+          System.out.println("Threads terminated!");
+        } catch (TimeoutException e) {
+          e.printStackTrace(System.err);
         }
         getFitness();
         printPopulation();
       }
-    });
+    });t.start();
   }
 
   /**

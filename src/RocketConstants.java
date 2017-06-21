@@ -49,7 +49,7 @@ public final class RocketConstants {
   /**
    * holds the number of rockets per generation
    */
-  public static final int ROCKETS_PER_GENERATION = 10;
+  public static final int ROCKETS_PER_GENERATION = 4;
 
   /**
    * holds the rocket's initial speed in x dir

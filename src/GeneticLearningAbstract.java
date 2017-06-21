@@ -55,7 +55,6 @@ public class GeneticLearningAbstract {
    * Create random population and values of rockets
    */
   public void createPopulationRandom() {
-
     boolean flag = true;
     boolean ready2 = false;
     ArrayList<Coordinate2D> processAcc;
@@ -94,17 +93,14 @@ public class GeneticLearningAbstract {
     Thread t = new Thread (new Runnable() {
       @Override
       public void run() {
-          try{
-            Thread.sleep(2300);
-          } catch(InterruptedException ec){
-          }
+        try {
+          Thread.sleep(2300);
+        } catch (InterruptedException ec) {
+        }
         getFitness();
         printPopulation();
       }
     });
-    t.start();
-
-
   }
 
   /**
@@ -210,7 +206,7 @@ public class GeneticLearningAbstract {
       fitnessTime = 1 - (this.population.get(j).getmTime() / timeSum);
       fitnessFuel = this.population.get(j).getFuelLeft() / fuelSum;
       fitnessAll = weightEndFuel * fitnessFuel + weightTime * fitnessTime;
-      System.out.println("Rakete " + j +
+      System.out.println("Rakete  " + j +
         " Fitness Zeit: " + (((fitnessTime)) * 100) + "%" +
         " Fitness Sprit: " + ((fitnessFuel) * 100) + "%" +
         " Fitness Combined: " + (fitnessAll * 100) + "%");

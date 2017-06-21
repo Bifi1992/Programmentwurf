@@ -131,7 +131,6 @@ public class RocketRunnable implements Runnable {
       // Setting process speed on every secound
       mRocket.setProcessSpeed();
     }
-
     Platform.runLater( () -> {
       mTextArea.appendText("landing time:" + mRocket.mTime + "\n");
       mTextArea.appendText(mPlanet.name() + "\n");

@@ -31,13 +31,34 @@ public final class RocketConstants {
    */
   public static final double MAX_INIT_DIST = 2000000;
 
-    /**
+  /**
    * holds the minimal initial fuel level of a rocket
    */
-  public static final double MIN_INIT_FUEL_LEVEL = 1000000;
+  public static final double MIN_INIT_FUEL_LEVEL = 1500;
 
   /**
    * holds the maximal initial fuel level of a rocket
    */
-  public static final double MAX_INIT_FUEL_LEVEL = 2000000;
+  public static final double MAX_INIT_FUEL_LEVEL = 2500;
+
+  /**
+   * holds the fuel usage per acceleration in [l / (m/s^2)]
+   */
+  public static final double FUEL_PER_ACCELERATION = 0.001;
+
+  /**
+   * holds the number of rockets per generation
+   */
+  public static final int ROCKETS_PER_GENERATION = 10;
+
+  /**
+   * holds the rocket's initial speed in x dir
+   */
+  public static final double INIT_SPEED_X = 100;
+
+  /**
+   * holds the rocket's initial speed in y dir
+   */
+  public static final double INIT_SPEED_Y = 10;
+
 }

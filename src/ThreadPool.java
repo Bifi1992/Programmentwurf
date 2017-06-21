@@ -8,7 +8,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 /**
  * Created by y.brisch on 11.05.17.
  */
-public class NeuralNetworkThreadPool {
+public class ThreadPool {
   private ConcurrentLinkedQueue<Runnable> mRocketPool;
 
   // Count of threadpools created
@@ -18,21 +18,21 @@ public class NeuralNetworkThreadPool {
   // Flag to control the SimpleThreadpoolThread objects
   private AtomicBoolean execute;
   // Holds the "pool" of threads
-  private List<NeuralNetworkThreadPoolThread> threads;
+  private List<ThreadPoolThread> threads;
 
   /**
    * Private constructor to control the creation of threadpools. Increments the poolcount whenever a new pool is created.
    *
    * @param threadCount Number of SimpleThreadpoolThreads to add to the pool
    */
-  private NeuralNetworkThreadPool(int threadCount) {
+  private ThreadPool(int threadCount) {
     // Increment pool count
     poolCount.incrementAndGet();
     this.runnables = new ConcurrentLinkedQueue<>();
     this.execute = new AtomicBoolean(true);
     this.threads = new ArrayList<>();
     for (int threadIndex = 0; threadIndex < threadCount; threadIndex++) {
-      NeuralNetworkThreadPoolThread thread = new NeuralNetworkThreadPoolThread("SimpleThreadpool" +
+      ThreadPoolThread thread = new ThreadPoolThread("Threadpool" +
           poolCount.get() + "Thread" + threadIndex, this.execute, this.runnables);
       thread.start();
       this.threads.add(thread);
@@ -44,7 +44,7 @@ public class NeuralNetworkThreadPool {
    *
    * @return new SimpleThreadpool
    */
-  public static NeuralNetworkThreadPool getInstance() {
+  public static ThreadPool getInstance() {
     return getInstance(Runtime.getRuntime().availableProcessors());
   }
 
@@ -54,8 +54,8 @@ public class NeuralNetworkThreadPool {
    * @param threadCount Threads to add to the pool
    * @return new SimpleThreadpool
    */
-  public static NeuralNetworkThreadPool getInstance(int threadCount) {
-    return new NeuralNetworkThreadPool(threadCount);
+  public static ThreadPool getInstance(int threadCount) {
+    return new ThreadPool(threadCount);
   }
 
   /**

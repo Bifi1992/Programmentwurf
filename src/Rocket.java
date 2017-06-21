@@ -139,7 +139,7 @@ public class Rocket {
     return mCurFuelLevel;
   }
 
-  public void setCurFuelLevel(float mCurFuelLevel) {
+  public void setCurFuelLevel(double mCurFuelLevel) {
     this.mCurFuelLevel = mCurFuelLevel;
   }
 

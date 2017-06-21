@@ -1,14 +1,11 @@
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.TextArea;
-import javafx.util.Callback;
 
-
-import java.rmi.server.ExportException;
 import java.time.Duration;
 import java.util.*;
 import java.util.concurrent.*;
-import java.lang.Thread.*;
+
 /**
  * Created by ludwig on 17.05.17.
  */
@@ -18,12 +15,13 @@ import java.lang.Thread.*;
  */
 public class GeneticLearningAbstract {
   CountDownLatch latch = new CountDownLatch(1);
-  ExecutorService mThreadPool = Executors.newCachedThreadPool();
+  ThreadPool mThreadPool = ThreadPool.getInstance(RocketConstants.ROCKETS_PER_GENERATION);
   final Duration timeout = Duration.ofSeconds(30);
   ExecutorService executor = Executors.newSingleThreadExecutor();
   double mutation = 0.01;
   int distance = 100;
   /**
+   * TODO put constants into new file like {@link RocketConstants}
    * Goal values to be reached
    */
   int goalSpeed = 100;
@@ -61,7 +59,7 @@ public class GeneticLearningAbstract {
     boolean flag = true;
     boolean ready2 = false;
     ArrayList<Coordinate2D> processAcc;
-    for (int i = 0; i < 4; i++){
+    for (int i = 0; i < RocketConstants.ROCKETS_PER_GENERATION; i++){
       processAcc = new ArrayList<>();
       for(int d = 0; d <= 300; d++){
         processAcc.add(new Coordinate2D((Math.random() * ((20)) - 10), Math.random() * ((600)) - 300));
@@ -73,16 +71,26 @@ public class GeneticLearningAbstract {
           //TODO get initial speed from interface sliders
         //(float) (Math.random() * ((100) + 1)),
         //(float) (Math.random() * ((100) + 1)),
-          100, 0,
+          RocketConstants.INIT_SPEED_X,
+          RocketConstants.INIT_SPEED_Y,
         mInterface.mSliderInitFuelLevel.getValue(),
         mInterface.mSliderInitDistance.getValue(),
         processAcc
       );
       mThreadPool.execute(new RocketRunnable(rocket, mInterface));
-      printPopulation();
       this.population.add(rocket);
-      System.out.println("Process: " + processAcc + "lenght: " + processAcc.size());
     }
+    try {
+      mThreadPool.stop();
+      // TODO awaitTermination crashes program...
+      if (false) {
+        mThreadPool.awaitTermination();
+      }
+      System.out.println("Threads terminated!");
+    } catch (TimeoutException e) {
+      e.printStackTrace(System.err);
+    }
+
     Thread t = new Thread (new Runnable() {
       @Override
       public void run() {
@@ -114,7 +122,6 @@ public class GeneticLearningAbstract {
          //*/
         for (Integer j = 0; j < this.population.size(); j++) {
             currRocket = population.get(j);
-            System.out.println(currRocket);
             if(currRocket.getCurSpeed().abs() < min){
               min = currRocket.getCurSpeed().abs();
             }

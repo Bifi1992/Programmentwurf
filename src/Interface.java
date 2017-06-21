@@ -1,5 +1,4 @@
 import javafx.application.Application;
-import javafx.application.Platform;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.*;
@@ -14,8 +13,7 @@ import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 
 import java.awt.*;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
+import java.util.HashMap;
 
 /**
  * Created by y.brisch on 11.05.17.
@@ -56,6 +54,11 @@ public class Interface extends Application {
    */
   Slider mSliderInitFuelLevel = new Slider(RocketConstants.MIN_INIT_FUEL_LEVEL, RocketConstants.MAX_INIT_FUEL_LEVEL,
       mInitFuelLevel);
+
+  /**
+   * Holds all ProgressIndicators for the rockets
+   */
+  HashMap<Integer, CustomProgressVBox> mProgressIndicatorMap = new HashMap<>();
 
   @Override
   public void start(Stage pPrimaryStage) throws Exception{
@@ -157,7 +160,23 @@ public class Interface extends Application {
     mTextArea.setPrefHeight(mScreenRes.getHeight() * 0.2);
     mTextArea.setPrefWidth(mScreenRes.getWidth() * 0.8);
 
-    HBox textAndButtonsBox = new HBox(5, mTextArea, ButtonBox);
+    HBox topHBox1 = new HBox();
+    HBox topHBox2 = new HBox();
+    for (int i = 0; i < RocketConstants.ROCKETS_PER_GENERATION; i++) {
+      mProgressIndicatorMap.put(i, new CustomProgressVBox(
+          (mScreenRes.getWidth() / RocketConstants.ROCKETS_PER_GENERATION),
+          (mScreenRes.getHeight() * 0.1)
+      ));
+      if (i < RocketConstants.ROCKETS_PER_GENERATION / 2) {
+        topHBox1.getChildren().add(mProgressIndicatorMap.get(i));
+      } else {
+        topHBox2.getChildren().add(mProgressIndicatorMap.get(i));
+      }
+    }
+
+    VBox topVBox = new VBox(topHBox1, topHBox2);
+
+    HBox textAndButtonsBox = new HBox(5, /*mTextArea,*/ topVBox, ButtonBox);
 
     VBox root = new VBox(10, textAndButtonsBox, canvasContainer);
 
@@ -181,6 +200,8 @@ public class Interface extends Application {
   private void closeProgram() {
     boolean close = ConfirmBox.display("Close Program", "Are you sure you want to close the application?");
     if (close) {
+      ThreadPool.getInstance().stop();
+      ThreadPool.getInstance().terminate();
       mPrimaryStage.close();
     }
   }

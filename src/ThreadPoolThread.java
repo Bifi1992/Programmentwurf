@@ -4,11 +4,11 @@ import java.util.concurrent.atomic.AtomicBoolean;
 /**
  * Created by y.brisch on 11.05.17.
  */
-public class NeuralNetworkThreadPoolThread extends Thread{
+public class ThreadPoolThread extends Thread{
   private AtomicBoolean execute;
   private ConcurrentLinkedQueue<Runnable> runnables;
 
-  public NeuralNetworkThreadPoolThread(String name, AtomicBoolean execute, ConcurrentLinkedQueue<Runnable> runnables) {
+  public ThreadPoolThread(String name, AtomicBoolean execute, ConcurrentLinkedQueue<Runnable> runnables) {
     super(name);
     this.execute = execute;
     this.runnables = runnables;

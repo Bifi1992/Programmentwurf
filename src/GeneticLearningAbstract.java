@@ -91,28 +91,59 @@ public class GeneticLearningAbstract {
    * Calculate fitness of population
    */
      public void getFitness(){
-        List<Double> sub = new ArrayList<Double>();
-        Double min = population.get(0).getCurSpeed().abs();
-        Double secndmin = 0.0;
-
+       /**
+        * Variables needed to calculate fitness level of rocket
+        * TODO: Fitness level should depend on how important one parameter is -> implement weights of the fitness results e.g time is not so necessary as fuel
+        * TODO: Maybe create a class to handle fitness values
+        */
+        float fuelSum = 0.0f;
+        float speedSum = 0.0f;
+        float timeSum = 0.0f;
+        float fitnessTime;
+        float fitnessFuel;
+        float fitnessSpeed;
+        float fitnessAll = 0;
+        float fitnessOld;
         Rocket currRocket;
+        Rocket best = null;
+        Rocket secoundBest = null;
 
+       for (Integer j = 0; j < this.population.size(); j++) {
+        fuelSum+= population.get(j).getCurFuelLevel();
+        speedSum+= population.get(j).getCurSpeed().abs();
+        timeSum+= population.get(j).getTime();
+       }
         /**
          * Choose best items of pupulation depending on their distance to the goal value.
          //*/
         for (Integer j = 0; j < this.population.size(); j++) {
             currRocket = population.get(j);
-            if(currRocket.getCurSpeed().abs() < min){
-              min = currRocket.getCurSpeed().abs();
+            fitnessFuel = (float)(currRocket.getCurFuelLevel()/fuelSum);
+            fitnessTime = 1-(currRocket.getTime()/timeSum);
+            fitnessSpeed = 1-(float)(currRocket.getCurSpeed().abs()/speedSum);
+            fitnessOld = fitnessAll;
+            fitnessAll = fitnessFuel + fitnessTime  + fitnessSpeed;
+            System.out.println("Rocket ID: " + currRocket.getRocketID() + "Fitness all: " + ((fitnessAll)));
+          /**
+           * If rockets are chosen depends on fitnessAll, which is the sum of every fitnessparameter an it's weight.
+           */
+          if(fitnessAll > fitnessOld){
+              if(best == null){
+                best = currRocket;
+              }else {
+                secoundBest = best;
+                best = currRocket;
+              }
             }
         }
-        System.out.println("Best Values ||  Min 1:  " + min + "  Min: 2  " + secndmin);
         /**
-         * Set Parents
+         * Output of best rockets from this thread
          //*/
         parents.clear();
-        parents.add(min);
-        parents.add(secndmin);
+        System.out.println("Best Rocket: " + best.getRocketID());
+        System.out.println("Secound Best: " + secoundBest.getRocketID());
+        /*parents.add(best);
+        parents.add(secoundBest);*/
     }
 
 //    /**

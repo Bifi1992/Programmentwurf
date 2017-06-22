@@ -12,7 +12,7 @@ public class RocketRunnable implements Runnable {
   /**
    * holds the time difference between every calculation
    */
-  private static final int TIME_INTERVAL = 5;
+  private static int TIME_INTERVAL;
 
   /**
    * holds a factor that adjusts the time to write rocket info to the screen
@@ -79,6 +79,10 @@ public class RocketRunnable implements Runnable {
         (mCanvas.getWidth() / 3) / (mRocket.getCurSpeed().getX() *
             Math.cos(Math.toRadians(mRocket.getCurSpeed().getAngleXAxis())) * mPlanet.getMaxLandingTime());
     DISPLAY_INTERVAL = mPlanet.getMaxLandingTime()/10;
+    TIME_INTERVAL = (int) Math.ceil((double) mPlanet.getMaxLandingTime() / 10000);
+    mRocket.setInitCoordinates(new Coordinate2D(mCanvas.getWidth() / 2 / COORD_X_FACTOR,
+        mRocket.getInitCoordinates().getY() / COORD_Y_FACTOR));
+    System.out.println("Rocket" + mRocket.getRocketID() + ": " + mRocket.getInitCoordinates().toString());
   }
 
   @Override
@@ -90,7 +94,7 @@ public class RocketRunnable implements Runnable {
       "initAngle: " + mRocket.getCurSpeed().getAngleXAxis() + "°\n" +
       "initCoords: " + mRocket.getCurCoordinates().toString() + "\n");
     });
-    //TODO timelimit, correct condition
+
     while (mRocket.getCurCoordinates().getY() < mRocket.getInitDistance()
         && mRocket.mTime < mPlanet.getMaxLandingTime()
         && mRocket.getCurFuelLevel() >= 0) {
@@ -102,6 +106,9 @@ public class RocketRunnable implements Runnable {
             newCoord.getX() * COORD_X_FACTOR, newCoord.getY() * COORD_Y_FACTOR);
         if (mRocket.mTime != 0 && mRocket.mTime % DISPLAY_INTERVAL == 0) {
           mGC.strokeText("" + mRocket.mTime, newCoord.getX() * COORD_X_FACTOR, newCoord.getY() * COORD_Y_FACTOR);
+          System.out.println(mRocket.getRocketID() + ": " +
+              oldCoord.getX() * COORD_X_FACTOR + " " + oldCoord.getY() * COORD_Y_FACTOR + " " +
+              newCoord.getX() * COORD_X_FACTOR + " " + newCoord.getY() * COORD_Y_FACTOR);
           /*
           mGC.strokeText("(" + String.format("%6.2e",newCoord.getX()) + ", " + String.format("%6.2e",newCoord.getY()) + ")",
               newCoord.getX() * COORD_X_FACTOR, newCoord.getY() * COORD_Y_FACTOR);

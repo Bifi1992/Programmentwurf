@@ -55,8 +55,6 @@ public class GeneticLearningAbstract {
    * Create random population and values of rockets
    */
   public void createPopulationRandom() {
-    boolean flag = true;
-    boolean ready2 = false;
     ArrayList<Coordinate2D> processAcc;
     for (int i = 0; i < RocketConstants.ROCKETS_PER_GENERATION; i++){
       processAcc = new ArrayList<>();
@@ -66,12 +64,8 @@ public class GeneticLearningAbstract {
       Rocket rocket = new Rocket(
         1,
         i,
-        //Math.random() * ((100) + 1)
-          //TODO get initial speed from interface sliders
-        //(float) (Math.random() * ((100) + 1)),
-        //(float) (Math.random() * ((100) + 1)),
-          RocketConstants.INIT_SPEED_X,
-          RocketConstants.INIT_SPEED_Y,
+        RocketConstants.INIT_SPEED_X,
+        RocketConstants.INIT_SPEED_Y,
         mInterface.mSliderInitFuelLevel.getValue(),
         mInterface.mSliderInitDistance.getValue(),
         processAcc
@@ -79,20 +73,18 @@ public class GeneticLearningAbstract {
       mThreadPool.execute(new RocketRunnable(rocket, mInterface));
       this.population.add(rocket);
     }
-    Thread t = new Thread (new Runnable() {
-      @Override
-      public void run() {
+    Thread t = new Thread (() -> {
         try {
           mThreadPool.stop();
-            mThreadPool.awaitTermination();
+          mThreadPool.awaitTermination();
           System.out.println("Threads terminated!");
         } catch (TimeoutException e) {
           e.printStackTrace(System.err);
         }
         getFitness();
         printPopulation();
-      }
-    });t.start();
+    });
+    t.start();
   }
 
   /**

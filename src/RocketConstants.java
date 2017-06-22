@@ -1,15 +1,18 @@
+
 /**
  * Created by y.brisch on 08.06.17.
  */
 public final class RocketConstants {
-  private RocketConstants() {
-
-  }
 
   /**
-   * holds the maximum speed for a successful landing of all rockets
+   * prohibit instantiation
    */
-  public static final Coordinate2D MAX_LANDING_SPEED = new Coordinate2D(20, 20);
+  private RocketConstants() {}
+
+  /**
+   * holds the maximum speed for a successful landing of all rockets in [m/s]
+   */
+  public static final int MAX_LANDING_SPEED = 20;
 
   /**
    * holds the initial coordinates of all rockets
@@ -44,7 +47,7 @@ public final class RocketConstants {
   /**
    * holds the fuel usage per acceleration in [l / (m/s^2)]
    */
-  public static final double FUEL_PER_ACCELERATION = 0.001;
+  public static final double FUEL_PER_ACCELERATION = 0.002;
 
   /**
    * holds the number of rockets per generation
@@ -60,5 +63,4 @@ public final class RocketConstants {
    * holds the rocket's initial speed in y dir
    */
   public static final double INIT_SPEED_Y = 10;
-
 }

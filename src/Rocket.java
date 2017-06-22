@@ -59,7 +59,7 @@ public class Rocket {
   /**
    * holds the initial coordinates of the rocket
    */
-  public final Coordinate2D mInitCoordinates;
+  private Coordinate2D mInitCoordinates;
 
   /**
    * A Map of the speed process per second <Second, Speed>
@@ -190,10 +190,20 @@ public class Rocket {
   public Coordinate2D getCurAcceleration() {
     return this.mCurAcceleration;
   }
+
   public int getRocketID() {
     return this.mRocketId;
   }
+
   public int getGenerationId(){
     return this.mGenerationId;
+  }
+
+  public void setInitCoordinates(Coordinate2D mInitCoordinates) {
+    this.mInitCoordinates = mInitCoordinates;
+  }
+
+  public Coordinate2D getInitCoordinates() {
+    return mInitCoordinates;
   }
 }

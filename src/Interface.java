@@ -1,10 +1,12 @@
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.*;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextArea;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
@@ -59,6 +61,11 @@ public class Interface extends Application {
    * Holds all ProgressIndicators for the rockets
    */
   HashMap<Integer, CustomProgressVBox> mProgressIndicatorMap = new HashMap<>();
+
+  /**
+   * Holds a scrollable pane that contains the canvas
+   */
+  ScrollPane mScrollPane;
 
   @Override
   public void start(Stage pPrimaryStage) throws Exception{
@@ -129,15 +136,16 @@ public class Interface extends Application {
   }
 
   private Scene getSimScene() {
-    mCanvas.setHeight(mScreenRes.getHeight() * 0.7);
-    mCanvas.setWidth(mScreenRes.getWidth());
+    // setup scrollable canvas
+    mCanvas.setHeight(mScreenRes.getHeight());
+    mCanvas.setWidth(mScreenRes.getWidth() * 6);
+    mScrollPane = new ScrollPane(mCanvas);
+    mScrollPane.setPrefSize(mScreenRes.getWidth(), mScreenRes.getHeight() * 0.7);
+    mScrollPane.setMaxSize(Double.MAX_VALUE, Double.MAX_VALUE);
+    mScrollPane.setFitToWidth(true);
+    mScrollPane.setFitToHeight(true);
     mGC.setStroke(Color.BLUE);
     mGC.setFill(Color.BLUE);
-    StackPane canvasContainer = new StackPane(mCanvas);
-    canvasContainer.setStyle(
-        "-fx-background-color: blue, white;" +
-            "    -fx-background-insets: 0, 2;" +
-            "    -fx-padding: 2;");
 
     //close via click or ESC button
     mSimExitButton.setText("Exit");
@@ -155,7 +163,7 @@ public class Interface extends Application {
     });
     mReturnButton.setPrefWidth(mScreenRes.getWidth() * 0.1);
 
-    VBox ButtonBox = new VBox(5, mStartExitButton, mReturnButton);
+    VBox ButtonBox = new VBox(5, mSimExitButton, mReturnButton);
 
     mTextArea.setPrefHeight(mScreenRes.getHeight() * 0.2);
     mTextArea.setPrefWidth(mScreenRes.getWidth() * 0.8);
@@ -178,7 +186,7 @@ public class Interface extends Application {
 
     HBox textAndButtonsBox = new HBox(5, /*mTextArea,*/ topVBox, ButtonBox);
 
-    VBox root = new VBox(10, textAndButtonsBox, canvasContainer);
+    VBox root = new VBox(5, textAndButtonsBox, mScrollPane);
 
     /*root.setStyle(
         "-fx-padding: 10;" +

@@ -1,15 +1,12 @@
+- (important) start painting in center of window
 - css
    http://docs.oracle.com/javafx/2/css_tutorial/jfxpub-css_tutorial.htm
 - monitor all Runnables
-- (maybe) if rocket hits right border of canvas, zoom out
-- calc approximate landing for x-coord-factor
+   - show reason for unsuccessful landing
 - clean up code (more classes and functions)
 - GUI *
    - Sliders for Rocket
-   - Sliders for Rocket
    - GUI Folder
-   - seperate scene for simulation (canvas, etc.)
-   - classes for each slider
 - correct calculation of landing *
    - fix distance
 - acceleration (forwards/backwards)

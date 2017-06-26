@@ -99,6 +99,8 @@ public class RocketRunnable implements Runnable {
         && mRocket.mTime < mPlanet.getMaxLandingTime()
         && mRocket.getCurFuelLevel() >= 0) {
       Platform.runLater(() -> {
+        // different color for each rocket
+        mGC.setStroke(RocketConstants.COLOR_PALETTE[mRocket.getRocketID()]);
         Coordinate2D oldCoord = mRocket.getCurCoordinates();
         calcNewCoordinates();
         Coordinate2D newCoord = mRocket.getCurCoordinates();

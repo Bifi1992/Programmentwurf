@@ -106,7 +106,7 @@ public class GeneticLearningAbstract {
         float fitnessOld;
         Rocket currRocket;
         Rocket best = null;
-        Rocket secoundBest = null;
+        Rocket secondBest = null;
 
        for (Integer j = 0; j < this.population.size(); j++) {
         fuelSum+= population.get(j).getCurFuelLevel();
@@ -131,7 +131,7 @@ public class GeneticLearningAbstract {
               if(best == null){
                 best = currRocket;
               }else {
-                secoundBest = best;
+                secondBest = best;
                 best = currRocket;
               }
             }
@@ -141,9 +141,10 @@ public class GeneticLearningAbstract {
          //*/
         parents.clear();
         System.out.println("Best Rocket: " + best.getRocketID());
-        System.out.println("Secound Best: " + secoundBest.getRocketID());
+        //TODO secondBest can throw NullPointer Exception because of no initiation
+        System.out.println("Secound Best: " + secondBest.getRocketID());
         /*parents.add(best);
-        parents.add(secoundBest);*/
+        parents.add(secondBest);*/
     }
 
 //    /**

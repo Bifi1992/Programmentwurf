@@ -7,9 +7,7 @@
 - GUI *
    - Sliders for Rocket
    - GUI Folder
+   - Different Colors for all Rockets
 - correct calculation of landing *
    - fix distance
-- acceleration (forwards/backwards)
-- (maybe) Lookup Class
 - Interface Singleton
-- Implement thread pool

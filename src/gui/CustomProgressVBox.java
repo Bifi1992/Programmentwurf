@@ -1,9 +1,10 @@
+package gui;
+
 import javafx.scene.control.Label;
 import javafx.scene.control.ProgressBar;
 import javafx.scene.control.ProgressIndicator;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
-import javafx.scene.text.Text;
 
 /**
  * Created by y.brisch on 20.06.17.
@@ -14,7 +15,7 @@ public class CustomProgressVBox extends VBox {
   private Label mLabelTime;
   private ProgressBar mProgressBarFuelLevel;
 
-  CustomProgressVBox(double pWidth, double pHeight) {
+  public CustomProgressVBox(double pWidth, double pHeight) {
     super();
     mLabelRocketId = new Label();
     mLabelDistance = new Label();

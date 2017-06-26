@@ -15,7 +15,7 @@ import java.util.concurrent.*;
  */
 public class GeneticLearningAbstract {
   CountDownLatch latch = new CountDownLatch(1);
-  ThreadPool mThreadPool = ThreadPool.getInstance(RocketConstants.ROCKETS_PER_GENERATION);
+  ThreadPool mThreadPool;
   final Duration timeout = Duration.ofSeconds(30);
   ExecutorService executor = Executors.newSingleThreadExecutor();
   double mutation = 0.01;
@@ -46,6 +46,7 @@ public class GeneticLearningAbstract {
 
   public GeneticLearningAbstract(Interface pInterface){
     mInterface = pInterface;
+    mThreadPool = ThreadPool.getInstance(mInterface.mPopSizeDropDown.getValue());
     mPlanet = pInterface.mPlanetDropDown.getValue();
     mTextArea = pInterface.mTextArea;
     mCanvas = pInterface.mCanvas;
@@ -56,7 +57,7 @@ public class GeneticLearningAbstract {
    */
   public void createPopulationRandom() {
     ArrayList<Coordinate2D> processAcc;
-    for (int i = 0; i < RocketConstants.ROCKETS_PER_GENERATION; i++){
+    for (int i = 0; i < mInterface.mPopSizeDropDown.getValue(); i++){
       processAcc = new ArrayList<>();
       for(int d = 0; d <= 300; d++){
         processAcc.add(new Coordinate2D((Math.random() * ((20)) - 10), Math.random() * ((600)) - 300));

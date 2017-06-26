@@ -52,7 +52,7 @@ public final class RocketConstants {
   public static final double FUEL_PER_ACCELERATION = 0.002;
 
   /**
-   * holds the number of rockets per generation
+   * holds the default number of rockets per generation for {@link Interface}.mPopSizeDropDown
    */
   public static final int ROCKETS_PER_GENERATION = 4;
 

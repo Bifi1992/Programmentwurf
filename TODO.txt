@@ -1,13 +1,13 @@
 - (important) start painting in center of window
+- draw grid only once
 - css
    http://docs.oracle.com/javafx/2/css_tutorial/jfxpub-css_tutorial.htm
 - monitor all Runnables
    - show reason for unsuccessful landing
 - clean up code (more classes and functions)
 - GUI *
-   - Sliders for Rocket
-   - GUI Folder
-   - Different Colors for all Rockets
+   - Sliders
+   - (maybe) smaller sim scene window
 - correct calculation of landing *
-   - fix distance
+   - fix distance (TOCHECK)
 - Interface Singleton

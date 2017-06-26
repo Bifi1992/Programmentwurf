@@ -1,5 +1,9 @@
+import gui.ConfirmBox;
+import gui.CustomProgressVBox;
+import gui.CustomSliderVBox;
 import javafx.application.Application;
-import javafx.application.Platform;
+import javafx.geometry.Orientation;
+import javafx.geometry.Pos;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.*;
@@ -9,13 +13,14 @@ import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextArea;
 import javafx.scene.layout.HBox;
-import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 
 import java.awt.*;
 import java.util.HashMap;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 /**
  * Created by y.brisch on 11.05.17.
@@ -40,10 +45,16 @@ public class Interface extends Application {
    */
   Double mInitDistance = RocketConstants.MIN_INIT_DIST + (RocketConstants.MAX_INIT_DIST - RocketConstants.MIN_INIT_DIST) * 0.5;
 
+
   /**
    * holds the slider for the initial distance
    */
   Slider mSliderInitDistance = new Slider(RocketConstants.MIN_INIT_DIST, RocketConstants.MAX_INIT_DIST, mInitDistance);
+
+  /**
+   * holds the choice box for the population size
+   */
+  ChoiceBox<Integer> mPopSizeDropDown = new ChoiceBox<>();
 
   /**
    * holds the initial fuel level chosen via the slider
@@ -82,10 +93,15 @@ public class Interface extends Application {
   }
 
   private Scene getStartScene() {
+    /**
+     * top side - buttons and PlanetDropDown
+     */
     for (Planet p : Planet.values()) {
       mPlanetDropDown.getItems().add(p);
     }
     mPlanetDropDown.setValue(Planet.MOON);
+
+    Label planetLabel = new Label("Planet:");
 
     //close via click or ESC button
     mStartExitButton.setText("Exit");
@@ -101,23 +117,39 @@ public class Interface extends Application {
     });
     mStartButton.setPrefWidth(mScreenRes.getWidth() * 0.1);
 
-    Label planetLabel = new Label("Planet");
-    CustomSliderVBox initDistanceSliderBox = new CustomSliderVBox(5, "Initial Distance: ", mSliderInitDistance);
-    CustomSliderVBox initFuelLevelSliderBox = new CustomSliderVBox(5, "Initial Fuel Level: ", mSliderInitFuelLevel);
-
-    Label rocketLabel = new Label("Rocket");
-
     HBox buttonBox = new HBox(5, mStartButton, mStartExitButton);
-    HBox topBox = new HBox(5, mPlanetDropDown, buttonBox);
+    HBox topBox = new HBox(5, planetLabel, mPlanetDropDown, buttonBox);
+    topBox.setAlignment(Pos.CENTER_LEFT);
 
-    VBox planetBox = new VBox(10, planetLabel);
-    planetBox.setPrefSize(mScreenRes.getWidth() * 0.5, mScreenRes.getHeight() * 0.4);
+    /**
+     * TODO initial speed / angle
+     * right side - Rocket
+      */
+    Label rocketLabel = new Label("Rocket");
+    CustomSliderVBox initDistanceSliderBox = new CustomSliderVBox(5, "Initial Distance: ", mSliderInitDistance, "km");
+    CustomSliderVBox initFuelLevelSliderBox = new CustomSliderVBox(5, "Initial Fuel Level: ", mSliderInitFuelLevel, "l");
     VBox rocketBox = new VBox(10, rocketLabel, initDistanceSliderBox, initFuelLevelSliderBox);
     rocketBox.setPrefSize(mScreenRes.getWidth() * 0.5, mScreenRes.getHeight() * 0.4);
-    HBox sliderBox = new HBox(5, planetBox, rocketBox);
+    rocketBox.setAlignment(Pos.TOP_CENTER);
 
+    /**
+     * TODO generation size
+     * left side - Algorithm
+      */
+    Label algoLabel = new Label("Algorithm");
+    for (Integer popSize : IntStream.rangeClosed(AlgorithmConstants.MIN_POP_SIZE, AlgorithmConstants.MAX_POP_SIZE).boxed().collect(Collectors.toList())) {
+      mPopSizeDropDown.getItems().add(popSize);
+    }
+    mPopSizeDropDown.setValue(RocketConstants.ROCKETS_PER_GENERATION);
+    Label popSizeLabel = new Label("Rockets per Population: ");
+    HBox popSizeVBox = new HBox(5, popSizeLabel, mPopSizeDropDown);
+    VBox algoBox = new VBox(10, algoLabel, popSizeVBox);
+    algoBox.setPrefSize(mScreenRes.getWidth() * 0.5, mScreenRes.getHeight() * 0.4);
+    algoBox.setAlignment(Pos.TOP_CENTER);
 
-    VBox root = new VBox(10, topBox, sliderBox);
+    HBox middleBox = new HBox(5, algoBox, new Separator(Orientation.VERTICAL), rocketBox);
+
+    VBox root = new VBox(10, topBox, new Separator(Orientation.HORIZONTAL), middleBox);
 
     /*root.setStyle(
         "-fx-padding: 10;" +
@@ -170,12 +202,12 @@ public class Interface extends Application {
 
     HBox topHBox1 = new HBox();
     HBox topHBox2 = new HBox();
-    for (int i = 0; i < RocketConstants.ROCKETS_PER_GENERATION; i++) {
+    for (int i = 0; i < mPopSizeDropDown.getValue(); i++) {
       mProgressIndicatorMap.put(i, new CustomProgressVBox(
-          (mScreenRes.getWidth() / RocketConstants.ROCKETS_PER_GENERATION),
+          (mScreenRes.getWidth() / mPopSizeDropDown.getValue()),
           (mScreenRes.getHeight() * 0.1)
       ));
-      if (i < RocketConstants.ROCKETS_PER_GENERATION / 2) {
+      if (i < mPopSizeDropDown.getValue() / 2) {
         topHBox1.getChildren().add(mProgressIndicatorMap.get(i));
       } else {
         topHBox2.getChildren().add(mProgressIndicatorMap.get(i));

@@ -21,7 +21,7 @@ public class GeneticLearningAbstract {
   ThreadPool mThreadPool;
   final Duration timeout = Duration.ofSeconds(30);
   ExecutorService executor = Executors.newSingleThreadExecutor();
-  double mutation = 0.01;
+  double mutation = 10;
   int distance = 100;
   /**
    * TODO put constants into new file like {@link RocketConstants}
@@ -64,7 +64,7 @@ public class GeneticLearningAbstract {
       for (int i = 0; i < mInterface.mPopSizeDropDown.getValue(); i++) {
         processAcc = new ArrayList<>();
         for (int d = 0; d <= 100000; d++) {
-          processAcc.add(new Coordinate2D((Math.random() * ((5)) - 2.5), Math.random() * ((300)) - 150));
+            processAcc.add(new Coordinate2D((Math.random() * ((5)) - 2.5), Math.random() * ((200)) - 100));
         }
         Rocket rocket = new Rocket(
           mGeneration,
@@ -146,7 +146,7 @@ public class GeneticLearningAbstract {
             if(fitnessDistance <= 0){
               fitnessDistance = 0;
             }
-            fitnessAll = (float)(0.1*fitnessFuel + 0.1*fitnessTime  + 0.1*fitnessSpeed + 0.7*fitnessDistance);
+            fitnessAll = (float)(0.3*fitnessFuel + 0.1*fitnessTime  + 0.2*fitnessSpeed + 0.4*fitnessDistance);
             currRocket.setTotalFitness(fitnessAll);
             total+=fitnessAll;
             System.out.println("Rocket ID: " + currRocket.getRocketID() + "Fitness all: " + ((fitnessAll)) + "Cur Distance:" + (currRocket.getInitDistance() - population.get(j).getCurCoordinates().getY() + mPlanet.getRadius()) + "Cur Speed: " + currRocket.getCurSpeed().abs() + "Cur Fuel: " + currRocket.getCurFuelLevel());
@@ -169,7 +169,7 @@ public class GeneticLearningAbstract {
          * Output of best rockets from this thread
          //*/
 
-       for (int j = 0; j < population.size(); j++){
+       /*for (int j = 0; j < population.size(); j++){
          currRocket = population.get(j);
          choosingProbability = currRocket.getTotalFitness()/total;
          currRocket.setChoosingProbability(choosingProbability);
@@ -190,10 +190,10 @@ public class GeneticLearningAbstract {
          else{
            parents.add(population.get(j));
          }
-       }
+       }*/
 
-         //parents.add(best);
-         //parents.add(secondBest);
+         parents.add(best);
+         parents.add(secondBest);
          System.out.println("Best Rocket: " + best.getRocketID());
          System.out.println("Parent Size: " + parents.size());
          System.out.println("Secound Best: " + secondBest.getRocketID());
@@ -209,57 +209,32 @@ public class GeneticLearningAbstract {
       int z = 0;
       //for (int i = 0; i < mInterface.mPopSizeDropDown.getValue(); i++) {
       for (int i = 0; i <  mInterface.mPopSizeDropDown.getValue(); i++) {
+          System.out.println("RandNumber: " + (Math.random() * ((2))));
         processAcc = new ArrayList<>();
-        if(i < parents.size()/2) {
-          if (parents.get(0).getProcessAcc().size() > parents.get(1).getProcessAcc().size()) {
-            for (int d = 0; d < parents.get(1).getProcessAcc().size(); d++) {
-              processAcc.add(new Coordinate2D(parents.get(d%2).getProcessAcc().get(d).getX(), parents.get(d % 2).getProcessAcc().get(d).getY()));
+        if(i<=1) {
+            if (parents.get(0).getProcessAcc().size() > parents.get(1).getProcessAcc().size()) {
+                for (int d = 0; d < parents.get(1).getProcessAcc().size(); d++) {
+                    if (d % mutation == 0) {
+                        processAcc.add(new Coordinate2D((parents.get(d%2).getProcessAcc().get(d).getX()*(Math.random() * ((2)) - 1)), parents.get(d%2).getProcessAcc().get(d).getY()*(Math.random() * ((2)) - 1)));
+                    }
+                    processAcc.add(new Coordinate2D(parents.get(d%2).getProcessAcc().get(d).getX(), parents.get(d%2).getProcessAcc().get(d).getY()));
+                }
+            } else {
+                for (int d = 1; d < parents.get(0).getProcessAcc().size(); d++) {
+                    if (d % mutation == 0) {
+                        processAcc.add(new Coordinate2D((parents.get(d%2).getProcessAcc().get(d).getX()*(Math.random() * ((2)) - 1)), parents.get(d%2).getProcessAcc().get(d).getY()*(Math.random() * ((2)) - 1)));
+                    }
+                    processAcc.add(new Coordinate2D(parents.get(d%2).getProcessAcc().get(d).getX(), parents.get(d%2).getProcessAcc().get(d).getY()));
+                }
             }
-          } else {
+        }else{
             for (int d = 0; d < parents.get(0).getProcessAcc().size(); d++) {
-              processAcc.add(new Coordinate2D(parents.get(d%2).getProcessAcc().get(d).getX(), parents.get(d % 2).getProcessAcc().get(d).getY()));
+                processAcc.add(new Coordinate2D((Math.random() * ((5)) - 2.5), Math.random() * ((200)) - 100));
             }
-          }
-        }else {
-          if (parents.get(2).getProcessAcc().size() > parents.get(3).getProcessAcc().size()) {
-            for (int d = 0; d < parents.get(3).getProcessAcc().size(); d++) {
-              if(d%2 == 0){
-                z = 2;
-              }else {
-                z=3;
-              }
-              processAcc.add(new Coordinate2D(parents.get(z).getProcessAcc().get(d).getX(), parents.get(z).getProcessAcc().get(d).getY()));
-            }
-          } else {
-            for (int d = 0; d < parents.get(2).getProcessAcc().size(); d++) {
-              if(d%2 == 0){
-                z = 2;
-              }else {
-                z = 3;
-              }
-              processAcc.add(new Coordinate2D(parents.get(z).getProcessAcc().get(d).getX(), parents.get(z).getProcessAcc().get(d).getY()));
-            }
-          }
-        }
-        if (i < parents.size()) {
-          Rocket rocket = new Rocket(
-            mGeneration,
-            i,
-            RocketConstants.INIT_SPEED_X,
-            RocketConstants.INIT_SPEED_Y,
-            mInterface.mSliderInitFuelLevel.getValue(),
-            mInterface.mSliderInitDistance.getValue(),
-            processAcc
-          );
-          mThreadPool.execute(new RocketRunnable(rocket, mInterface));
-
-          this.population.add(rocket);
+            System.out.println("RandRocket");
 
         }
-        /**
-         * Mutation
-         */
-        else {
+
           Rocket rocket = new Rocket(
             mGeneration,
             i,
@@ -271,8 +246,10 @@ public class GeneticLearningAbstract {
           );
           mThreadPool.execute(new RocketRunnable(rocket, mInterface));
           this.population.add(rocket);
+
         }
-      }
+
+
       Thread t = new Thread (() -> {
         try {
           mThreadPool.stop();

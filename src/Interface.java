@@ -38,7 +38,7 @@ public class Interface extends Application {
   Button mReturnButton = new Button();
   final Canvas mCanvas = new Canvas();
   GraphicsContext mGC = mCanvas.getGraphicsContext2D();
-  Dimension mScreenRes = Toolkit.getDefaultToolkit().getScreenSize();
+  Dimension mScreenRes = new Dimension(1000,1000);
 
   /**
    * holds the initial distance chosen via the slider

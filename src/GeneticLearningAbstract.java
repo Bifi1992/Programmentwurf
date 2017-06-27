@@ -6,6 +6,9 @@ import java.time.Duration;
 import java.util.*;
 import java.util.concurrent.*;
 
+import static java.lang.Math.abs;
+import static java.lang.Math.floor;
+
 /**
  * Created by ludwig on 17.05.17.
  */
@@ -40,9 +43,10 @@ public class GeneticLearningAbstract {
   GraphicsContext mGC;
   TextArea mTextArea;
   Interface mInterface;
+  int mGeneration = 1;
 
   List<Rocket> population = new ArrayList<Rocket>();
-  List<Double> parents = new ArrayList<Double>();
+  List<Rocket> parents = new ArrayList<>();
 
   public GeneticLearningAbstract(Interface pInterface){
     mInterface = pInterface;
@@ -57,24 +61,24 @@ public class GeneticLearningAbstract {
    */
   public void createPopulationRandom() {
     ArrayList<Coordinate2D> processAcc;
-    for (int i = 0; i < mInterface.mPopSizeDropDown.getValue(); i++){
-      processAcc = new ArrayList<>();
-      for(int d = 0; d <= 300; d++){
-        processAcc.add(new Coordinate2D((Math.random() * ((20)) - 10), Math.random() * ((600)) - 300));
+      for (int i = 0; i < mInterface.mPopSizeDropDown.getValue(); i++) {
+        processAcc = new ArrayList<>();
+        for (int d = 0; d <= 100000; d++) {
+          processAcc.add(new Coordinate2D((Math.random() * ((5)) - 2.5), Math.random() * ((300)) - 150));
+        }
+        Rocket rocket = new Rocket(
+          mGeneration,
+          i,
+          RocketConstants.INIT_SPEED_X,
+          RocketConstants.INIT_SPEED_Y,
+          mInterface.mSliderInitFuelLevel.getValue(),
+          mInterface.mSliderInitDistance.getValue(),
+          processAcc
+        );
+        mThreadPool.execute(new RocketRunnable(rocket, mInterface));
+        this.population.add(rocket);
       }
-      Rocket rocket = new Rocket(
-        1,
-        i,
-        RocketConstants.INIT_SPEED_X,
-        RocketConstants.INIT_SPEED_Y,
-        mInterface.mSliderInitFuelLevel.getValue(),
-        mInterface.mSliderInitDistance.getValue(),
-        processAcc
-      );
-      mThreadPool.execute(new RocketRunnable(rocket, mInterface));
-      this.population.add(rocket);
-    }
-    Thread t = new Thread (() -> {
+      Thread t = new Thread(() -> {
         try {
           mThreadPool.stop();
           mThreadPool.awaitTermination();
@@ -82,11 +86,14 @@ public class GeneticLearningAbstract {
         } catch (TimeoutException e) {
           e.printStackTrace(System.err);
         }
+        mGeneration++;
         getFitness();
-        printPopulation();
-    });
-    t.start();
-  }
+        //printPopulation();
+
+      });
+      t.start();
+    }
+
 
   /**
    * Calculate fitness of population
@@ -100,19 +107,28 @@ public class GeneticLearningAbstract {
         float fuelSum = 0.0f;
         float speedSum = 0.0f;
         float timeSum = 0.0f;
+        float distanceSum = 0.0f;
         float fitnessTime;
         float fitnessFuel;
         float fitnessSpeed;
         float fitnessAll = 0;
         float fitnessOld;
+        float fitnessDistance;
+        float choosingProbability;
+        float total = 0;
+        double randomVal;
+
         Rocket currRocket;
         Rocket best = null;
         Rocket secondBest = null;
+
+       parents.clear();
 
        for (Integer j = 0; j < this.population.size(); j++) {
         fuelSum+= population.get(j).getCurFuelLevel();
         speedSum+= population.get(j).getCurSpeed().abs();
         timeSum+= population.get(j).getTime();
+        distanceSum+= population.get(j).getInitDistance() - population.get(j).getCurCoordinates().getY() + mPlanet.getRadius();
        }
         /**
          * Choose best items of pupulation depending on their distance to the goal value.
@@ -120,11 +136,20 @@ public class GeneticLearningAbstract {
         for (Integer j = 0; j < this.population.size(); j++) {
             currRocket = population.get(j);
             fitnessFuel = (float)(currRocket.getCurFuelLevel()/fuelSum);
+            if(fitnessFuel<= 0){
+              fitnessFuel = 0;
+            }
             fitnessTime = 1-(currRocket.getTime()/timeSum);
             fitnessSpeed = 1-(float)(currRocket.getCurSpeed().abs()/speedSum);
             fitnessOld = fitnessAll;
-            fitnessAll = fitnessFuel + fitnessTime  + fitnessSpeed;
-            System.out.println("Rocket ID: " + currRocket.getRocketID() + "Fitness all: " + ((fitnessAll)));
+            fitnessDistance = 1-((float)(currRocket.getInitDistance() - population.get(j).getCurCoordinates().getY() + mPlanet.getRadius())/distanceSum);
+            if(fitnessDistance <= 0){
+              fitnessDistance = 0;
+            }
+            fitnessAll = (float)(0.1*fitnessFuel + 0.1*fitnessTime  + 0.1*fitnessSpeed + 0.7*fitnessDistance);
+            currRocket.setTotalFitness(fitnessAll);
+            total+=fitnessAll;
+            System.out.println("Rocket ID: " + currRocket.getRocketID() + "Fitness all: " + ((fitnessAll)) + "Cur Distance:" + (currRocket.getInitDistance() - population.get(j).getCurCoordinates().getY() + mPlanet.getRadius()) + "Cur Speed: " + currRocket.getCurSpeed().abs() + "Cur Fuel: " + currRocket.getCurFuelLevel());
           /**
            * If rockets are chosen depends on fitnessAll, which is the sum of every fitnessparameter an it's weight.
            */
@@ -135,18 +160,135 @@ public class GeneticLearningAbstract {
                 secondBest = best;
                 best = currRocket;
               }
+              if(secondBest == null){
+                secondBest = currRocket;
+              }
             }
         }
         /**
          * Output of best rockets from this thread
          //*/
-        parents.clear();
-        System.out.println("Best Rocket: " + best.getRocketID());
-        //TODO secondBest can throw NullPointer Exception because of no initiation
-        System.out.println("Secound Best: " + secondBest.getRocketID());
-        /*parents.add(best);
-        parents.add(secondBest);*/
+
+       for (int j = 0; j < population.size(); j++){
+         currRocket = population.get(j);
+         choosingProbability = currRocket.getTotalFitness()/total;
+         currRocket.setChoosingProbability(choosingProbability);
+         System.out.println("Choosing Prob Rocket: " + currRocket.getRocketID() + "Prob: " + choosingProbability);
+       }
+       float prev = 0;
+       for (int j = 0; j < population.size(); j++){
+         currRocket = population.get(j);
+         currRocket.setCumulativeProbabilities(currRocket.getChoosingProbability() + prev);
+         prev+= currRocket.getChoosingProbability();
+       }
+       parents.clear();
+       for (int j = 0; j < population.size(); j++) {
+         randomVal = Math.random();
+         if (randomVal > population.get(j).getCumulativeProbabilities() && randomVal < population.get(j+1).getCumulativeProbabilities()){
+           parents.add(population.get((j+1)));
+         }
+         else{
+           parents.add(population.get(j));
+         }
+       }
+
+         //parents.add(best);
+         //parents.add(secondBest);
+         System.out.println("Best Rocket: " + best.getRocketID());
+         System.out.println("Parent Size: " + parents.size());
+         System.out.println("Secound Best: " + secondBest.getRocketID());
+         System.out.println("Parents index: " + parents.get(0));
+         createNextGeneration();
+
     }
+    public void createNextGeneration(){
+      population.clear();
+      mThreadPool = ThreadPool.getInstance(mInterface.mPopSizeDropDown.getValue());
+       //mThreadPool.terminate();
+      ArrayList<Coordinate2D> processAcc;
+      int z = 0;
+      //for (int i = 0; i < mInterface.mPopSizeDropDown.getValue(); i++) {
+      for (int i = 0; i <  mInterface.mPopSizeDropDown.getValue(); i++) {
+        processAcc = new ArrayList<>();
+        if(i < parents.size()/2) {
+          if (parents.get(0).getProcessAcc().size() > parents.get(1).getProcessAcc().size()) {
+            for (int d = 0; d < parents.get(1).getProcessAcc().size(); d++) {
+              processAcc.add(new Coordinate2D(parents.get(d%2).getProcessAcc().get(d).getX(), parents.get(d % 2).getProcessAcc().get(d).getY()));
+            }
+          } else {
+            for (int d = 0; d < parents.get(0).getProcessAcc().size(); d++) {
+              processAcc.add(new Coordinate2D(parents.get(d%2).getProcessAcc().get(d).getX(), parents.get(d % 2).getProcessAcc().get(d).getY()));
+            }
+          }
+        }else {
+          if (parents.get(2).getProcessAcc().size() > parents.get(3).getProcessAcc().size()) {
+            for (int d = 0; d < parents.get(3).getProcessAcc().size(); d++) {
+              if(d%2 == 0){
+                z = 2;
+              }else {
+                z=3;
+              }
+              processAcc.add(new Coordinate2D(parents.get(z).getProcessAcc().get(d).getX(), parents.get(z).getProcessAcc().get(d).getY()));
+            }
+          } else {
+            for (int d = 0; d < parents.get(2).getProcessAcc().size(); d++) {
+              if(d%2 == 0){
+                z = 2;
+              }else {
+                z = 3;
+              }
+              processAcc.add(new Coordinate2D(parents.get(z).getProcessAcc().get(d).getX(), parents.get(z).getProcessAcc().get(d).getY()));
+            }
+          }
+        }
+        if (i < parents.size()) {
+          Rocket rocket = new Rocket(
+            mGeneration,
+            i,
+            RocketConstants.INIT_SPEED_X,
+            RocketConstants.INIT_SPEED_Y,
+            mInterface.mSliderInitFuelLevel.getValue(),
+            mInterface.mSliderInitDistance.getValue(),
+            processAcc
+          );
+          mThreadPool.execute(new RocketRunnable(rocket, mInterface));
+
+          this.population.add(rocket);
+
+        }
+        /**
+         * Mutation
+         */
+        else {
+          Rocket rocket = new Rocket(
+            mGeneration,
+            i,
+            RocketConstants.INIT_SPEED_X,
+            RocketConstants.INIT_SPEED_Y,
+            mInterface.mSliderInitFuelLevel.getValue(),
+            mInterface.mSliderInitDistance.getValue(),
+            processAcc
+          );
+          mThreadPool.execute(new RocketRunnable(rocket, mInterface));
+          this.population.add(rocket);
+        }
+      }
+      Thread t = new Thread (() -> {
+        try {
+          mThreadPool.stop();
+          mThreadPool.awaitTermination();
+        } catch (TimeoutException e) {
+          e.printStackTrace(System.err);
+        }
+        mGeneration++;
+        getFitness();
+        printPopulation();
+
+      });
+      t.start();
+     }
+
+
 
 //    /**
 //     * Optimize parents for new population

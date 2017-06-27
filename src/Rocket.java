@@ -77,6 +77,21 @@ public class Rocket {
   private Coordinate2D mCurCoordinates;
 
   /**
+   * fitness values
+   */
+  private float mTotalFitness;
+
+  /**
+   * choosing probability
+   */
+  private float mChoosingProbability;
+
+  /**
+   * necessary for choosing randomly a parent, but the parent with highest store is more likely to be chosen
+   */
+  private float mCumulativeProbabilities;
+
+  /**
    * constructor for rocket
    * @param pGenerationId the generation id of the Rocket
    * @param pRocketId the id of the rocket
@@ -205,5 +220,28 @@ public class Rocket {
 
   public Coordinate2D getInitCoordinates() {
     return mInitCoordinates;
+  }
+
+  //Functions for genetic learner
+  public float getTotalFitness() {
+    return mTotalFitness;
+  }
+
+  public void setTotalFitness(float pTotalFitness) {
+    this.mTotalFitness = pTotalFitness;
+  }
+  public float getChoosingProbability() {
+    return mChoosingProbability;
+  }
+
+  public void setChoosingProbability(float pChoosingProbability) {
+    this.mChoosingProbability = pChoosingProbability;
+  }
+  public float getCumulativeProbabilities() {
+    return mCumulativeProbabilities;
+  }
+
+  public void setCumulativeProbabilities(float pCumulativeProbabilities) {
+    this.mCumulativeProbabilities = pCumulativeProbabilities;
   }
 }

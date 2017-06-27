@@ -109,9 +109,9 @@ public class RocketRunnable implements Runnable {
             newCoord.getX() * COORD_X_FACTOR, newCoord.getY() * COORD_Y_FACTOR);
         if (mRocket.mTime != 0 && mRocket.mTime % DISPLAY_INTERVAL == 0) {
           mGC.strokeText("" + mRocket.mTime, newCoord.getX() * COORD_X_FACTOR, newCoord.getY() * COORD_Y_FACTOR);
-          System.out.println(mRocket.getRocketID() + ": " +
+          /*System.out.println(mRocket.getRocketID() + ": " +
               oldCoord.getX() * COORD_X_FACTOR + " " + oldCoord.getY() * COORD_Y_FACTOR + " " +
-              newCoord.getX() * COORD_X_FACTOR + " " + newCoord.getY() * COORD_Y_FACTOR);
+              newCoord.getX() * COORD_X_FACTOR + " " + newCoord.getY() * COORD_Y_FACTOR);*/
           /*
           mGC.strokeText("(" + String.format("%6.2e",newCoord.getX()) + ", " + String.format("%6.2e",newCoord.getY()) + ")",
               newCoord.getX() * COORD_X_FACTOR, newCoord.getY() * COORD_Y_FACTOR);
@@ -180,6 +180,7 @@ public class RocketRunnable implements Runnable {
           mRocket.setCurAcceleration(mRocket.getProcessAcc().get(mRocket.mTime));
       } else {
         mRocket.setCurAcceleration(new Coordinate2D((Math.random() * ((20)) - 10), Math.random() * ((600)) - 300));
+        mRocket.setProcessAcc();
       }
   }
 

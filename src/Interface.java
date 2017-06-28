@@ -2,6 +2,7 @@ import gui.ConfirmBox;
 import gui.CustomProgressVBox;
 import gui.CustomSliderVBox;
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.geometry.Orientation;
 import javafx.geometry.Pos;
 import javafx.scene.canvas.Canvas;
@@ -176,7 +177,7 @@ public class Interface extends Application {
     mScrollPane.setMaxSize(Double.MAX_VALUE, Double.MAX_VALUE);
     mScrollPane.setFitToWidth(true);
     mScrollPane.setFitToHeight(true);
-    mGC.setStroke(Color.BLUE);
+    mGC.setStroke(Color.BLACK);
     mGC.setFill(Color.BLUE);
 
     //close via click or ESC button
@@ -190,6 +191,7 @@ public class Interface extends Application {
     mReturnButton.setDefaultButton(true);
     //TODO cancel all RocketThreads when returning
     mReturnButton.setOnAction(e -> {
+
       mPrimaryStage.setScene(mStartScene);
       mGC.clearRect(0, 0, mCanvas.getWidth(), mCanvas.getHeight());
     });
@@ -233,6 +235,9 @@ public class Interface extends Application {
   }
 
   private void startCalculations() {
+    Platform.runLater(() -> {
+      displayGrid(30, 30);
+    });
     GeneticLearningAbstract learner = new GeneticLearningAbstract(this);
     learner.createPopulationRandom();
   }
@@ -243,6 +248,18 @@ public class Interface extends Application {
       ThreadPool.getInstance().stop();
       ThreadPool.getInstance().terminate();
       mPrimaryStage.close();
+    }
+  }
+
+  /**
+   * This method generates a grid with mash size of x*y
+   */
+  private void displayGrid(double pX, double pY) {
+    for (double i = pX; i < mCanvas.getWidth(); i += pX) {
+      mGC.strokeLine(i, 0, i, mCanvas.getHeight());
+    }
+    for (double i = pY; i < mCanvas.getHeight(); i += pY) {
+      mGC.strokeLine(0, i, mCanvas.getWidth(), i);
     }
   }
 }

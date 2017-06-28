@@ -90,7 +90,6 @@ public class RocketRunnable implements Runnable {
   public void run() {
     Platform.runLater(() -> {
       updateProgressIndicator();
-      displayGrid(30, 30);
       mTextArea.appendText("initSpeed: " + mRocket.getCurSpeed().toString() + "\n" +
       "initAngle: " + mRocket.getCurSpeed().getAngleXAxis() + "°\n" +
       "initCoords: " + mRocket.getCurCoordinates().toString() + "\n");
@@ -177,7 +176,8 @@ public class RocketRunnable implements Runnable {
    */
    public void calcCurAcceleration() {
       if (mRocket.mTime < mRocket.getProcessAcc().size()) {
-          mRocket.setCurAcceleration(mRocket.getProcessAcc().get(mRocket.mTime));
+          mRocket.setCurAcceleration(mRocket.getProcessAcc().get(mRocket.getProcessAccIndex()));
+          mRocket.setProcessAccIndex(mRocket.getProcessAccIndex() + 1);
       } else {
         mRocket.setCurAcceleration(new Coordinate2D((Math.random() * ((20)) - 10), Math.random() * ((600)) - 300));
         mRocket.setProcessAcc();
@@ -230,18 +230,6 @@ public class RocketRunnable implements Runnable {
    */
   private void calcNewFuelLevel() {
     mRocket.setCurFuelLevel(mRocket.getCurFuelLevel() - (RocketConstants.FUEL_PER_ACCELERATION * mRocket.getCurAcceleration().abs()));
-  }
-
-  /**
-   * This method generates a grid with mash size of x*y
-   */
-  private void displayGrid(double pX, double pY) {
-    for (double i = pX; i < mCanvas.getWidth(); i += pX) {
-      mGC.strokeLine(i, 0, i, mCanvas.getHeight());
-    }
-    for (double i = pY; i < mCanvas.getHeight(); i += pY) {
-      mGC.strokeLine(0, i, mCanvas.getWidth(), i);
-    }
   }
 
   /**

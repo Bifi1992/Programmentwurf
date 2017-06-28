@@ -1,5 +1,4 @@
 - (important) start painting in center of window
-- draw grid only once
 - css
    http://docs.oracle.com/javafx/2/css_tutorial/jfxpub-css_tutorial.htm
 - monitor all Runnables
@@ -7,7 +6,6 @@
 - clean up code (more classes and functions)
 - GUI *
    - Sliders
-   - (maybe) smaller sim scene window
-- correct calculation of landing *
+   - (maybe) smaller start scene window
+- correct calculation of landing (TOCHECK)
    - fix distance (TOCHECK)
-- Interface Singleton

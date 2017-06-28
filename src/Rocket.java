@@ -10,7 +10,6 @@ public class Rocket {
    */
   public final int mGenerationId;
 
-
   /**
    * holds the rocket id
    */
@@ -70,6 +69,11 @@ public class Rocket {
    * A ArrayList of the acceleration process <acceleration>
    */
   private ArrayList<Coordinate2D> mProcessAcc = new ArrayList<>();
+
+  /**
+   * holds the index for the current acceleration of the rocket
+   */
+  private int mProcessAccIndex = 0;
 
   /**
    * holds the current coordinates of the Rocket
@@ -243,5 +247,13 @@ public class Rocket {
 
   public void setCumulativeProbabilities(float pCumulativeProbabilities) {
     this.mCumulativeProbabilities = pCumulativeProbabilities;
+  }
+
+  public int getProcessAccIndex() {
+    return mProcessAccIndex;
+  }
+
+  public void setProcessAccIndex(int pProcessAccIndex) {
+    mProcessAccIndex = pProcessAccIndex;
   }
 }

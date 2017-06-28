@@ -12,3 +12,4 @@
 - correct calculation of landing (TOCHECK)
    - fix distance (TOCHECK)
 - boolean successful Landing as rocket member
+- negative algorithm weights if not Rocket ends out of Canvas

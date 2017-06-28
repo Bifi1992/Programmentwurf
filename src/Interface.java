@@ -40,7 +40,7 @@ public class Interface extends Application {
   Button mClearButton = new Button();
   final Canvas mCanvas = new Canvas();
   GraphicsContext mGC = mCanvas.getGraphicsContext2D();
-  Dimension mScreenRes = new Dimension(1000,1000);
+  Dimension mScreenRes = Toolkit.getDefaultToolkit().getScreenSize();
   Planet mDefaultPlanet = Planet.MARS;
   GeneticLearningAbstract mLearner;
 
@@ -183,7 +183,10 @@ public class Interface extends Application {
     mScrollPane.setMaxSize(Double.MAX_VALUE, Double.MAX_VALUE);
     mScrollPane.setFitToWidth(true);
     mScrollPane.setFitToHeight(true);
-    mGC.setFill(Color.BLUE);
+    /** needed if you want to start in the middle of the Canvas
+    mScrollPane.setHvalue(mCanvas.getWidth()/2/mCanvas.getWidth());
+     */
+    mGC.clearRect(0, 0, mCanvas.getWidth(), mCanvas.getHeight());
 
     //close via click or ESC button
     mSimExitButton.setText("Exit");
@@ -261,7 +264,7 @@ public class Interface extends Application {
    * This method generates a grid with mash size of x*y
    */
   private void displayGrid(double pX, double pY) {
-    mGC.setStroke(Color.BLACK);
+    mGC.setStroke(Color.LIGHTGRAY);
     for (double i = pX; i < mCanvas.getWidth(); i += pX) {
       mGC.strokeLine(i, 0, i, mCanvas.getHeight());
     }
@@ -280,7 +283,7 @@ public class Interface extends Application {
           (mScreenRes.getWidth() / pNumOfBoxes),
           (mScreenRes.getHeight() * 0.1)
       ));
-      if (i < pNumOfBoxes / 2) {
+      if (i % 2 == 0) {
         topHBox1.getChildren().add(mProgressIndicatorMap.get(i));
       } else {
         topHBox2.getChildren().add(mProgressIndicatorMap.get(i));

@@ -34,7 +34,7 @@ public class CustomProgressVBox extends VBox {
     HBox speedBox = new HBox(2, speed, mLabelSpeed);
     this.getChildren().addAll(mLabelRocketId, fuelLevelBox, distanceBox, timeBox, speedBox);
     this.setMinSize(pWidth, pHeight);
-    this.setPrefSize(pWidth * 1.1, pHeight * 1.1);
+    this.setPrefSize(pWidth * 1.2, pHeight * 1.1);
   }
 
   public Label getLabelRocketId() {

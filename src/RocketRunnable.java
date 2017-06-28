@@ -82,8 +82,10 @@ public class RocketRunnable implements Runnable {
             Math.cos(Math.toRadians(mRocket.getCurSpeed().getAngleXAxis())) * mPlanet.getMaxLandingTime());
     DISPLAY_INTERVAL = mPlanet.getMaxLandingTime()/10;
     TIME_INTERVAL = (int) Math.ceil((double) mPlanet.getMaxLandingTime() / 10000);
+    /* needed if you want to start in the middle of the canvas
     mRocket.setInitCoordinates(new Coordinate2D(mCanvas.getWidth() / 2 / COORD_X_FACTOR,
         mRocket.getInitCoordinates().getY() / COORD_Y_FACTOR));
+    */
     System.out.println("Rocket" + mRocket.getRocketID() + ": " + mRocket.getInitCoordinates().toString());
   }
 

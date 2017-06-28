@@ -218,8 +218,9 @@ public class Rocket {
     return this.mGenerationId;
   }
 
-  public void setInitCoordinates(Coordinate2D mInitCoordinates) {
-    this.mInitCoordinates = mInitCoordinates;
+  public void setInitCoordinates(Coordinate2D pInitCoordinates) {
+    mInitCoordinates = pInitCoordinates;
+    mCurCoordinates = pInitCoordinates;
   }
 
   public Coordinate2D getInitCoordinates() {

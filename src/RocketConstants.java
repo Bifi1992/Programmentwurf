@@ -60,12 +60,12 @@ public final class RocketConstants {
   /**
    * holds the rocket's initial speed in x dir
    */
-  public static final double INIT_SPEED_X = 100;
+  public static final double INIT_SPEED_X = 200;
 
   /**
    * holds the rocket's initial speed in y dir
    */
-  public static final double INIT_SPEED_Y = 10;
+  public static final double INIT_SPEED_Y = 100;
 
   /**
    * holds a number of colors for the rockets with their corresponding rgb values as string

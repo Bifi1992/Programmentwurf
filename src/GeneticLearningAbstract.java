@@ -69,7 +69,7 @@ public class GeneticLearningAbstract {
       for (int i = 0; i < mInterface.mPopSizeDropDown.getValue(); i++) {
         processAcc = new ArrayList<>();
         for (int d = 0; d <= 100000; d++) {
-            processAcc.add(new Coordinate2D((Math.random() * ((20)) - 10), Math.random() * ((300)) - 150));
+            processAcc.add(new Coordinate2D((Math.random() * ((5)) - 2.5), Math.random() * ((200)) - 100));
         }
         Rocket rocket = new Rocket(
           mGeneration,
@@ -252,7 +252,7 @@ public class GeneticLearningAbstract {
         individualProcessAcc = new ArrayList<>();
         for (int j = 0; j < processAcc.size(); j++) {
           if(Math.random()<= mutation) {
-            individualProcessAcc.add(new Coordinate2D((Math.random() * ((20)) - 10), Math.random() * ((300)) - 150));
+            individualProcessAcc.add(new Coordinate2D((Math.random() * ((5)) - 2.5), Math.random() * ((200)) - 100));
           }else{
             individualProcessAcc.add(processAcc.get(j));
           }

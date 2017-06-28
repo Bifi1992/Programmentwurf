@@ -37,6 +37,7 @@ public class Interface extends Application {
   Button mStartExitButton = new Button();
   Button mSimExitButton = new Button();
   Button mReturnButton = new Button();
+  Button mClearButton = new Button();
   final Canvas mCanvas = new Canvas();
   GraphicsContext mGC = mCanvas.getGraphicsContext2D();
   Dimension mScreenRes = new Dimension(1000,1000);
@@ -182,7 +183,6 @@ public class Interface extends Application {
     mScrollPane.setMaxSize(Double.MAX_VALUE, Double.MAX_VALUE);
     mScrollPane.setFitToWidth(true);
     mScrollPane.setFitToHeight(true);
-    mGC.setStroke(Color.BLACK);
     mGC.setFill(Color.BLUE);
 
     //close via click or ESC button
@@ -205,7 +205,14 @@ public class Interface extends Application {
     });
     mReturnButton.setPrefWidth(mScreenRes.getWidth() * 0.1);
 
-    VBox ButtonBox = new VBox(5, mSimExitButton, mReturnButton);
+    mClearButton.setText("Clear");
+    mClearButton.setOnAction(e -> {
+      mGC.clearRect(0, 0, mCanvas.getWidth(), mCanvas.getHeight());
+      displayGrid(30, 30);
+    });
+    mClearButton.setPrefWidth(mScreenRes.getWidth() * 0.1);
+
+    VBox ButtonBox = new VBox(5, mSimExitButton, mReturnButton, mClearButton);
 
     mTextArea.setPrefHeight(mScreenRes.getHeight() * 0.2);
     mTextArea.setPrefWidth(mScreenRes.getWidth() * 0.8);
@@ -254,6 +261,7 @@ public class Interface extends Application {
    * This method generates a grid with mash size of x*y
    */
   private void displayGrid(double pX, double pY) {
+    mGC.setStroke(Color.BLACK);
     for (double i = pX; i < mCanvas.getWidth(); i += pX) {
       mGC.strokeLine(i, 0, i, mCanvas.getHeight());
     }

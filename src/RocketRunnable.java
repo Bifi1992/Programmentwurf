@@ -180,7 +180,8 @@ public class RocketRunnable implements Runnable {
           mRocket.setCurAcceleration(mRocket.getProcessAcc().get(mRocket.getProcessAccIndex()));
           mRocket.setProcessAccIndex(mRocket.getProcessAccIndex() + 1);
       } else {
-        mRocket.setCurAcceleration(new Coordinate2D((Math.random() * ((20)) - 10), Math.random() * ((600)) - 300));
+        System.out.println("Not enough");
+        mRocket.setCurAcceleration(new Coordinate2D((Math.random() * ((5)) - 2.5), Math.random() * ((300)) - 150));
         mRocket.setProcessAcc();
       }
   }

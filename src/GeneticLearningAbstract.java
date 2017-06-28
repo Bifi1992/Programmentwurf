@@ -22,7 +22,6 @@ public class GeneticLearningAbstract {
   final Duration timeout = Duration.ofSeconds(30);
   ExecutorService executor = Executors.newSingleThreadExecutor();
   double mutation = 10;
-  int distance = 100;
   /**
    * TODO put constants into new file like {@link RocketConstants}
    * Goal values to be reached
@@ -44,7 +43,7 @@ public class GeneticLearningAbstract {
   TextArea mTextArea;
   Interface mInterface;
   int mGeneration = 1;
-
+  private static int TIME_INTERVAL;
   List<Rocket> population = new ArrayList<Rocket>();
   List<Rocket> parents = new ArrayList<>();
 
@@ -55,6 +54,7 @@ public class GeneticLearningAbstract {
     mTextArea = pInterface.mTextArea;
     mCanvas = pInterface.mCanvas;
     mGC = pInterface.mGC;
+    TIME_INTERVAL =  (int) Math.ceil((double) mPlanet.getMaxLandingTime() / 10000);
   }
   /**
    * Create random population and values of rockets
@@ -114,6 +114,7 @@ public class GeneticLearningAbstract {
         float fitnessAll = 0;
         float fitnessOld;
         float fitnessDistance;
+        boolean successfulLanding = false;
         float choosingProbability;
         float total = 0;
         double randomVal;
@@ -146,7 +147,11 @@ public class GeneticLearningAbstract {
             if(fitnessDistance <= 0){
               fitnessDistance = 0;
             }
-            fitnessAll = (float)(0.3*fitnessFuel + 0.1*fitnessTime  + 0.2*fitnessSpeed + 0.4*fitnessDistance);
+            fitnessAll = (float)(0.2*fitnessFuel + 0.1*fitnessTime  + 0.6*fitnessSpeed + 0.1*fitnessDistance)/2;
+            if(currRocket.getCurSpeed().abs() <= RocketConstants.MAX_LANDING_SPEED) {
+              successfulLanding = true;
+              fitnessAll+=0.5;
+            }
             currRocket.setTotalFitness(fitnessAll);
             total+=fitnessAll;
             System.out.println("Rocket ID: " + currRocket.getRocketID() + "Fitness all: " + ((fitnessAll)) + "Cur Distance:" + (currRocket.getInitDistance() - population.get(j).getCurCoordinates().getY() + mPlanet.getRadius()) + "Cur Speed: " + currRocket.getCurSpeed().abs() + "Cur Fuel: " + currRocket.getCurFuelLevel());
@@ -209,28 +214,27 @@ public class GeneticLearningAbstract {
       int z = 0;
       //for (int i = 0; i < mInterface.mPopSizeDropDown.getValue(); i++) {
       for (int i = 0; i <  mInterface.mPopSizeDropDown.getValue(); i++) {
-          System.out.println("RandNumber: " + (Math.random() * ((2))));
         processAcc = new ArrayList<>();
         if(i<=1) {
             if (parents.get(0).getProcessAcc().size() > parents.get(1).getProcessAcc().size()) {
                 for (int d = 0; d < parents.get(1).getProcessAcc().size(); d++) {
                     if (d % mutation == 0) {
-                        processAcc.add(new Coordinate2D((parents.get(d%2).getProcessAcc().get(d).getX()*(Math.random() * ((2)) - 1)), parents.get(d%2).getProcessAcc().get(d).getY()*(Math.random() * ((2)) - 1)));
+                        processAcc.add(new Coordinate2D((parents.get(d%2).getProcessAcc().get(d).getX()+(Math.random() * ((2)) - 1)), parents.get(d%2).getProcessAcc().get(d).getY()+(Math.random() * ((2)) - 1)));
                     }
                     processAcc.add(new Coordinate2D(parents.get(d%2).getProcessAcc().get(d).getX(), parents.get(d%2).getProcessAcc().get(d).getY()));
                 }
             } else {
                 for (int d = 1; d < parents.get(0).getProcessAcc().size(); d++) {
                     if (d % mutation == 0) {
-                        processAcc.add(new Coordinate2D((parents.get(d%2).getProcessAcc().get(d).getX()*(Math.random() * ((2)) - 1)), parents.get(d%2).getProcessAcc().get(d).getY()*(Math.random() * ((2)) - 1)));
+                        processAcc.add(new Coordinate2D((parents.get(d%2).getProcessAcc().get(d).getX()+(Math.random() * ((2)) - 1)), parents.get(d%2).getProcessAcc().get(d).getY()+(Math.random() * ((2)) - 1)));
                     }
                     processAcc.add(new Coordinate2D(parents.get(d%2).getProcessAcc().get(d).getX(), parents.get(d%2).getProcessAcc().get(d).getY()));
                 }
             }
         }else{
-            for (int d = 0; d < parents.get(0).getProcessAcc().size(); d++) {
-                processAcc.add(new Coordinate2D((Math.random() * ((5)) - 2.5), Math.random() * ((200)) - 100));
-            }
+          for (int d = 0; d <= 100000; d++) {
+              processAcc.add(new Coordinate2D((Math.random() * ((5)) - 2.5), Math.random() * ((200)) - 100));
+          }
             System.out.println("RandRocket");
 
         }
@@ -267,36 +271,6 @@ public class GeneticLearningAbstract {
 
 
 
-//    /**
-//     * Optimize parents for new population
-//     */
-//    public void manipulateParents(){
-//        Double optimumvalue = 0.0;
-//        for(Integer i = 0; i < parents.size(); i++){
-//            System.out.println("Parent " + i + " = " + parents.get(i));
-//            optimumvalue += parents.get(i);
-//        }
-//        optimumvalue = optimumvalue/2;
-//        System.out.println("optimized step 1 " + optimumvalue);
-//        calculateNewPopulation(optimumvalue);
-//    }
-//    public void variatePopulation(){
-//
-//    }
-//
-//    /**
-//     * Set new population of rockets
-//     * @param optimumvalue
-//     //*/
-//    public void calculateNewPopulation(Double optimumvalue){
-//        population.clear();
-//        Integer sign = 1;
-//        for(Integer i = 0; i < 4; i++){
-//            this.population.add((double) (optimumvalue - sign*(Math.random() * ((2) + 1))));
-//            sign = sign * (-1);
-//        }
-//        printPopulation();
-//    }
 
   /**
    * Print out current population
@@ -307,49 +281,4 @@ public class GeneticLearningAbstract {
       System.out.println("Koordx" + population.get(j).getCurCoordinates().getX() + " KoordY: " + population.get(j).getCurCoordinates().getY() +  "Rocket" + j + "|| Speed: " + population.get(j).getCurSpeed().abs() + "  Fuel:  " + population.get(j).getCurFuelLevel());
     }
   }
-  //Test
-
-  /*public void simulateFly() {
-    Rocket currentRocket;
-    double time;
-    for (int i = 0; i < 4; i++) {
-      currentRocket = this.population.get(i);
-      time = distance / currentRocket.getCurSpeed().getX();
-      currentRocket.setTime(time);
-      if (currentRocket.getCurFuelLevel() - time * fuelConsumption <= 0) {
-        currentRocket.setFuelLeft(0);
-      } else {
-        currentRocket.setFuelLeft(currentRocket.getCurFuelLevel() - time * fuelConsumption);
-      }
-      //currentRocket;
-      System.out.println("Benötigte Zeit: " + currentRocket.getmTime() + "  Noch vorhandener Treibstoff: " + currentRocket.getFuelLeft());
-    }
-  }
-
-  public void getFitness() {
-    Rocket currentRocket;
-    //float timeSum = 0f;
-    float fuelSum = 0f;
-    float fitnessTime;
-    float fitnessFuel;
-    float fitnessAll;
-    for (int i = 0; i < 4; i++) {
-      currentRocket = this.population.get(i);
-      timeSum += currentRocket.getmTime();
-      fuelSum += currentRocket.getFuelLeft();
-    }
-    for (int j = 0; j < 4; j++) {
-      fitnessTime = 1 - (this.population.get(j).getmTime() / timeSum);
-      fitnessFuel = this.population.get(j).getFuelLeft() / fuelSum;
-      fitnessAll = weightEndFuel * fitnessFuel + weightTime * fitnessTime;
-      System.out.println("Rakete  " + j +
-        " Fitness Zeit: " + (((fitnessTime)) * 100) + "%" +
-        " Fitness Sprit: " + ((fitnessFuel) * 100) + "%" +
-        " Fitness Combined: " + (fitnessAll * 100) + "%");
-    }
-  }*/
-
-  // time_rating = weightTime * time1/time1+time2+time3+time4;
-  // fuel_rating = weightFuel * time1/time1+time2+time3+time4;
-
 }

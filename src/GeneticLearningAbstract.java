@@ -23,6 +23,12 @@ public class GeneticLearningAbstract {
   ExecutorService executor = Executors.newSingleThreadExecutor();
   double mutation = 10;
   int distance = 100;
+
+  /**
+   * holds the information, if the genetic learner should generate new rockets and, thus, continue to work
+   */
+  private boolean isRunning = true;
+
   /**
    * TODO put constants into new file like {@link RocketConstants}
    * Goal values to be reached
@@ -198,7 +204,9 @@ public class GeneticLearningAbstract {
          System.out.println("Parent Size: " + parents.size());
          System.out.println("Secound Best: " + secondBest.getRocketID());
          System.out.println("Parents index: " + parents.get(0));
-         createNextGeneration();
+         if (isRunning) {
+           createNextGeneration();
+         }
 
     }
     public void createNextGeneration(){
@@ -306,6 +314,10 @@ public class GeneticLearningAbstract {
     for (int j = 0; j < this.population.size(); j++) {
       System.out.println("Koordx" + population.get(j).getCurCoordinates().getX() + " KoordY: " + population.get(j).getCurCoordinates().getY() +  "Rocket" + j + "|| Speed: " + population.get(j).getCurSpeed().abs() + "  Fuel:  " + population.get(j).getCurFuelLevel());
     }
+  }
+
+  public void terminate() {
+    isRunning = false;
   }
   //Test
 

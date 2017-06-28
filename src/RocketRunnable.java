@@ -3,6 +3,7 @@ import javafx.application.Platform;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.TextArea;
+import javafx.scene.paint.Color;
 
 
 /**
@@ -100,7 +101,7 @@ public class RocketRunnable implements Runnable {
         && mRocket.getCurFuelLevel() >= 0) {
       Platform.runLater(() -> {
         // different color for each rocket
-        mGC.setStroke(RocketConstants.COLOR_PALETTE[mRocket.getRocketID()]);
+        mGC.setStroke((Color) RocketConstants.COLOR_PALETTE[mRocket.getRocketID()][0]);
         Coordinate2D oldCoord = mRocket.getCurCoordinates();
         calcNewCoordinates();
         Coordinate2D newCoord = mRocket.getCurCoordinates();
@@ -237,16 +238,26 @@ public class RocketRunnable implements Runnable {
    */
   private void updateProgressIndicator() {
     double d = calcDistanceToSurface();
+    String col = "rgba(" + RocketConstants.COLOR_PALETTE[mRocket.getRocketID()][1] + "," + 0.6 + ")";
+
     CustomProgressVBox box = mInterface.mProgressIndicatorMap.get(mRocket.getRocketID());
+    box.setStyle(
+        "-fx-background-color: " + col + ";" +
+        "-fx-border-style: solid;" +
+        "-fx-border-width: 2;" +
+        "-fx-border-color: black;"
+    );
 
     // update time Label
     box.getLabelDistance().setText(String.format("%.0f", d < 0 ? 0 : d));
     // set rocket label
     box.getLabelRocketId().setText("Rocket" + mRocket.getRocketID() + ":");
+    //box.getLabelRocketId().setTextFill(RocketConstants.COLOR_PALETTE[mRocket.getRocketID()]);
     // set fuel level
     box.getProgressBarFuelLevel().setProgress(mRocket.getCurFuelLevel() / mRocket.mInitFuelLevel);
     // set time label
     box.getLabelTime().setText(mRocket.mTime > mPlanet.getMaxLandingTime() ?
         String.valueOf(mPlanet.getMaxLandingTime()) : String.valueOf(mRocket.mTime));
+    box.getLabelSpeed().setText(String.format("%.0f", mRocket.getCurSpeed().abs()));
   }
 }

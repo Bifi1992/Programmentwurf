@@ -40,6 +40,8 @@ public class Interface extends Application {
   final Canvas mCanvas = new Canvas();
   GraphicsContext mGC = mCanvas.getGraphicsContext2D();
   Dimension mScreenRes = new Dimension(1000,1000);
+  Planet mDefaultPlanet = Planet.MARS;
+  GeneticLearningAbstract mLearner;
 
   /**
    * holds the initial distance chosen via the slider
@@ -100,7 +102,7 @@ public class Interface extends Application {
     for (Planet p : Planet.values()) {
       mPlanetDropDown.getItems().add(p);
     }
-    mPlanetDropDown.setValue(Planet.MOON);
+    mPlanetDropDown.setValue(mDefaultPlanet);
 
     Label planetLabel = new Label("Planet:");
 
@@ -142,6 +144,9 @@ public class Interface extends Application {
       mPopSizeDropDown.getItems().add(popSize);
     }
     mPopSizeDropDown.setValue(RocketConstants.ROCKETS_PER_GENERATION);
+    mPopSizeDropDown.getSelectionModel().selectedItemProperty()
+        .addListener((observable, oldValue, newValue) -> mSimScene = getSimScene());
+
     Label popSizeLabel = new Label("Rockets per Population: ");
     HBox popSizeVBox = new HBox(5, popSizeLabel, mPopSizeDropDown);
     VBox algoBox = new VBox(10, algoLabel, popSizeVBox);
@@ -189,9 +194,12 @@ public class Interface extends Application {
     //return to StartScene
     mReturnButton.setText("Return");
     mReturnButton.setDefaultButton(true);
-    //TODO cancel all RocketThreads when returning
     mReturnButton.setOnAction(e -> {
-
+      if (mLearner != null) {
+        mLearner.terminate();
+      }
+      ThreadPool.getInstance().stop();
+      ThreadPool.getInstance().terminate();
       mPrimaryStage.setScene(mStartScene);
       mGC.clearRect(0, 0, mCanvas.getWidth(), mCanvas.getHeight());
     });
@@ -202,21 +210,7 @@ public class Interface extends Application {
     mTextArea.setPrefHeight(mScreenRes.getHeight() * 0.2);
     mTextArea.setPrefWidth(mScreenRes.getWidth() * 0.8);
 
-    HBox topHBox1 = new HBox();
-    HBox topHBox2 = new HBox();
-    for (int i = 0; i < mPopSizeDropDown.getValue(); i++) {
-      mProgressIndicatorMap.put(i, new CustomProgressVBox(
-          (mScreenRes.getWidth() / mPopSizeDropDown.getValue()),
-          (mScreenRes.getHeight() * 0.1)
-      ));
-      if (i < mPopSizeDropDown.getValue() / 2) {
-        topHBox1.getChildren().add(mProgressIndicatorMap.get(i));
-      } else {
-        topHBox2.getChildren().add(mProgressIndicatorMap.get(i));
-      }
-    }
-
-    VBox topVBox = new VBox(topHBox1, topHBox2);
+    VBox topVBox = setupProgressBoxes(mPopSizeDropDown.getValue());
 
     HBox textAndButtonsBox = new HBox(5, /*mTextArea,*/ topVBox, ButtonBox);
 
@@ -238,16 +232,21 @@ public class Interface extends Application {
     Platform.runLater(() -> {
       displayGrid(30, 30);
     });
-    GeneticLearningAbstract learner = new GeneticLearningAbstract(this);
-    learner.createPopulationRandom();
+    mLearner = new GeneticLearningAbstract(this);
+    mLearner.createPopulationRandom();
   }
 
   private void closeProgram() {
     boolean close = ConfirmBox.display("Close Program", "Are you sure you want to close the application?");
     if (close) {
+      if (mLearner != null) {
+        mLearner.terminate();
+      }
       ThreadPool.getInstance().stop();
       ThreadPool.getInstance().terminate();
       mPrimaryStage.close();
+      Platform.exit();
+      System.exit(0);
     }
   }
 
@@ -261,5 +260,24 @@ public class Interface extends Application {
     for (double i = pY; i < mCanvas.getHeight(); i += pY) {
       mGC.strokeLine(0, i, mCanvas.getWidth(), i);
     }
+  }
+
+  private VBox setupProgressBoxes(Integer pNumOfBoxes) {
+    mProgressIndicatorMap.clear();
+    HBox topHBox1 = new HBox();
+    HBox topHBox2 = new HBox();
+
+    for (int i = 0; i < pNumOfBoxes; i++) {
+      mProgressIndicatorMap.put(i, new CustomProgressVBox(
+          (mScreenRes.getWidth() / pNumOfBoxes),
+          (mScreenRes.getHeight() * 0.1)
+      ));
+      if (i < pNumOfBoxes / 2) {
+        topHBox1.getChildren().add(mProgressIndicatorMap.get(i));
+      } else {
+        topHBox2.getChildren().add(mProgressIndicatorMap.get(i));
+      }
+    }
+    return new VBox(topHBox1, topHBox2);
   }
 }

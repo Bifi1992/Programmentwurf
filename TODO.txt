@@ -6,6 +6,9 @@
 - clean up code (more classes and functions)
 - GUI *
    - Sliders
+        - Mutation rate
+   - Clear Button
    - (maybe) smaller start scene window
 - correct calculation of landing (TOCHECK)
    - fix distance (TOCHECK)
+- boolean successful Landing as rocket member

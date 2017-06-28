@@ -16,5 +16,7 @@ public final class AlgorithmConstants {
 
   public static final float RATING_SPEED = 0.05f;
 
+  public static final double MUTATION = 0.1;
+
 
 }

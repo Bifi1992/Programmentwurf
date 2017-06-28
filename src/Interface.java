@@ -40,7 +40,7 @@ public class Interface extends Application {
   Button mClearButton = new Button();
   final Canvas mCanvas = new Canvas();
   GraphicsContext mGC = mCanvas.getGraphicsContext2D();
-  Dimension mScreenRes = Toolkit.getDefaultToolkit().getScreenSize();
+  Dimension mScreenRes = new Dimension(800,600);
   Planet mDefaultPlanet = Planet.MARS;
   GeneticLearningAbstract mLearner;
 
@@ -243,7 +243,7 @@ public class Interface extends Application {
       displayGrid(30, 30);
     });
     mLearner = new GeneticLearningAbstract(this);
-    mLearner.createPopulationRandom();
+    mLearner.initPopulationRandom();
   }
 
   private void closeProgram() {

@@ -8,13 +8,14 @@ public final class AlgorithmConstants {
 
   public static final int MAX_POP_SIZE = 8;
 
-  public static final float RATING_TIME = 0.05f;
+  public static final double MUTATION = 0.1;
 
-  public static final float RATING_FUEL = 0.6f;
-
-  public static final float RATING_DISTANCE = 0.3f;
-
+  /**
+   * The Ratings have to add up to 1
+   */
+  public static final float RATING_TIME = 0.3f;
+  public static final float RATING_FUEL = 0.1f;
+  public static final float RATING_DISTANCE = 0.55f;
   public static final float RATING_SPEED = 0.05f;
 
-  public static final double MUTATION = 0.1;
 }

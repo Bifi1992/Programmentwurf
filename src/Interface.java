@@ -185,9 +185,8 @@ public class Interface extends Application {
     mScrollPane.setMaxSize(Double.MAX_VALUE, Double.MAX_VALUE);
     mScrollPane.setFitToWidth(true);
     mScrollPane.setFitToHeight(true);
-    /** needed if you want to start in the middle of the Canvas
     mScrollPane.setHvalue(mCanvas.getWidth()/2/mCanvas.getWidth());
-     */
+
     mGC.clearRect(0, 0, mCanvas.getWidth(), mCanvas.getHeight());
 
     //close via click or ESC button

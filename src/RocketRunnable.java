@@ -85,14 +85,11 @@ public class RocketRunnable implements Runnable {
         (mCanvas.getWidth() / 3) / (mRocket.getCurSpeed().getX() *
             Math.cos(Math.toRadians(mRocket.getCurSpeed().getAngleXAxis())) * mPlanet.getMaxLandingTime());
     */
-    COORD_X_FACTOR = COORD_Y_FACTOR;
+    COORD_X_FACTOR = COORD_Y_FACTOR * 0.01;
     DISPLAY_INTERVAL = mPlanet.getMaxLandingTime()/10;
     TIME_INTERVAL = (int) Math.ceil((double) mPlanet.getMaxLandingTime() / 10000);
-    /* needed if you want to start in the middle of the canvas
     mRocket.setInitCoordinates(new Coordinate2D(mCanvas.getWidth() / 2 / COORD_X_FACTOR,
         mRocket.getInitCoordinates().getY() / COORD_Y_FACTOR));
-    */
-    System.out.println("Rocket" + mRocket.getRocketID() + ": " + mRocket.getInitCoordinates().toString());
   }
 
   @Override
@@ -113,7 +110,7 @@ public class RocketRunnable implements Runnable {
           mGC.strokeText("" + mRocket.mTime, newCoord.getX() * COORD_X_FACTOR, newCoord.getY() * COORD_Y_FACTOR);
         }
         if(mRocket.mTime % 500 == 0 && mRocket.getRocketID() == 0){
-          mTextArea.appendText("NOW \n");
+          //mTextArea.appendText("NOW \n");
         }
         mRocket.mTime += TIME_INTERVAL;
         mRocket.setTime(mRocket.mTime);

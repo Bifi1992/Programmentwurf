@@ -302,4 +302,13 @@ public class GeneticLearningAbstract {
   public void terminate() {
     isRunning = false;
   }
+
+  private void appendParentsToTextArea(Rocket pRocket1, Rocket pRocket2) {
+    Platform.runLater(() ->
+        mTextArea.appendText("Generation " + pRocket1.getGenerationId() + ":\n" +
+            "Parents:\n" +
+            "Rocket " + pRocket1.getRocketID() + "\n" +
+            "Rocket " + pRocket2.getRocketID() + "\n")
+    );
+  }
 }

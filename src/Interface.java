@@ -197,7 +197,6 @@ public class Interface extends Application {
 
     //return to StartScene
     mReturnButton.setText("Return");
-    mReturnButton.setDefaultButton(true);
     mReturnButton.setOnAction(e -> {
       if (mLearner != null) {
         mLearner.terminate();
@@ -210,6 +209,7 @@ public class Interface extends Application {
     mReturnButton.setPrefWidth(mScreenRes.getWidth() * 0.1);
 
     mClearButton.setText("Clear");
+    mClearButton.setDefaultButton(true);
     mClearButton.setOnAction(e -> {
       mGC.clearRect(0, 0, mCanvas.getWidth(), mCanvas.getHeight());
       displayGrid(30, 30);

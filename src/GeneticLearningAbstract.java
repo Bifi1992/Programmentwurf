@@ -65,6 +65,7 @@ public class GeneticLearningAbstract {
    */
   private List<Rocket> population = new ArrayList<Rocket>();
 
+  private Rocket eliteRocket = null;
 
   /**
    * @param pInterface
@@ -189,7 +190,7 @@ public class GeneticLearningAbstract {
       fitnessDistance = 1 - ((float) (population.get(j).getInitDistance() - population.get(j).getCurCoordinates().getY())/distanceSum);
       fitnessCurRocket = (float) (AlgorithmConstants.RATING_FUEL * fitnessFuel + AlgorithmConstants.RATING_TIME
           * fitnessTime + AlgorithmConstants.RATING_SPEED * fitnessSpeed
-          + AlgorithmConstants.RATING_DISTANCE * fitnessDistance) * 0.1f;
+          + AlgorithmConstants.RATING_DISTANCE * fitnessDistance) * 0.9f;
       /*
        * TODO: Distance to surface
        */
@@ -218,9 +219,20 @@ public class GeneticLearningAbstract {
     /*
      * Output of best rockets from this thread
      */
+    if(eliteRocket != null && eliteRocket.getTotalFitness() < best.getTotalFitness()){
+      eliteRocket = best;
+      System.out.println("verbessert");
+
+    }
+    if(eliteRocket != null && eliteRocket.getTotalFitness() > best.getTotalFitness()){
+      best = eliteRocket;
+      System.out.println("Elite nehmen");
+    }
+    if(eliteRocket == null){
+      eliteRocket = best;
+    }
     parents.add(best);
     parents.add(secondBest);
-
     prepareCanvasForNextGen(best, secondBest);
 
     System.out.println("Best Rocket: " + best.getRocketID());

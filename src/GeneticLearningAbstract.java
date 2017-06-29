@@ -145,12 +145,30 @@ public class GeneticLearningAbstract {
     float fitnessTime;
     float fitnessFuel;
     float fitnessSpeed;
-    float fitnessAll = 0;
-    float fitnessOld;
+    float fitnessCurRocket = 0;
+    float fitnessPrevRocket;
     float fitnessDistance;
     Rocket currRocket;
-    Rocket best = null;
-    Rocket secondBest = null;
+    Rocket best = new Rocket(
+      -1,
+      -1,
+      RocketConstants.INIT_SPEED_X,
+      RocketConstants.INIT_SPEED_Y,
+      mInterface.mSliderInitFuelLevel.getValue(),
+      mInterface.mSliderInitDistance.getValue(),
+      null
+    );
+    best.setTotalFitness(0);
+    Rocket secondBest = new Rocket(
+      -1,
+      -1,
+      RocketConstants.INIT_SPEED_X,
+      RocketConstants.INIT_SPEED_Y,
+      mInterface.mSliderInitFuelLevel.getValue(),
+      mInterface.mSliderInitDistance.getValue(),
+      null
+    );
+    secondBest.setTotalFitness(0);
     List<Rocket> parents = new ArrayList<>();
 
     /*
@@ -160,8 +178,7 @@ public class GeneticLearningAbstract {
       fuelSum += population.get(j).getCurFuelLevel();
       speedSum += population.get(j).getCurSpeed().abs();
       timeSum += population.get(j).getTime();
-      distanceSum += population.get(j).getInitDistance() - population.get(j).getCurCoordinates().getY()
-          + mPlanet.getRadius();
+      distanceSum += population.get(j).getInitDistance() - population.get(j).getCurCoordinates().getY();
     }
     /*
      * Choose best items of population depending on their distance to the goal value.
@@ -171,40 +188,33 @@ public class GeneticLearningAbstract {
       fitnessFuel = (float) (currRocket.getCurFuelLevel() / fuelSum);
       fitnessTime = 1 - (currRocket.getTime() / timeSum);
       fitnessSpeed = 1 - (float) (currRocket.getCurSpeed().abs() / speedSum);
-      fitnessOld = fitnessAll;
-      fitnessDistance = 1 - ((float) (currRocket.getInitDistance() -
-          population.get(j).getCurCoordinates().getY()
-          + mPlanet.getRadius()) / distanceSum);
-      fitnessAll = (float) (AlgorithmConstants.RATING_FUEL * fitnessFuel + AlgorithmConstants.RATING_TIME
+      fitnessPrevRocket = fitnessCurRocket;
+      fitnessDistance = 1 - ((float) (population.get(j).getInitDistance() - population.get(j).getCurCoordinates().getY())/distanceSum);
+      fitnessCurRocket = (float) (AlgorithmConstants.RATING_FUEL * fitnessFuel + AlgorithmConstants.RATING_TIME
           * fitnessTime + AlgorithmConstants.RATING_SPEED * fitnessSpeed
           + AlgorithmConstants.RATING_DISTANCE * fitnessDistance) * 0.5f;
-
+      /*
+       * TODO: Distance to surface
+       */
       /*
        * check if rocket is landed
        */
-      if (currRocket.getCurSpeed().abs() <= RocketConstants.MAX_LANDING_SPEED) {
-        fitnessAll += 0.5;
+      if (population.get(j).getInitDistance() - population.get(j).getCurCoordinates().getY() <= 0 ) {
+        fitnessCurRocket += 0.5;
       }
-      currRocket.setTotalFitness(fitnessAll);
-      System.out.println("Rocket ID: " + currRocket.getRocketID() + "Fitness all: " + ((fitnessAll))
+      currRocket.setTotalFitness(fitnessCurRocket);
+      System.out.println("Rocket ID: " + currRocket.getRocketID() + "Fitness all: " + ((fitnessCurRocket))
           + "Cur Distance:" + (currRocket.getInitDistance()
           - population.get(j).getCurCoordinates().getY() + mPlanet.getRadius())
           + "Cur Speed: " + currRocket.getCurSpeed().abs() + "Cur Fuel: "
           + currRocket.getCurFuelLevel() + " CurAcc: " + currRocket.getCurAcceleration().abs());
       /*
-       * If rockets are chosen depends on fitnessAll, which is the sum of every fitness parameter and it's weight.
+       * If rockets are chosen depends on fitnessCurRocket, which is the sum of every fitness parameter and it's weight.
        */
-      if (fitnessAll > fitnessOld) {
-        if (best == null) {
-          best = currRocket;
-        } else {
+      if (fitnessCurRocket > best.getTotalFitness()) {
           secondBest = best;
           best = currRocket;
         }
-        if (secondBest == null) {
-          secondBest = currRocket;
-        }
-      }
     }
     /*
      * Output of best rockets from this thread

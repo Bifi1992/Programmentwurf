@@ -144,6 +144,21 @@ public class Rocket {
   }
 
   /**
+   * worst Rocket
+   */
+ /* public Rocket(){
+    mGenerationId = -1;
+    mRocketId = -1;
+    mCurSpeed = new Coordinate2D(200000,200000);
+    mCurFuelLevel = 0;
+    mTime = 999999999;
+    mInitSpeed = new Coordinate2D(99999999,999999999);
+    mInitAcceleration = new Coordinate2D(0,0);
+    mInitFuelLevel = 0;
+
+  }*/
+
+  /**
    * getters and setters for rocket member variables
    */
   public Coordinate2D getCurSpeed() {

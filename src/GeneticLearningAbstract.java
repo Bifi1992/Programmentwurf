@@ -189,7 +189,7 @@ public class GeneticLearningAbstract {
       fitnessDistance = 1 - ((float) (population.get(j).getInitDistance() - population.get(j).getCurCoordinates().getY())/distanceSum);
       fitnessCurRocket = (float) (AlgorithmConstants.RATING_FUEL * fitnessFuel + AlgorithmConstants.RATING_TIME
           * fitnessTime + AlgorithmConstants.RATING_SPEED * fitnessSpeed
-          + AlgorithmConstants.RATING_DISTANCE * fitnessDistance) * 0.5f;
+          + AlgorithmConstants.RATING_DISTANCE * fitnessDistance) * 0.1f;
       /*
        * TODO: Distance to surface
        */
@@ -197,7 +197,7 @@ public class GeneticLearningAbstract {
        * check if rocket has landed
        */
       if (population.get(j).getInitDistance() - population.get(j).getCurCoordinates().getY() <= 0 ) {
-        fitnessCurRocket += 0.5;
+        fitnessCurRocket += 0.1;
       }
       currRocket.setTotalFitness(fitnessCurRocket);
       System.out.println("Rocket ID: " + currRocket.getRocketID() + "Fitness all: " + ((fitnessCurRocket))

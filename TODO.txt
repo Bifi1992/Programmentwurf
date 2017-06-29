@@ -16,3 +16,4 @@
 - save final Coordinates for all rockets of all generations, clear canvas after each tun and repaint those coordinates
 - min / max accel as constants
     - adjust a little for planets
+- implement elite generation

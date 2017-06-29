@@ -11,6 +11,7 @@ import java.util.concurrent.*;
 import static java.lang.Math.abs;
 import static java.lang.Math.floor;
 
+
 /**
  * Created by ludwig on 17.05.17.
  */
@@ -66,6 +67,7 @@ public class GeneticLearningAbstract {
    */
   private List<Rocket> population = new ArrayList<Rocket>();
 
+
   /**
    * @param pInterface
    */
@@ -89,9 +91,12 @@ public class GeneticLearningAbstract {
     ArrayList<Coordinate2D> processAcc;
     for (int i = 0; i < mInterface.mPopSizeDropDown.getValue(); i++) {
       processAcc = new ArrayList<>();
-      for (int d = 0; d <= mPlanet.getMaxLandingTime(); d++) {
+      double deltaX;
+      double deltaY;
+      double xInter;
+      double yInter;
+      for (int d = 0; d <= 100; d++) {
         processAcc.add(new Coordinate2D((Math.random() * ((5)) - 2.5), Math.random() * ((200)) - 100));
-        //processAcc.add(new Coordinate2D((Math.random() * ((200)) - 100), Math.random() * ((200)) - 100));
       }
       /*
        * setup rocket with process speed.
@@ -244,7 +249,6 @@ public class GeneticLearningAbstract {
         newProcessAcc.add(new Coordinate2D(pParents.get(shorterParent).getProcessAcc().get(i).getX(), pParents.get(shorterParent).getProcessAcc().get(i).getY()));
       }
     }
-
     /*
      * #### MUTATION ####
      */

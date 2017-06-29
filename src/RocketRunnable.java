@@ -32,6 +32,11 @@ public class RocketRunnable implements Runnable {
    */
   private static double COORD_X_FACTOR;
 
+  private static int count = 0;
+
+  private static int timeIntervalForAcceleration = 1000;
+
+
   /**
    * Holds the passed textarea
    */
@@ -95,7 +100,7 @@ public class RocketRunnable implements Runnable {
   @Override
   public void run() {
     Platform.runLater(this::updateProgressIndicator);
-
+    count = 0;
     while (mRocket.getCurCoordinates().getY() < mRocket.getInitDistance()
         && mRocket.mTime < mPlanet.getMaxLandingTime()
         && mRocket.getCurFuelLevel() >= 0) {
@@ -155,10 +160,16 @@ public class RocketRunnable implements Runnable {
    * Calculate acceleration by getting processAcceleration value
    */
    public void calcCurAcceleration() {
-      if (mRocket.mTime < mRocket.getProcessAcc().size()) {
-          mRocket.setCurAcceleration(mRocket.getProcessAcc().get(mRocket.getProcessAccIndex()));
-          mRocket.setProcessAccIndex(mRocket.getProcessAccIndex() + 1);
+      if ((mRocket.mTime / timeIntervalForAcceleration) < mRocket.getProcessAcc().size()) {
+        if(mRocket.mTime % timeIntervalForAcceleration == 0){
+          // Take Value out of array from array[counter]
+          mRocket.setCurAcceleration(mRocket.getProcessAcc().get(count));
+          count++;
+        }
+          /*mRocket.setCurAcceleration(mRocket.getProcessAcc().get(mRocket.getProcessAccIndex()));
+          mRocket.setProcessAccIndex(mRocket.getProcessAccIndex() + 1);*/
       } else {
+        System.out.println("Not enough MTIME" + mRocket.mTime);
         mRocket.setCurAcceleration(new Coordinate2D((Math.random() * ((5)) - 2.5), Math.random() * ((300)) - 150));
         mRocket.setProcessAcc();
       }

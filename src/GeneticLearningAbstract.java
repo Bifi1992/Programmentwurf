@@ -1,3 +1,4 @@
+import javafx.application.Platform;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.TextArea;
@@ -23,7 +24,7 @@ public class GeneticLearningAbstract {
   /**
    * responsible to manage runnables
    */
-  ThreadPool mThreadPool;
+  private ThreadPool mThreadPool;
 
   /**
    * holds the information, if the genetic learner should generate new rockets and, thus, continue to work
@@ -33,7 +34,7 @@ public class GeneticLearningAbstract {
   /**
    * gets initialised in constructor
    */
-  Planet mPlanet;
+  private Planet mPlanet;
 
   /**
    * gets initialised in constructor
@@ -43,32 +44,27 @@ public class GeneticLearningAbstract {
   /**
    * gets initialised in constructor
    */
-  GraphicsContext mGC;
+  private GraphicsContext mGC;
 
   /**
    * gets initialised in constructor
    */
-  TextArea mTextArea;
+  private TextArea mTextArea;
 
   /**
    * gets initialised in constructor
    */
-  Interface mInterface;
+  private Interface mInterface;
 
   /**
    * counter variable which represents actual generation id
    */
-  int mGeneration = 1;
+  private int mGeneration = 1;
 
   /**
    * list of population wich gets recreated on every generation
    */
-  List<Rocket> population = new ArrayList<Rocket>();
-
-  /**
-   * list of parents, wich are choosen from the fitness function
-   */
-  List<Rocket> parents = new ArrayList<>();
+  private List<Rocket> population = new ArrayList<Rocket>();
 
   /**
    * @param pInterface
@@ -80,14 +76,13 @@ public class GeneticLearningAbstract {
     mTextArea = pInterface.mTextArea;
     mCanvas = pInterface.mCanvas;
     mGC = pInterface.mGC;
-    //TIME_INTERVAL = (int) Math.ceil((double) mPlanet.getMaxLandingTime() / 10000);
   }
 
   /**
    * Create random population and values of rockets
    */
   public void initPopulationRandom() {
-    /**
+    /*
      * processAcc keeps the acceleration values over time of a certain rocket
      * processAcc gets filled randomly the first time
      */
@@ -98,7 +93,7 @@ public class GeneticLearningAbstract {
         processAcc.add(new Coordinate2D((Math.random() * ((5)) - 2.5), Math.random() * ((200)) - 100));
         //processAcc.add(new Coordinate2D((Math.random() * ((200)) - 100), Math.random() * ((200)) - 100));
       }
-      /**
+      /*
        * setup rocket with process speed.
        */
       Rocket rocket = new Rocket(
@@ -114,7 +109,7 @@ public class GeneticLearningAbstract {
       this.population.add(rocket);
     }
 
-    /**
+    /*
      * thread which waits until runnables finished. Not the best way to implement this, but it works.
      */
     Thread t = new Thread(() -> {
@@ -131,11 +126,11 @@ public class GeneticLearningAbstract {
     t.start();
   }
 
-  /**
+  /*
    * Calculate fitness of population
    */
   public void getFitness() {
-    /**
+    /*
      * Variables needed to calculate fitness level of rocket
      */
     float fuelSum = 0.0f;
@@ -151,9 +146,9 @@ public class GeneticLearningAbstract {
     Rocket currRocket;
     Rocket best = null;
     Rocket secondBest = null;
-    parents = new ArrayList<>();
+    List<Rocket> parents = new ArrayList<>();
 
-    /**
+    /*
      * get sum of all values
      */
     for (Integer j = 0; j < this.population.size(); j++) {
@@ -163,7 +158,7 @@ public class GeneticLearningAbstract {
       distanceSum += population.get(j).getInitDistance() - population.get(j).getCurCoordinates().getY()
           + mPlanet.getRadius();
     }
-    /**
+    /*
      * Choose best items of population depending on their distance to the goal value.
      */
     for (Integer j = 0; j < this.population.size(); j++) {
@@ -179,7 +174,7 @@ public class GeneticLearningAbstract {
           * fitnessTime + AlgorithmConstants.RATING_SPEED * fitnessSpeed
           + AlgorithmConstants.RATING_DISTANCE * fitnessDistance) * 0.5f;
 
-      /**
+      /*
        * check if rocket is landed
        */
       if (currRocket.getCurSpeed().abs() <= RocketConstants.MAX_LANDING_SPEED) {
@@ -191,8 +186,8 @@ public class GeneticLearningAbstract {
           - population.get(j).getCurCoordinates().getY() + mPlanet.getRadius())
           + "Cur Speed: " + currRocket.getCurSpeed().abs() + "Cur Fuel: "
           + currRocket.getCurFuelLevel() + " CurAcc: " + currRocket.getCurAcceleration().abs());
-      /**
-       * If rockets are chosen depends on fitnessAll, which is the sum of every fitnessparameter an it's weight.
+      /*
+       * If rockets are chosen depends on fitnessAll, which is the sum of every fitness parameter and it's weight.
        */
       if (fitnessAll > fitnessOld) {
         if (best == null) {
@@ -206,50 +201,51 @@ public class GeneticLearningAbstract {
         }
       }
     }
-    /**
+    /*
      * Output of best rockets from this thread
      */
     parents.add(best);
     parents.add(secondBest);
+
     System.out.println("Best Rocket: " + best.getRocketID());
     System.out.println("Parent Size: " + parents.size());
     System.out.println("Secound Best: " + secondBest.getRocketID());
     System.out.println("Parents index: " + parents.get(0));
     if (isRunning) {
-      createNextGeneration();
+      createNextGeneration(parents);
     }
 
   }
 
-  public void createNextGeneration() {
+  public void createNextGeneration(List<Rocket> pParents) {
     // clear population
     population = new ArrayList<>();
     mThreadPool = ThreadPool.getInstance(mInterface.mPopSizeDropDown.getValue());
     ArrayList<Coordinate2D> newProcessAcc = new ArrayList<>();
     ArrayList<Coordinate2D> individualProcessAcc;
 
-    /**
+    /*
      * #### CROSSOVER ####
      */
-    int longerParent = parents.get(0).getProcessAcc().size() >= parents.get(1).getProcessAcc().size() ? 0 : 1;
+    int longerParent = pParents.get(0).getProcessAcc().size() > pParents.get(1).getProcessAcc().size() ? 0 : 1;
     int shorterParent = longerParent == 0 ? 1 : 0;
-    for (int i = 0; i < parents.get(shorterParent).getProcessAcc().size(); i++) {
+    for (int i = 0; i < pParents.get(shorterParent).getProcessAcc().size(); i++) {
       if (Math.random() <= 0.5) {
         try {
-          newProcessAcc.add(new Coordinate2D(parents.get(longerParent).getProcessAcc().get(i).getX(), parents.get(longerParent).getProcessAcc().get(i).getY()));
+          newProcessAcc.add(new Coordinate2D(pParents.get(longerParent).getProcessAcc().get(i).getX(), pParents.get(longerParent).getProcessAcc().get(i).getY()));
         } catch (IndexOutOfBoundsException e) {
           System.out.println("Index: " + i);
           System.out.println("longerParentId: " + longerParent + ", shorterParentId: " + shorterParent);
-          System.out.println("longerParent: " + parents.get(longerParent).getProcessAcc().size());
-          System.out.println("shorterParent: " + parents.get(shorterParent).getProcessAcc().size());
+          System.out.println("longerParent: " + pParents.get(longerParent).getProcessAcc().size());
+          System.out.println("shorterParent: " + pParents.get(shorterParent).getProcessAcc().size());
           throw e;
         }
       } else {
-        newProcessAcc.add(new Coordinate2D(parents.get(shorterParent).getProcessAcc().get(i).getX(), parents.get(shorterParent).getProcessAcc().get(i).getY()));
+        newProcessAcc.add(new Coordinate2D(pParents.get(shorterParent).getProcessAcc().get(i).getX(), pParents.get(shorterParent).getProcessAcc().get(i).getY()));
       }
     }
 
-    /**
+    /*
      * #### MUTATION ####
      */
     for (int i = 0; i < mInterface.mPopSizeDropDown.getValue(); i++) {
@@ -289,7 +285,6 @@ public class GeneticLearningAbstract {
 
   /**
    * Print out current population
-   * //
    */
   public void printPopulation() {
     System.out.println("Current Population:");
@@ -301,6 +296,9 @@ public class GeneticLearningAbstract {
     }
   }
 
+  /**
+   * This method prohibits the genetic learner from generating new runnables
+   */
   public void terminate() {
     isRunning = false;
   }

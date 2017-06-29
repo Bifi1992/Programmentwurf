@@ -6,7 +6,7 @@ public final class AlgorithmConstants {
 
   public static final int MIN_POP_SIZE = 4;
 
-  public static final int MAX_POP_SIZE = 10;
+  public static final int MAX_POP_SIZE = 8;
 
   public static final float RATING_TIME = 0.05f;
 
@@ -17,6 +17,4 @@ public final class AlgorithmConstants {
   public static final float RATING_SPEED = 0.05f;
 
   public static final double MUTATION = 0.1;
-
-
 }

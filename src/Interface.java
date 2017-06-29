@@ -217,16 +217,15 @@ public class Interface extends Application {
     });
     mClearButton.setPrefWidth(mScreenRes.getWidth() * 0.1);
 
+    VBox topProgressVBox = setupProgressBoxes(mPopSizeDropDown.getValue());
+
     VBox ButtonBox = new VBox(5, mSimExitButton, mReturnButton, mClearButton);
+    mTextArea.setPrefHeight(topProgressVBox.getHeight());
+    mTextArea.setPrefWidth(mScreenRes.getWidth() * 0.3);
+    mTextArea.setMaxWidth(mScreenRes.getWidth() * 0.3);
+    HBox topTextAndButtonsBox = new HBox(5, topProgressVBox, ButtonBox, mTextArea);
 
-    mTextArea.setPrefHeight(mScreenRes.getHeight() * 0.2);
-    mTextArea.setPrefWidth(mScreenRes.getWidth() * 0.8);
-
-    VBox topVBox = setupProgressBoxes(mPopSizeDropDown.getValue());
-
-    HBox textAndButtonsBox = new HBox(5, /*mTextArea,*/ topVBox, ButtonBox);
-
-    VBox root = new VBox(5, textAndButtonsBox, mScrollPane);
+    VBox root = new VBox(5, topTextAndButtonsBox, mScrollPane);
 
     /*root.setStyle(
         "-fx-padding: 10;" +

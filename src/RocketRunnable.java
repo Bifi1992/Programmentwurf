@@ -94,12 +94,7 @@ public class RocketRunnable implements Runnable {
 
   @Override
   public void run() {
-    Platform.runLater(() -> {
-      updateProgressIndicator();
-      mTextArea.appendText("initSpeed: " + mRocket.getCurSpeed().toString() + "\n" +
-      "initAngle: " + mRocket.getCurSpeed().getAngleXAxis() + "°\n" +
-      "initCoords: " + mRocket.getCurCoordinates().toString() + "\n");
-    });
+    Platform.runLater(this::updateProgressIndicator);
 
     while (mRocket.getCurCoordinates().getY() < mRocket.getInitDistance()
         && mRocket.mTime < mPlanet.getMaxLandingTime()
@@ -114,42 +109,21 @@ public class RocketRunnable implements Runnable {
             newCoord.getX() * COORD_X_FACTOR, newCoord.getY() * COORD_Y_FACTOR);
         if (mRocket.mTime != 0 && mRocket.mTime % DISPLAY_INTERVAL == 0) {
           mGC.strokeText("" + mRocket.mTime, newCoord.getX() * COORD_X_FACTOR, newCoord.getY() * COORD_Y_FACTOR);
-          /*System.out.println(mRocket.getRocketID() + ": " +
-              oldCoord.getX() * COORD_X_FACTOR + " " + oldCoord.getY() * COORD_Y_FACTOR + " " +
-              newCoord.getX() * COORD_X_FACTOR + " " + newCoord.getY() * COORD_Y_FACTOR);*/
-          /*
-          mGC.strokeText("(" + String.format("%6.2e",newCoord.getX()) + ", " + String.format("%6.2e",newCoord.getY()) + ")",
-              newCoord.getX() * COORD_X_FACTOR, newCoord.getY() * COORD_Y_FACTOR);
-          */
-          /*
-          mGC.strokeText("" + String.format("%6.3e",(calcDistance() - mPlanet.getRadius())),
-              newCoord.getX() / COORD_X_FACTOR, newCoord.getY() * COORD_Y_FACTOR);
-           */
-          /*
-          mTextArea.appendText("mRocket.getInitDistance() = " + mRocket.getInitDistance()
-              + "calcDistance() = " + calcDistance()
-              + " -> " + String.format("%6.3e",(mRocket.getInitDistance() - calcDistance())) + "\n");
-          */
         }
         mRocket.mTime += TIME_INTERVAL;
         mRocket.setTime(mRocket.mTime);
         mRocket.setProcessSpeed();
         updateProgressIndicator();
       });
-      // Sleep for a few ms to not spam the program with runnables
+      // Sleep for a ms to not spam the application thread with runnables
       try {
         Thread.sleep(1);
       } catch (InterruptedException e) {
         mTextArea.appendText(e.getMessage());
       }
-      //mRocket.setCurSpeed();
-      // Setting process speed on every secound
+      // Setting process speed on every second
       mRocket.setProcessSpeed();
     }
-    Platform.runLater( () -> {
-      mTextArea.appendText("landing time:" + mRocket.mTime + "\n");
-      mTextArea.appendText(mPlanet.name() + "\n");
-    });
   }
 
   /**
@@ -185,7 +159,6 @@ public class RocketRunnable implements Runnable {
           mRocket.setCurAcceleration(mRocket.getProcessAcc().get(mRocket.getProcessAccIndex()));
           mRocket.setProcessAccIndex(mRocket.getProcessAccIndex() + 1);
       } else {
-        System.out.println("Not enough");
         mRocket.setCurAcceleration(new Coordinate2D((Math.random() * ((5)) - 2.5), Math.random() * ((300)) - 150));
         mRocket.setProcessAcc();
       }

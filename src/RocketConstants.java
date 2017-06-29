@@ -55,7 +55,7 @@ public final class RocketConstants {
   /**
    * holds the default number of rockets per generation for {@link Interface}.mPopSizeDropDown
    */
-  public static final int ROCKETS_PER_GENERATION = 4;
+  public static final int ROCKETS_PER_GENERATION = 6;
 
   /**
    * holds the rocket's initial speed in x dir

@@ -10,6 +10,7 @@ import java.util.concurrent.*;
 import static java.lang.Math.abs;
 import static java.lang.Math.floor;
 
+
 /**
  * Created by ludwig on 17.05.17.
  */
@@ -70,6 +71,7 @@ public class GeneticLearningAbstract {
    */
   List<Rocket> parents = new ArrayList<>();
 
+
   /**
    * @param pInterface
    */
@@ -94,9 +96,12 @@ public class GeneticLearningAbstract {
     ArrayList<Coordinate2D> processAcc;
     for (int i = 0; i < mInterface.mPopSizeDropDown.getValue(); i++) {
       processAcc = new ArrayList<>();
-      for (int d = 0; d <= mPlanet.getMaxLandingTime(); d++) {
+      double deltaX;
+      double deltaY;
+      double xInter;
+      double yInter;
+      for (int d = 0; d <= 100; d++) {
         processAcc.add(new Coordinate2D((Math.random() * ((5)) - 2.5), Math.random() * ((200)) - 100));
-        //processAcc.add(new Coordinate2D((Math.random() * ((200)) - 100), Math.random() * ((200)) - 100));
       }
       /**
        * setup rocket with process speed.
@@ -248,7 +253,6 @@ public class GeneticLearningAbstract {
         newProcessAcc.add(new Coordinate2D(parents.get(shorterParent).getProcessAcc().get(i).getX(), parents.get(shorterParent).getProcessAcc().get(i).getY()));
       }
     }
-
     /**
      * #### MUTATION ####
      */
@@ -303,5 +307,15 @@ public class GeneticLearningAbstract {
 
   public void terminate() {
     isRunning = false;
+  }
+
+  public double cosineInterpolate(
+    double y1,double y2,
+    double mu)
+  {
+    double mu2;
+
+    mu2 = (1-Math.cos(mu*Math.PI))/2;
+    return(y1*(1-mu2)+y2*mu2);
   }
 }

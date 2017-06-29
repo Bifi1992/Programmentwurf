@@ -206,6 +206,7 @@ public class GeneticLearningAbstract {
      */
     parents.add(best);
     parents.add(secondBest);
+    appendParentsToTextArea(best, secondBest);
 
     System.out.println("Best Rocket: " + best.getRocketID());
     System.out.println("Parent Size: " + parents.size());
@@ -214,7 +215,6 @@ public class GeneticLearningAbstract {
     if (isRunning) {
       createNextGeneration(parents);
     }
-
   }
 
   public void createNextGeneration(List<Rocket> pParents) {

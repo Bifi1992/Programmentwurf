@@ -40,7 +40,8 @@ public class Interface extends Application {
   Button mClearButton = new Button();
   final Canvas mCanvas = new Canvas();
   GraphicsContext mGC = mCanvas.getGraphicsContext2D();
-  Dimension mScreenRes = new Dimension(800,600);
+  //Dimension mScreenRes = new Dimension(800,600);
+  Dimension mScreenRes = Toolkit.getDefaultToolkit().getScreenSize();
   Planet mDefaultPlanet = Planet.MARS;
   GeneticLearningAbstract mLearner;
 
@@ -179,7 +180,8 @@ public class Interface extends Application {
     mCanvas.setHeight(mScreenRes.getHeight());
     mCanvas.setWidth(mScreenRes.getWidth() * 6);
     mScrollPane = new ScrollPane(mCanvas);
-    mScrollPane.setPrefSize(mScreenRes.getWidth(), mScreenRes.getHeight() * 0.7);
+    //mScrollPane.setPrefSize(mScreenRes.getWidth(), mScreenRes.getHeight() * 0.7);
+    mScrollPane.setPrefSize(Double.MAX_VALUE, mScreenRes.getHeight() * 0.7);
     mScrollPane.setMaxSize(Double.MAX_VALUE, Double.MAX_VALUE);
     mScrollPane.setFitToWidth(true);
     mScrollPane.setFitToHeight(true);

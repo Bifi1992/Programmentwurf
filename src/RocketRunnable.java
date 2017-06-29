@@ -77,9 +77,12 @@ public class RocketRunnable implements Runnable {
     mGC = pInterface.mGC;
     mCanvas = pInterface.mCanvas;
     COORD_Y_FACTOR = mCanvas.getHeight()/pRocket.getInitDistance();
+    /* Use this X Factor for approximate landing in the middle
     COORD_X_FACTOR = mRocket.getCurSpeed().getX() == 0 ? 1 :
         (mCanvas.getWidth() / 3) / (mRocket.getCurSpeed().getX() *
             Math.cos(Math.toRadians(mRocket.getCurSpeed().getAngleXAxis())) * mPlanet.getMaxLandingTime());
+    */
+    COORD_X_FACTOR = COORD_Y_FACTOR;
     DISPLAY_INTERVAL = mPlanet.getMaxLandingTime()/10;
     TIME_INTERVAL = (int) Math.ceil((double) mPlanet.getMaxLandingTime() / 10000);
     /* needed if you want to start in the middle of the canvas

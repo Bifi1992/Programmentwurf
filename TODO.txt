@@ -14,3 +14,5 @@
 - boolean successful Landing as rocket member
 - negative algorithm weights if not Rocket ends out of Canvas
 - save final Coordinates for all rockets of all generations, clear canvas after each tun and repaint those coordinates
+- min / max accel as constants
+    - adjust a little for planets

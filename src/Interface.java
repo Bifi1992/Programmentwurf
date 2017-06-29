@@ -177,10 +177,9 @@ public class Interface extends Application {
 
   private Scene getSimScene() {
     // setup scrollable canvas
-    mCanvas.setHeight(mScreenRes.getHeight());
+    mCanvas.setHeight(mScreenRes.getHeight() * 0.7);
     mCanvas.setWidth(mScreenRes.getWidth() * 6);
     mScrollPane = new ScrollPane(mCanvas);
-    //mScrollPane.setPrefSize(mScreenRes.getWidth(), mScreenRes.getHeight() * 0.7);
     mScrollPane.setPrefSize(Double.MAX_VALUE, mScreenRes.getHeight() * 0.7);
     mScrollPane.setMaxSize(Double.MAX_VALUE, Double.MAX_VALUE);
     mScrollPane.setFitToWidth(true);
@@ -263,7 +262,7 @@ public class Interface extends Application {
   /**
    * This method generates a grid with mash size of x*y
    */
-  private void displayGrid(double pX, double pY) {
+  public void displayGrid(double pX, double pY) {
     mGC.setStroke(Color.LIGHTGRAY);
     for (double i = pX; i < mCanvas.getWidth(); i += pX) {
       mGC.strokeLine(i, 0, i, mCanvas.getHeight());
@@ -271,6 +270,14 @@ public class Interface extends Application {
     for (double i = pY; i < mCanvas.getHeight(); i += pY) {
       mGC.strokeLine(0, i, mCanvas.getWidth(), i);
     }
+  }
+
+  /**
+   * This method draws a transparent grid over the Interface to slowly hide previous generations
+   */
+  public void drawTransparentRect() {
+    mGC.setFill(new Color(1, 1, 1, 0.7));
+    mGC.fillRect(0, 0, mCanvas.getWidth(), mCanvas.getHeight());
   }
 
   private VBox setupProgressBoxes(Integer pNumOfBoxes) {

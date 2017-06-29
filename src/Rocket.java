@@ -165,16 +165,16 @@ public class Rocket {
     return mCurSpeed;
   }
 
-  public void setCurSpeed(Coordinate2D mCurSpeed) {
-    this.mCurSpeed = mCurSpeed;
+  public void setCurSpeed(Coordinate2D pCurSpeed) {
+    mCurSpeed = pCurSpeed;
   }
 
   public double getCurFuelLevel() {
     return mCurFuelLevel;
   }
 
-  public void setCurFuelLevel(double mCurFuelLevel) {
-    this.mCurFuelLevel = mCurFuelLevel;
+  public void setCurFuelLevel(double pCurFuelLevel) {
+    mCurFuelLevel = pCurFuelLevel;
   }
 
   public Coordinate2D getCurCoordinates() {
@@ -182,23 +182,23 @@ public class Rocket {
   }
 
   public void setCurCoordinates(double pX, double pY) {
-    this.mCurCoordinates = new Coordinate2D(pX, pY);
+    mCurCoordinates = new Coordinate2D(pX, pY);
   }
 
   public void setCurCoordinates(Coordinate2D pCoord) {
-    this.mCurCoordinates = pCoord;
+    mCurCoordinates = pCoord;
   }
 
   public double getInitDistance() {
-    return this.mInitDistance;
+    return mInitDistance;
   }
 
   public void setProcessSpeed() {
-    this.mProcessSpeed.put(this.mTime, this.mCurSpeed);
+    mProcessSpeed.put(mTime, mCurSpeed);
   }
 
   public void setProcessAcc() {
-    this.mProcessAcc.add(this.mCurAcceleration);
+    mProcessAcc.add(mCurAcceleration);
   }
 
   public ArrayList<Coordinate2D> getProcessAcc(){
@@ -206,31 +206,31 @@ public class Rocket {
   }
 
   public ConcurrentHashMap<Integer, Coordinate2D> getProcessSpeed() {
-    return this.mProcessSpeed;
+    return mProcessSpeed;
   }
 
   public int getTime() {
     return mTime;
   }
 
-  public void setTime(int mTime) {
-    this.mTime = mTime;
+  public void setTime(int pTime) {
+    mTime = pTime;
   }
 
   public void setCurAcceleration(Coordinate2D pCurAcceleration){
-    this.mCurAcceleration = pCurAcceleration;
+    mCurAcceleration = pCurAcceleration;
   }
 
   public Coordinate2D getCurAcceleration() {
-    return this.mCurAcceleration;
+    return mCurAcceleration;
   }
 
   public int getRocketID() {
-    return this.mRocketId;
+    return mRocketId;
   }
 
   public int getGenerationId(){
-    return this.mGenerationId;
+    return mGenerationId;
   }
 
   public void setInitCoordinates(Coordinate2D pInitCoordinates) {
@@ -248,21 +248,22 @@ public class Rocket {
   }
 
   public void setTotalFitness(float pTotalFitness) {
-    this.mTotalFitness = pTotalFitness;
+    mTotalFitness = pTotalFitness;
   }
   public float getChoosingProbability() {
     return mChoosingProbability;
   }
 
   public void setChoosingProbability(float pChoosingProbability) {
-    this.mChoosingProbability = pChoosingProbability;
+    mChoosingProbability = pChoosingProbability;
   }
+
   public float getCumulativeProbabilities() {
     return mCumulativeProbabilities;
   }
 
   public void setCumulativeProbabilities(float pCumulativeProbabilities) {
-    this.mCumulativeProbabilities = pCumulativeProbabilities;
+    mCumulativeProbabilities = pCumulativeProbabilities;
   }
 
   public int getProcessAccIndex() {

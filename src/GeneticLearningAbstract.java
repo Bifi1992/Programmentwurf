@@ -2,14 +2,12 @@ import javafx.application.Platform;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.TextArea;
+import javafx.scene.paint.Color;
 
-import java.lang.reflect.Array;
-import java.time.Duration;
 import java.util.*;
 import java.util.concurrent.*;
 
 import static java.lang.Math.abs;
-import static java.lang.Math.floor;
 
 
 /**
@@ -150,23 +148,23 @@ public class GeneticLearningAbstract {
     float fitnessDistance;
     Rocket currRocket;
     Rocket best = new Rocket(
-      -1,
-      -1,
-      RocketConstants.INIT_SPEED_X,
-      RocketConstants.INIT_SPEED_Y,
-      mInterface.mSliderInitFuelLevel.getValue(),
-      mInterface.mSliderInitDistance.getValue(),
-      null
+        -1,
+        -1,
+        RocketConstants.INIT_SPEED_X,
+        RocketConstants.INIT_SPEED_Y,
+        mInterface.mSliderInitFuelLevel.getValue(),
+        mInterface.mSliderInitDistance.getValue(),
+        null
     );
     best.setTotalFitness(0);
     Rocket secondBest = new Rocket(
-      -1,
-      -1,
-      RocketConstants.INIT_SPEED_X,
-      RocketConstants.INIT_SPEED_Y,
-      mInterface.mSliderInitFuelLevel.getValue(),
-      mInterface.mSliderInitDistance.getValue(),
-      null
+        -1,
+        -1,
+        RocketConstants.INIT_SPEED_X,
+        RocketConstants.INIT_SPEED_Y,
+        mInterface.mSliderInitFuelLevel.getValue(),
+        mInterface.mSliderInitDistance.getValue(),
+        null
     );
     secondBest.setTotalFitness(0);
     List<Rocket> parents = new ArrayList<>();
@@ -188,7 +186,6 @@ public class GeneticLearningAbstract {
       fitnessFuel = (float) (currRocket.getCurFuelLevel() / fuelSum);
       fitnessTime = 1 - (currRocket.getTime() / timeSum);
       fitnessSpeed = 1 - (float) (currRocket.getCurSpeed().abs() / speedSum);
-      fitnessPrevRocket = fitnessCurRocket;
       fitnessDistance = 1 - ((float) (population.get(j).getInitDistance() - population.get(j).getCurCoordinates().getY())/distanceSum);
       fitnessCurRocket = (float) (AlgorithmConstants.RATING_FUEL * fitnessFuel + AlgorithmConstants.RATING_TIME
           * fitnessTime + AlgorithmConstants.RATING_SPEED * fitnessSpeed
@@ -197,7 +194,7 @@ public class GeneticLearningAbstract {
        * TODO: Distance to surface
        */
       /*
-       * check if rocket is landed
+       * check if rocket has landed
        */
       if (population.get(j).getInitDistance() - population.get(j).getCurCoordinates().getY() <= 0 ) {
         fitnessCurRocket += 0.5;
@@ -212,16 +209,19 @@ public class GeneticLearningAbstract {
        * If rockets are chosen depends on fitnessCurRocket, which is the sum of every fitness parameter and it's weight.
        */
       if (fitnessCurRocket > best.getTotalFitness()) {
-          secondBest = best;
-          best = currRocket;
-        }
+        secondBest = best;
+        best = currRocket;
+      } else if (fitnessCurRocket > secondBest.getTotalFitness()) {
+        secondBest = currRocket;
+      }
     }
     /*
      * Output of best rockets from this thread
      */
     parents.add(best);
     parents.add(secondBest);
-    appendParentsToTextArea(best, secondBest);
+
+    prepareCanvasForNextGen(best, secondBest);
 
     System.out.println("Best Rocket: " + best.getRocketID());
     System.out.println("Parent Size: " + parents.size());
@@ -317,12 +317,30 @@ public class GeneticLearningAbstract {
     isRunning = false;
   }
 
-  private void appendParentsToTextArea(Rocket pRocket1, Rocket pRocket2) {
-    Platform.runLater(() ->
-        mTextArea.appendText("Generation " + pRocket1.getGenerationId() + ":\n" +
-            "Parents:\n" +
-            "Rocket " + pRocket1.getRocketID() + "\n" +
-            "Rocket " + pRocket2.getRocketID() + "\n")
-    );
+  /**
+   * - Draw a transparent Rect to hide the previous generations
+   * - Redraw the Grid
+   * - Show the chosen parents as dots
+   * @param pRocket1 the first parent rocket
+   * @param pRocket2 the second parent rocket
+   */
+  private void prepareCanvasForNextGen(Rocket pRocket1, Rocket pRocket2) {
+    Platform.runLater(() -> {
+      mInterface.drawTransparentRect();
+      mInterface.displayGrid(30, 30);
+      for (int i = 0; i < 2; i++) {
+        Rocket r = i == 0 ? pRocket1 : pRocket2;
+        mGC.setFill((Color) RocketConstants.COLOR_PALETTE[r.getRocketID()][0]);
+        mGC.setStroke((Color) RocketConstants.COLOR_PALETTE[r.getRocketID()][0]);
+        mGC.fillOval(r.getCurCoordinates().getX() * RocketRunnable.COORD_X_FACTOR - 3,
+            r.getCurCoordinates().getY() * RocketRunnable.COORD_Y_FACTOR - 3, 6, 6);
+        mGC.strokeText(String.valueOf(r.getRocketID()), r.getCurCoordinates().getX() * RocketRunnable.COORD_X_FACTOR - 3,
+            r.getCurCoordinates().getY() * RocketRunnable.COORD_Y_FACTOR - 3);
+      }
+      mTextArea.appendText("Generation " + pRocket1.getGenerationId() + ":\n" +
+          "Parents:\n" +
+          "Rocket " + pRocket1.getRocketID() + "\n" +
+          "Rocket " + pRocket2.getRocketID() + "\n");
+    });
   }
 }

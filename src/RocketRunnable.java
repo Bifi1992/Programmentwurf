@@ -25,12 +25,12 @@ public class RocketRunnable implements Runnable {
   /**
    * holds the value for adjustment of y coordinates
    */
-  private static double COORD_Y_FACTOR;
+  public static double COORD_Y_FACTOR;
 
   /**
    * holds the value for adjustment of x coordinates
    */
-  private static double COORD_X_FACTOR;
+  public static double COORD_X_FACTOR;
 
   private static int timeIntervalForAcceleration = 500;
 
@@ -107,7 +107,7 @@ public class RocketRunnable implements Runnable {
             mGC.strokeLine(oldCoord.getX() * COORD_X_FACTOR, oldCoord.getY() * COORD_Y_FACTOR,
             newCoord.getX() * COORD_X_FACTOR, newCoord.getY() * COORD_Y_FACTOR);
         if (mRocket.mTime != 0 && mRocket.mTime % DISPLAY_INTERVAL == 0) {
-          mGC.strokeText("" + mRocket.mTime, newCoord.getX() * COORD_X_FACTOR, newCoord.getY() * COORD_Y_FACTOR);
+          //mGC.fillOval(newCoord.getX() * COORD_X_FACTOR - 2, newCoord.getY() * COORD_Y_FACTOR - 2, 4, 4);
         }
         if(mRocket.mTime % 500 == 0 && mRocket.getRocketID() == 0){
           //mTextArea.appendText("NOW \n");
@@ -126,6 +126,14 @@ public class RocketRunnable implements Runnable {
       // Setting process speed on every second
       mRocket.setProcessSpeed();
     }
+    Platform.runLater(() -> {
+      mGC.setFill((Color) RocketConstants.COLOR_PALETTE[mRocket.getRocketID()][0]);
+      mGC.setStroke((Color) RocketConstants.COLOR_PALETTE[mRocket.getRocketID()][0]);
+      mGC.fillOval(mRocket.getCurCoordinates().getX() * COORD_X_FACTOR - 3,
+        mRocket.getCurCoordinates().getY() * COORD_Y_FACTOR - 3, 6, 6);
+      mGC.strokeText(String.valueOf(mRocket.getRocketID()), mRocket.getCurCoordinates().getX() * COORD_X_FACTOR - 3,
+          mRocket.getCurCoordinates().getY() * COORD_Y_FACTOR - 3);
+    });
   }
 
   /**
@@ -243,6 +251,6 @@ public class RocketRunnable implements Runnable {
     // set time label
     box.getLabelTime().setText(mRocket.mTime > mPlanet.getMaxLandingTime() ?
         String.valueOf(mPlanet.getMaxLandingTime()) : String.valueOf(mRocket.mTime));
-    box.getLabelSpeed().setText(String.format("%.0f", mRocket.getCurSpeed().abs()));
+    box.getLabelSpeed().setText(String.format("%.2f", mRocket.getCurSpeed().abs()));
   }
 }

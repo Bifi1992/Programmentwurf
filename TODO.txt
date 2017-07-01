@@ -4,11 +4,14 @@
 - monitor all Runnables
    - show reason for unsuccessful landing
 - clean up code (more classes and functions)
+- (important) handle large screens
 - GUI *
    - Sliders
         - Mutation rate
-   - Clear Button
+   - Generation Size
    - (maybe) smaller start scene window
+   - Number of Threads (in order to save resources)
+   - Max landing time
 - correct calculation of landing (TOCHECK)
    - fix distance (TOCHECK)
 - boolean successful Landing as rocket member

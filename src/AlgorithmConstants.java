@@ -10,12 +10,14 @@ public final class AlgorithmConstants {
 
   public static final double MUTATION = 0.1;
 
+  public static final double LANDING_BONUS = 0.2;
+
   /**
    * The Ratings have to add up to 1
    */
-  public static final float RATING_TIME = 0.3f;
-  public static final float RATING_FUEL = 0.1f;
-  public static final float RATING_DISTANCE = 0.55f;
-  public static final float RATING_SPEED = 0.05f;
+  public static final double RATING_TIME = 0.3;
+  public static final double RATING_FUEL = 0.1;
+  public static final double RATING_DISTANCE = 0.55;
+  public static final double RATING_SPEED = 0.05;
 
 }

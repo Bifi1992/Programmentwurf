@@ -163,13 +163,15 @@ public class GeneticLearningAbstract {
       speedSum += mEliteRocket.getFinalSpeed();
       timeSum += mEliteRocket.getFinalTime();
       distanceSum += mEliteRocket.getFinalDistance();
-      mEliteRocket.calculateAndSetFitness(fuelSum, timeSum, speedSum, distanceSum);
     } else {
       //set the EliteRocket as the first rocket in the first run
       mEliteRocket = new EliteRocket(population.get(0));
     }
+    distanceSum = distanceSum < 1 ? 1 : distanceSum;
 
     // recalc fitness for the EliteRockets proportionate to the current pop
+    mEliteRocket.calculateAndSetFitness(fuelSum, timeSum, speedSum, distanceSum);
+
 
     /*
     TODO distanceSum can be 0 ... => division by 0

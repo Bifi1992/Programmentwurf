@@ -279,13 +279,20 @@ public class Rocket {
   }
 
   public void calculateAndSetFitness(double pFuelSum, double pTimeSum, double pSpeedSum, double pDistanceSum){
-    double fitness = (mCurFuelLevel / pFuelSum) * AlgorithmConstants.RATING_FUEL +
+    double fitness =
+        // minimize fuel consumption
+        (mCurFuelLevel / pFuelSum) * AlgorithmConstants.RATING_FUEL +
+        // minimize usage of time
         (1 - (mTime / pTimeSum)) * AlgorithmConstants.RATING_TIME +
+        // minimize end speed
         (1 - (mCurSpeed.abs() / pSpeedSum)) * AlgorithmConstants.RATING_SPEED +
+        // minimize distance to planet
         (1 - ((mInitDistance - mCurCoordinates.getY()) / pDistanceSum)) * AlgorithmConstants.RATING_DISTANCE;
-    fitness -= (1 - AlgorithmConstants.LANDING_BONUS);
+    // remove landing bonus
+    fitness += (1 - AlgorithmConstants.LANDING_BONUS);
+    // add landing bonus if rocket has landed
     if (mInitDistance - mCurCoordinates.getY() <= 0) {
-      fitness += AlgorithmConstants.LANDING_BONUS;
+      fitness += 1 + AlgorithmConstants.LANDING_BONUS;
     }
     this.setTotalFitness(fitness);
   }

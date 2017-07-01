@@ -130,6 +130,8 @@ Spinner mSpinnerInitGenerations = new Spinner<>(RocketConstants.INIT_MIN_GENERAT
     mStartButton.setDefaultButton(true);
     mStartButton.setOnAction(e -> {
       mPrimaryStage.setScene(mSimScene);
+      mGC.clearRect(0, 0, mCanvas.getWidth(), mCanvas.getHeight());
+      displayGrid(30, 30);
       startCalculations();
     });
     mStartButton.setPrefWidth(mScreenRes.getWidth() * 0.1);
@@ -166,8 +168,9 @@ Spinner mSpinnerInitGenerations = new Spinner<>(RocketConstants.INIT_MIN_GENERAT
 
     Label popSizeLabel = new Label("Rockets per Population: ");
     Label generationsLabel = new Label("Maximum of Generations: ");
-    HBox popSizeVBox = new HBox(5, popSizeLabel, mPopSizeDropDown, generationsLabel, mSpinnerInitGenerations);
-    VBox algoBox = new VBox(10, algoLabel, popSizeVBox);
+    HBox generationHBox = new HBox(5, generationsLabel, mSpinnerInitGenerations);
+    HBox popSizeVBox = new HBox(5, popSizeLabel, mPopSizeDropDown);
+    VBox algoBox = new VBox(10, algoLabel, popSizeVBox, generationHBox);
     algoBox.setPrefSize(mScreenRes.getWidth() * 0.5, mScreenRes.getHeight() * 0.4);
     algoBox.setAlignment(Pos.TOP_CENTER);
 

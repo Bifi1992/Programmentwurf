@@ -70,6 +70,7 @@ public class GeneticLearningAbstract {
    */
   private EliteRocket mEliteRocket;
 
+  private ArrayList<EliteRocket> allElites = new ArrayList<>();
   /**
    * @param pInterface
    */
@@ -200,7 +201,7 @@ public class GeneticLearningAbstract {
       Rocket bestForTextArea = best;
       mEliteRocket = new EliteRocket(best);
       Platform.runLater(() -> mInterface.mTextArea.appendText("Set rocket" + bestForTextArea.getRocketID() + " as new elite!\n"));
-
+      allElites.add(mEliteRocket);
     }else if (best.getGenerationId() > 1) {
       useElite = true;
       Rocket bestForTextArea = best;
@@ -223,73 +224,110 @@ public class GeneticLearningAbstract {
     mThreadPool = ThreadPool.getInstance(mInterface.mPopSizeDropDown.getValue());
     ArrayList<Coordinate2D> newProcessAcc = new ArrayList<>();
     ArrayList<Coordinate2D> individualProcessAcc;
+    System.out.println("Interface Generations: " + mInterface.mSpinnerInitGenerations.getValue());
+    if (mGeneration >= mInterface.mSpinnerInitGenerations.getValue()) {
+      for (int i = 0; i < 5; i++) {
 
+        if (allElites.size() > i) {
+          this.population.add(new Rocket(
+                  mGeneration,
+                  i,
+                  allElites.get(allElites.size()-(i+1)).mInitSpeed.getX(),
+                  allElites.get(allElites.size()-(i+1)).mInitSpeed.getY(),
+                  allElites.get(allElites.size()-(i+1)).mInitFuelLevel,
+                  allElites.get(allElites.size()-(i+1)).getInitDistance(),
+                  allElites.get(allElites.size()-(i+1)).getProcessAcc()
+          ));
+
+          System.out.println("Elite " + allElites.get(allElites.size() - (i + 1)).getRocketID());
+          mThreadPool.execute(new RocketRunnable(population.get(i), mInterface));
+
+        }
+      }
+      System.out.println("DONE! BEST RESULTS FOUND");
+      Thread t = new Thread(() -> {
+        try {
+          mThreadPool.stop();
+          mThreadPool.awaitTermination();
+        } catch (TimeoutException e) {
+          e.printStackTrace(System.err);
+        }
+        mGeneration++;
+        mInterface.drawTransparentRect();
+        createNextGeneration(population, false);
+      });
+      t.start();
+    } else {
     /*
      * #### CROSSOVER ####
      */
-    int longerParent = pParents.get(0).getProcessAcc().size() > pParents.get(1).getProcessAcc().size() ? 0 : 1;
-    int shorterParent = longerParent == 0 ? 1 : 0;
-    for (int i = 0; i < pParents.get(shorterParent).getProcessAcc().size(); i++) {
-      if (Math.random() <= 0.5) {
-        newProcessAcc.add(new Coordinate2D(pParents.get(longerParent).getProcessAcc().get(i).getX(), pParents.get(longerParent).getProcessAcc().get(i).getY()));
-      } else {
-        newProcessAcc.add(new Coordinate2D(pParents.get(shorterParent).getProcessAcc().get(i).getX(), pParents.get(shorterParent).getProcessAcc().get(i).getY()));
+      int longerParent = pParents.get(0).getProcessAcc().size() > pParents.get(1).getProcessAcc().size() ? 0 : 1;
+      int shorterParent = longerParent == 0 ? 1 : 0;
+      for (int i = 0; i < pParents.get(shorterParent).getProcessAcc().size(); i++) {
+        if (Math.random() <= 0.5) {
+          newProcessAcc.add(new Coordinate2D(pParents.get(longerParent).getProcessAcc().get(i).getX(), pParents.get(longerParent).getProcessAcc().get(i).getY()));
+        } else {
+          newProcessAcc.add(new Coordinate2D(pParents.get(shorterParent).getProcessAcc().get(i).getX(), pParents.get(shorterParent).getProcessAcc().get(i).getY()));
+        }
       }
-    }
     /*
      * #### MUTATION ####
      */
-    for (int i = 0; i < mInterface.mPopSizeDropDown.getValue(); i++) {
-      if (i == 0 && pUseElite) {
-        this.population.add(new Rocket(
-            mGeneration,
-            0,
-            mEliteRocket.mInitSpeed.getX(),
-            mEliteRocket.mInitSpeed.getY(),
-            mEliteRocket.mInitFuelLevel,
-            mEliteRocket.getInitDistance(),
-            mEliteRocket.getProcessAcc()
-        ));
-        continue;
-      }
-      individualProcessAcc = new ArrayList<>();
-      for (int j = 0; j < newProcessAcc.size(); j++) {
-        if (Math.random() <= AlgorithmConstants.MUTATION) {
-          individualProcessAcc.add(new Coordinate2D((Math.random() * ((5)) - 2.5), Math.random() * ((200)) - 100));
-        } else {
-          individualProcessAcc.add(newProcessAcc.get(j));
+      for (int i = 0; i < mInterface.mPopSizeDropDown.getValue(); i++) {
+        if (i == 0 && pUseElite) {
+          this.population.add(new Rocket(
+                  mGeneration,
+                  0,
+                  mEliteRocket.mInitSpeed.getX(),
+                  mEliteRocket.mInitSpeed.getY(),
+                  mEliteRocket.mInitFuelLevel,
+                  mEliteRocket.getInitDistance(),
+                  mEliteRocket.getProcessAcc()
+          ));
+          continue;
         }
-      }
-      Rocket rocket = new Rocket(
-          mGeneration,
-          i,
-          RocketConstants.INIT_SPEED_X,
-          RocketConstants.INIT_SPEED_Y,
-          mInterface.mSliderInitFuelLevel.getValue(),
-          mInterface.mSliderInitDistance.getValue(),
-          individualProcessAcc
-      );
-      this.population.add(rocket);
-    }
 
-    // start all runnables
-    for (Rocket r : population) {
-      mThreadPool.execute(new RocketRunnable(r, mInterface));
-    }
-
-    Thread t = new Thread(() -> {
-      try {
-        mThreadPool.stop();
-        mThreadPool.awaitTermination();
-      } catch (TimeoutException e) {
-        e.printStackTrace(System.err);
+        individualProcessAcc = new ArrayList<>();
+        for (int j = 0; j < newProcessAcc.size(); j++) {
+          if (Math.random() <= AlgorithmConstants.MUTATION) {
+            individualProcessAcc.add(new Coordinate2D((Math.random() * ((5)) - 2.5), Math.random() * ((200)) - 100));
+          } else {
+            individualProcessAcc.add(newProcessAcc.get(j));
+          }
+        }
+        Rocket rocket = new Rocket(
+                mGeneration,
+                i,
+                RocketConstants.INIT_SPEED_X,
+                RocketConstants.INIT_SPEED_Y,
+                mInterface.mSliderInitFuelLevel.getValue(),
+                mInterface.mSliderInitDistance.getValue(),
+                individualProcessAcc
+        );
+        this.population.add(rocket);
       }
-      mGeneration++;
-      getFitness();
-      printPopulation();
-    });
-    t.start();
+
+
+      // start all runnables
+      for (Rocket r : population) {
+        mThreadPool.execute(new RocketRunnable(r, mInterface));
+      }
+
+      Thread t = new Thread(() -> {
+        try {
+          mThreadPool.stop();
+          mThreadPool.awaitTermination();
+        } catch (TimeoutException e) {
+          e.printStackTrace(System.err);
+        }
+        mGeneration++;
+        getFitness();
+        printPopulation();
+      });
+      t.start();
+    }
   }
+
 
   /**
    * Print out current population

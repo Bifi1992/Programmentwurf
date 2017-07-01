@@ -70,12 +70,12 @@ public final class RocketConstants {
   /**
    * Holds the min initial generations
    */
-  public static final int INIT_MIN_GENERATIONS = 10;
+  public static final int INIT_MIN_GENERATIONS = 5;
 
   /**
    * Holds the min initial generations
    */
-  public static final int INIT_MAX_GENERATIONS = 300;
+  public static final int INIT_MAX_GENERATIONS = 800;
 
   /**
    * holds a number of colors for the rockets with their corresponding rgb values as string

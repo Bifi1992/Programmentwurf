@@ -77,11 +77,11 @@ public class Interface extends Application {
   /**
    *initial generations
    */
-  Double mInitGenerations = (double)RocketConstants.INIT_MIN_GENERATIONS;
+  int mInitGenerations = RocketConstants.INIT_MIN_GENERATIONS;
 /**
  * slider for initial generations
  */
-Spinner mSpinnerInitGenerations = new Spinner<>(RocketConstants.INIT_MIN_GENERATIONS, RocketConstants.INIT_MAX_GENERATIONS,
+  Spinner<Integer> mSpinnerInitGenerations = new Spinner<>(RocketConstants.INIT_MIN_GENERATIONS, RocketConstants.INIT_MAX_GENERATIONS,
         mInitGenerations);
 
 
@@ -163,7 +163,6 @@ Spinner mSpinnerInitGenerations = new Spinner<>(RocketConstants.INIT_MIN_GENERAT
     mPopSizeDropDown.setValue(RocketConstants.ROCKETS_PER_GENERATION);
     mPopSizeDropDown.getSelectionModel().selectedItemProperty()
         .addListener((observable, oldValue, newValue) -> mSimScene = getSimScene());
-
     //CustomSliderVBox initGenerationsLevelSliderBox = new S(5, "Generations: ", mSliderInitGenerations, "Gens");
 
 

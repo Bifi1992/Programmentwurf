@@ -67,11 +67,23 @@ public class Interface extends Application {
   Double mInitFuelLevel = RocketConstants.MIN_INIT_FUEL_LEVEL +
       (RocketConstants.MAX_INIT_FUEL_LEVEL - RocketConstants.MIN_INIT_FUEL_LEVEL) * 0.5;
 
+
   /**
    * holds the slider for the initial fuel level
    */
   Slider mSliderInitFuelLevel = new Slider(RocketConstants.MIN_INIT_FUEL_LEVEL, RocketConstants.MAX_INIT_FUEL_LEVEL,
       mInitFuelLevel);
+
+  /**
+   *initial generations
+   */
+  Double mInitGenerations = (double)RocketConstants.INIT_MIN_GENERATIONS;
+/**
+ * slider for initial generations
+ */
+Spinner mSpinnerInitGenerations = new Spinner<>(RocketConstants.INIT_MIN_GENERATIONS, RocketConstants.INIT_MAX_GENERATIONS,
+        mInitGenerations);
+
 
   /**
    * Holds all ProgressIndicators for the rockets
@@ -149,8 +161,12 @@ public class Interface extends Application {
     mPopSizeDropDown.getSelectionModel().selectedItemProperty()
         .addListener((observable, oldValue, newValue) -> mSimScene = getSimScene());
 
+    //CustomSliderVBox initGenerationsLevelSliderBox = new S(5, "Generations: ", mSliderInitGenerations, "Gens");
+
+
     Label popSizeLabel = new Label("Rockets per Population: ");
-    HBox popSizeVBox = new HBox(5, popSizeLabel, mPopSizeDropDown);
+    Label generationsLabel = new Label("Maximum of Generations: ");
+    HBox popSizeVBox = new HBox(5, popSizeLabel, mPopSizeDropDown, generationsLabel, mSpinnerInitGenerations);
     VBox algoBox = new VBox(10, algoLabel, popSizeVBox);
     algoBox.setPrefSize(mScreenRes.getWidth() * 0.5, mScreenRes.getHeight() * 0.4);
     algoBox.setAlignment(Pos.TOP_CENTER);

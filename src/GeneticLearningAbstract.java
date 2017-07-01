@@ -90,12 +90,9 @@ public class GeneticLearningAbstract {
     ArrayList<Coordinate2D> processAcc;
     for (int i = 0; i < mInterface.mPopSizeDropDown.getValue(); i++) {
       processAcc = new ArrayList<>();
-      double deltaX;
-      double deltaY;
-      double xInter;
-      double yInter;
       for (int d = 0; d <= 100; d++) {
-        processAcc.add(new Coordinate2D((Math.random() * ((5)) - 2.5), Math.random() * ((200)) - 100));
+        processAcc.add(new Coordinate2D((Math.random() * ((5)) - 2.5), (Math.random() * ((300) - 150))));
+        System.out.println(processAcc.get(d).getY());
       }
       /*
        * setup rocket with process speed.
@@ -219,7 +216,7 @@ public class GeneticLearningAbstract {
     /*
      * Output of best rockets from this thread
      */
-    if(eliteRocket != null && eliteRocket.getTotalFitness() < best.getTotalFitness()){
+    /*if(eliteRocket != null && eliteRocket.getTotalFitness() < best.getTotalFitness()){
       eliteRocket = best;
       System.out.println("verbessert");
 
@@ -230,7 +227,7 @@ public class GeneticLearningAbstract {
     }
     if(eliteRocket == null){
       eliteRocket = best;
-    }
+    }*/
     parents.add(best);
     parents.add(secondBest);
     prepareCanvasForNextGen(best, secondBest);
@@ -278,7 +275,7 @@ public class GeneticLearningAbstract {
       individualProcessAcc = new ArrayList<>();
       for (int j = 0; j < newProcessAcc.size(); j++) {
         if (Math.random() <= AlgorithmConstants.MUTATION) {
-          individualProcessAcc.add(new Coordinate2D((Math.random() * ((5)) - 2.5), Math.random() * ((200)) - 100));
+          individualProcessAcc.add(new Coordinate2D((Math.random() * ((5)) - 2.5), Math.random() * ((300) - 150)));
         } else {
           individualProcessAcc.add(newProcessAcc.get(j));
         }

@@ -181,7 +181,6 @@ public class RocketRunnable implements Runnable {
   }
 
   /**
-   * TODO implement variable rocket acceleration
    * this method calculates and sets the new coordinates and speed of the rocket
    */
   public void calcNewCoordinates() {

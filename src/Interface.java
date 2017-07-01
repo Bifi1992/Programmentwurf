@@ -40,8 +40,8 @@ public class Interface extends Application {
   Button mClearButton = new Button();
   final Canvas mCanvas = new Canvas();
   GraphicsContext mGC = mCanvas.getGraphicsContext2D();
-  Dimension mScreenRes = new Dimension(800,600);
-  //Dimension mScreenRes = Toolkit.getDefaultToolkit().getScreenSize();
+  //Dimension mScreenRes = new Dimension(800,600);
+  Dimension mScreenRes = Toolkit.getDefaultToolkit().getScreenSize();
   Planet mDefaultPlanet = Planet.MARS;
   GeneticLearningAbstract mLearner;
 
@@ -97,6 +97,8 @@ Spinner mSpinnerInitGenerations = new Spinner<>(RocketConstants.INIT_MIN_GENERAT
 
   @Override
   public void start(Stage pPrimaryStage) throws Exception{
+    mScreenRes = mScreenRes.getWidth() > 1280 ? new Dimension(1280, 800) : mScreenRes;
+
     mPrimaryStage = pPrimaryStage;
     mStartScene = getStartScene();
     mSimScene = getSimScene();
@@ -140,8 +142,8 @@ Spinner mSpinnerInitGenerations = new Spinner<>(RocketConstants.INIT_MIN_GENERAT
     HBox topBox = new HBox(5, planetLabel, mPlanetDropDown, buttonBox);
     topBox.setAlignment(Pos.TOP_LEFT);
 
-    /**
-     * TODO initial speed / angle
+    /*
+     * TODO (maybe) initial speed / angle
      * right side - Rocket
       */
     Label rocketLabel = new Label("Rocket");
@@ -151,8 +153,7 @@ Spinner mSpinnerInitGenerations = new Spinner<>(RocketConstants.INIT_MIN_GENERAT
     rocketBox.setPrefSize(mScreenRes.getWidth() * 0.5, mScreenRes.getHeight() * 0.4);
     rocketBox.setAlignment(Pos.TOP_CENTER);
 
-    /**
-     * TODO generation size
+    /*
      * left side - Algorithm
       */
     Label algoLabel = new Label("Algorithm");
@@ -265,6 +266,10 @@ Spinner mSpinnerInitGenerations = new Spinner<>(RocketConstants.INIT_MIN_GENERAT
     mClearButton.setPrefWidth(mScreenRes.getWidth() * 0.1);
 
     VBox topProgressVBox = setupProgressBoxes(mPopSizeDropDown.getValue());
+    topProgressVBox.setStyle(
+        "-fx-border-insets: 5;" +
+        "-fx-border-radius: 2;"
+    );
 
     VBox ButtonBox = new VBox(5, mSimExitButton, mReturnButton, mClearButton);
     mTextArea.setPrefHeight(topProgressVBox.getHeight());
@@ -273,6 +278,7 @@ Spinner mSpinnerInitGenerations = new Spinner<>(RocketConstants.INIT_MIN_GENERAT
     HBox topTextAndButtonsBox = new HBox(5, topProgressVBox, ButtonBox, mTextArea);
 
     VBox root = new VBox(5, topTextAndButtonsBox, mScrollPane);
+    root.setAlignment(Pos.TOP_CENTER);
 
     /*root.setStyle(
         "-fx-padding: 10;" +

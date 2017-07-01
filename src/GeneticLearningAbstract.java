@@ -174,7 +174,6 @@ public class GeneticLearningAbstract {
 
 
     /*
-    TODO distanceSum can be 0 ... => division by 0
      * Choose best items of population depending on their distance to the goal value.
      */
     for (Rocket r : population) {
@@ -197,7 +196,7 @@ public class GeneticLearningAbstract {
       Rocket bestForTextArea = best;
       mEliteRocket = new EliteRocket(best);
       Platform.runLater(() -> mInterface.mTextArea.appendText("Set rocket" + bestForTextArea.getRocketID() + " as new elite!\n"));
-    } else {
+    } else if (best.getGenerationId() > 1) {
       useElite = true;
       Rocket bestForTextArea = best;
       Platform.runLater(() ->

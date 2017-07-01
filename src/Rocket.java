@@ -144,21 +144,6 @@ public class Rocket {
   }
 
   /**
-   * worst Rocket
-   */
- /* public Rocket(){
-    mGenerationId = -1;
-    mRocketId = -1;
-    mCurSpeed = new Coordinate2D(200000,200000);
-    mCurFuelLevel = 0;
-    mTime = 999999999;
-    mInitSpeed = new Coordinate2D(99999999,999999999);
-    mInitAcceleration = new Coordinate2D(0,0);
-    mInitFuelLevel = 0;
-
-  }*/
-
-  /**
    * getters and setters for rocket member variables
    */
   public Coordinate2D getCurSpeed() {
@@ -289,11 +274,25 @@ public class Rocket {
         // minimize distance to planet
         (1 - ((mInitDistance - mCurCoordinates.getY()) / pDistanceSum)) * AlgorithmConstants.RATING_DISTANCE;
     // remove landing bonus
-    fitness += (1 - AlgorithmConstants.LANDING_BONUS);
+    fitness *= (1 - AlgorithmConstants.LANDING_BONUS);
     // add landing bonus if rocket has landed
     if (mInitDistance - mCurCoordinates.getY() <= 0) {
-      fitness += 1 + AlgorithmConstants.LANDING_BONUS;
+      fitness += AlgorithmConstants.LANDING_BONUS;
     }
     this.setTotalFitness(fitness);
+    //DEBUG TODO REMOVE
+    if (mTotalFitness < 0 || mTotalFitness > 1) {
+      System.out.println("--------------------");
+      System.out.println("TOTAL: " + mTotalFitness);
+      System.out.println("curFuel: " + mCurFuelLevel);
+      System.out.println("fuelSum: " + pFuelSum);
+      System.out.println("time: " + mTime);
+      System.out.println("timeSum: " + pTimeSum);
+      System.out.println("CurSpeed: " + mCurSpeed.abs());
+      System.out.println("speedSum: " + pSpeedSum);
+      System.out.println("curDist: " + (mInitDistance - mCurCoordinates.getY()));
+      System.out.println("distSum: " + pDistanceSum);
+      System.out.println("--------------------");
+    }
   }
 }

@@ -32,7 +32,7 @@ public class RocketRunnable implements Runnable {
    */
   public static double COORD_X_FACTOR;
 
-  private static int timeIntervalForAcceleration = 500;
+  private static final int TIME_INTERVAL_FOR_ACCELERATION = 500;
 
 
   /**
@@ -165,16 +165,16 @@ public class RocketRunnable implements Runnable {
    * Calculate acceleration by getting processAcceleration value
    */
    public void calcCurAcceleration() {
-      if ((mRocket.mTime / timeIntervalForAcceleration) < mRocket.getProcessAcc().size()) {
-        if(mRocket.mTime % timeIntervalForAcceleration == 0){
+      if ((mRocket.mTime / TIME_INTERVAL_FOR_ACCELERATION) < mRocket.getProcessAcc().size()) {
+        if(mRocket.mTime % TIME_INTERVAL_FOR_ACCELERATION == 0){
           // Take Value out of array from array[counter]
           mRocket.setCurAcceleration(mRocket.getProcessAcc().get(mRocket.getProcessAccIndex()));
           mRocket.setProcessAccIndex(mRocket.getProcessAccIndex() + 1);
         }
       } else {
-        System.out.println("Not enough MTIME" + mRocket.mTime);
+        System.out.println(mRocket.getRocketID() + ": Not enough mTime" + mRocket.mTime);
         mRocket.setCurAcceleration(new Coordinate2D((Math.random() * ((5)) - 2.5), Math.random() * ((300)) - 150));
-        mRocket.setProcessAcc();
+        mRocket.addCurAccToProcessAcc();
       }
   }
 

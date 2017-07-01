@@ -83,17 +83,17 @@ public class Rocket {
   /**
    * fitness values
    */
-  private float mTotalFitness;
+  private double mTotalFitness;
 
   /**
    * choosing probability
    */
-  private float mChoosingProbability;
+  private double mChoosingProbability;
 
   /**
    * necessary for choosing randomly a parent, but the parent with highest store is more likely to be chosen
    */
-  private float mCumulativeProbabilities;
+  private double mCumulativeProbabilities;
 
   /**
    * constructor for rocket
@@ -103,7 +103,7 @@ public class Rocket {
    * @param pInitFuelLevel the initial fuel level of the rocket
    * @param pInitDistance the initial distance to the surface of the rocket
    */
-  public Rocket(int pGenerationId, int pRocketId, Coordinate2D pInitSpeed, float pInitFuelLevel, double pInitDistance) {
+  public Rocket(int pGenerationId, int pRocketId, Coordinate2D pInitSpeed, double pInitFuelLevel, double pInitDistance) {
     mGenerationId = pGenerationId;
     mRocketId = pRocketId;
     mInitSpeed = pInitSpeed;
@@ -197,12 +197,12 @@ public class Rocket {
     mProcessSpeed.put(mTime, mCurSpeed);
   }
 
-  public void setProcessAcc() {
-    mProcessAcc.add(mCurAcceleration);
-  }
-
   public ArrayList<Coordinate2D> getProcessAcc(){
     return mProcessAcc;
+  }
+
+  public void setProcessAcc(ArrayList<Coordinate2D> pProcessAcc) {
+    mProcessAcc = pProcessAcc;
   }
 
   public ConcurrentHashMap<Integer, Coordinate2D> getProcessSpeed() {
@@ -243,26 +243,26 @@ public class Rocket {
   }
 
   //Functions for genetic learner
-  public float getTotalFitness() {
+  public double getTotalFitness() {
     return mTotalFitness;
   }
 
-  public void setTotalFitness(float pTotalFitness) {
+  private void setTotalFitness(double pTotalFitness) {
     mTotalFitness = pTotalFitness;
   }
-  public float getChoosingProbability() {
+  public double getChoosingProbability() {
     return mChoosingProbability;
   }
 
-  public void setChoosingProbability(float pChoosingProbability) {
+  public void setChoosingProbability(double pChoosingProbability) {
     mChoosingProbability = pChoosingProbability;
   }
 
-  public float getCumulativeProbabilities() {
+  public double getCumulativeProbabilities() {
     return mCumulativeProbabilities;
   }
 
-  public void setCumulativeProbabilities(float pCumulativeProbabilities) {
+  public void setCumulativeProbabilities(double pCumulativeProbabilities) {
     mCumulativeProbabilities = pCumulativeProbabilities;
   }
 
@@ -272,5 +272,21 @@ public class Rocket {
 
   public void setProcessAccIndex(int pProcessAccIndex) {
     mProcessAccIndex = pProcessAccIndex;
+  }
+
+  public void addCurAccToProcessAcc() {
+    mProcessAcc.add(mCurAcceleration);
+  }
+
+  public void calculateAndSetFitness(double pFuelSum, double pTimeSum, double pSpeedSum, double pDistanceSum){
+    double fitness = (mCurFuelLevel / pFuelSum) * AlgorithmConstants.RATING_FUEL +
+        (1 - (mTime / pTimeSum)) * AlgorithmConstants.RATING_TIME +
+        (1 - (mCurSpeed.abs() / pSpeedSum)) * AlgorithmConstants.RATING_SPEED +
+        (1 - ((mInitDistance - mCurCoordinates.getY()) / pDistanceSum)) * AlgorithmConstants.RATING_DISTANCE;
+    fitness -= (1 - AlgorithmConstants.LANDING_BONUS);
+    if (mInitDistance - mCurCoordinates.getY() <= 0) {
+      fitness += AlgorithmConstants.LANDING_BONUS;
+    }
+    this.setTotalFitness(fitness);
   }
 }

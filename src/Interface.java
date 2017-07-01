@@ -193,7 +193,7 @@ Spinner mSpinnerInitGenerations = new Spinner<>(RocketConstants.INIT_MIN_GENERAT
 
   private Scene getSimScene() {
     // setup scrollable canvas
-    mCanvas.setHeight(mScreenRes.getHeight() * 0.7);
+    mCanvas.setHeight(mScreenRes.getHeight() * 0.8);
     mCanvas.setWidth(mScreenRes.getWidth() * 6);
     mScrollPane = new ScrollPane(mCanvas);
     mScrollPane.setPrefSize(Double.MAX_VALUE, mScreenRes.getHeight() * 0.7);

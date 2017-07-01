@@ -197,6 +197,9 @@ public class GeneticLearningAbstract {
       Rocket bestForTextArea = best;
       mEliteRocket = new EliteRocket(best);
       Platform.runLater(() -> mInterface.mTextArea.appendText("Set rocket" + bestForTextArea.getRocketID() + " as new elite!\n"));
+    if(mEliteRocket.getTotalFitness() > parents.get(1).getTotalFitness()){
+      parents.set(1, mEliteRocket);
+    }
     } else {
       useElite = true;
       Rocket bestForTextArea = best;

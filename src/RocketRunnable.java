@@ -126,6 +126,8 @@ public class RocketRunnable implements Runnable {
       // Setting process speed on every second
       mRocket.setProcessSpeed();
     }
+    mRocket.setCurCoordinates(mRocket.getCurCoordinates().getX(),
+        mRocket.getCurCoordinates().getY() < 0 ? 0 : mRocket.getCurCoordinates().getY());
     Platform.runLater(() -> {
       mGC.setFill((Color) RocketConstants.COLOR_PALETTE[mRocket.getRocketID()][0]);
       mGC.setStroke((Color) RocketConstants.COLOR_PALETTE[mRocket.getRocketID()][0]);
@@ -242,7 +244,7 @@ public class RocketRunnable implements Runnable {
     );
 
     // update time Label
-    box.getLabelDistance().setText(String.format("%.0f", d < 0 ? 0 : d));
+    box.getLabelDistance().setText(String.format("%.2f", d < 0 ? 0 : d));
     // set rocket label
     box.getLabelRocketId().setText("Rocket" + mRocket.getRocketID() + ":");
     //box.getLabelRocketId().setTextFill(RocketConstants.COLOR_PALETTE[mRocket.getRocketID()]);

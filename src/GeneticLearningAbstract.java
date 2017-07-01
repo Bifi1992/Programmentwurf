@@ -174,7 +174,6 @@ public class GeneticLearningAbstract {
 
 
     /*
-    TODO distanceSum can be 0 ... => division by 0
      * Choose best items of population depending on their distance to the goal value.
      */
     for (Rocket r : population) {
@@ -194,13 +193,15 @@ public class GeneticLearningAbstract {
     prepareCanvasForNextGen(best, secondBest);
     boolean useElite = false;
     if (best.getTotalFitness() > mEliteRocket.getTotalFitness()) {
+      if(mEliteRocket.getTotalFitness() > parents.get(1).getTotalFitness()){
+        parents.set(1, mEliteRocket);
+        System.out.println("Use old Elite as secoundbest | fitness Elite: " + mEliteRocket.getTotalFitness());
+      }
       Rocket bestForTextArea = best;
       mEliteRocket = new EliteRocket(best);
       Platform.runLater(() -> mInterface.mTextArea.appendText("Set rocket" + bestForTextArea.getRocketID() + " as new elite!\n"));
-    if(mEliteRocket.getTotalFitness() > parents.get(1).getTotalFitness()){
-      parents.set(1, mEliteRocket);
-    }
-    } else {
+
+    }else if (best.getGenerationId() > 1) {
       useElite = true;
       Rocket bestForTextArea = best;
       Platform.runLater(() ->

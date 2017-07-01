@@ -40,8 +40,8 @@ public class Interface extends Application {
   Button mClearButton = new Button();
   final Canvas mCanvas = new Canvas();
   GraphicsContext mGC = mCanvas.getGraphicsContext2D();
-  //Dimension mScreenRes = new Dimension(800,600);
-  Dimension mScreenRes = Toolkit.getDefaultToolkit().getScreenSize();
+  Dimension mScreenRes = new Dimension(800,600);
+  //Dimension mScreenRes = Toolkit.getDefaultToolkit().getScreenSize();
   Planet mDefaultPlanet = Planet.MARS;
   GeneticLearningAbstract mLearner;
 
@@ -178,14 +178,29 @@ Spinner mSpinnerInitGenerations = new Spinner<>(RocketConstants.INIT_MIN_GENERAT
 
     VBox root = new VBox(10, topBox, new Separator(Orientation.HORIZONTAL), middleBox);
 
-    /*root.setStyle(
+    root.setStyle(
         "-fx-padding: 10;" +
             "-fx-border-style: solid inside;" +
             "-fx-border-width: 2;" +
             "-fx-border-insets: 5;" +
             "-fx-border-radius: 5;" +
             "-fx-border-color: blue;"
-    );*/
+    );
+    mStartButton.setStyle(
+            "-fx-padding: 10;"+
+                    "-fx-background-color: #87FF8A;"
+    );
+    mStartExitButton.setStyle(
+            "-fx-padding: 10;"+
+                    "-fx-background-color: #FF5244;"
+    );
+    mPlanetDropDown.setStyle(
+            "-fx-padding: 5;" +
+            "-fx-background-color: #4C4C4C;"
+    );
+    algoLabel.setStyle(
+            "-fx-font-size: 15px;"
+    );
 
 
 

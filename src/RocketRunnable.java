@@ -225,7 +225,7 @@ public class RocketRunnable implements Runnable {
    * this method sets the current fuel level of the rocket depending on the current acceleration
    */
   private void calcNewFuelLevel() {
-    mRocket.setCurFuelLevel(mRocket.getCurFuelLevel() - (RocketConstants.FUEL_PER_ACCELERATION * mRocket.getCurAcceleration().abs()));
+    mRocket.setCurFuelLevel(mRocket.getCurFuelLevel() - (RocketConstants.FUEL_PER_ACCELERATION * mRocket.getCurAcceleration().abs() * TIME_INTERVAL));
   }
 
   /**

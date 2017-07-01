@@ -3,6 +3,7 @@ import gui.CustomProgressVBox;
 import gui.CustomSliderVBox;
 import javafx.application.Application;
 import javafx.application.Platform;
+import javafx.geometry.HPos;
 import javafx.geometry.Orientation;
 import javafx.geometry.Pos;
 import javafx.scene.canvas.Canvas;
@@ -13,8 +14,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextArea;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.VBox;
+import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 
@@ -138,7 +138,7 @@ Spinner mSpinnerInitGenerations = new Spinner<>(RocketConstants.INIT_MIN_GENERAT
 
     HBox buttonBox = new HBox(5, mStartButton, mStartExitButton);
     HBox topBox = new HBox(5, planetLabel, mPlanetDropDown, buttonBox);
-    topBox.setAlignment(Pos.CENTER_LEFT);
+    topBox.setAlignment(Pos.TOP_LEFT);
 
     /**
      * TODO initial speed / angle
@@ -168,11 +168,13 @@ Spinner mSpinnerInitGenerations = new Spinner<>(RocketConstants.INIT_MIN_GENERAT
 
     Label popSizeLabel = new Label("Rockets per Population: ");
     Label generationsLabel = new Label("Maximum of Generations: ");
-    HBox generationHBox = new HBox(5, generationsLabel, mSpinnerInitGenerations);
-    HBox popSizeVBox = new HBox(5, popSizeLabel, mPopSizeDropDown);
-    VBox algoBox = new VBox(10, algoLabel, popSizeVBox, generationHBox);
+    HBox generationHBox = new HBox(5, mSpinnerInitGenerations);
+    HBox popSizeVBox = new HBox(5, mPopSizeDropDown);
+    VBox algoBox = new VBox(10, algoLabel,popSizeLabel, popSizeVBox,generationsLabel, generationHBox);
     algoBox.setPrefSize(mScreenRes.getWidth() * 0.5, mScreenRes.getHeight() * 0.4);
     algoBox.setAlignment(Pos.TOP_CENTER);
+    generationHBox.setAlignment(Pos.CENTER);
+    popSizeVBox.setAlignment(Pos.CENTER);
 
     HBox middleBox = new HBox(5, algoBox, new Separator(Orientation.VERTICAL), rocketBox);
 
@@ -180,11 +182,10 @@ Spinner mSpinnerInitGenerations = new Spinner<>(RocketConstants.INIT_MIN_GENERAT
 
     root.setStyle(
         "-fx-padding: 10;" +
-            "-fx-border-style: solid inside;" +
             "-fx-border-width: 2;" +
             "-fx-border-insets: 5;" +
-            "-fx-border-radius: 5;" +
-            "-fx-border-color: blue;"
+            "-fx-border-radius: 2;" +
+            "-fx-border-color: #4C4C4C;"
     );
     mStartButton.setStyle(
             "-fx-padding: 10;"+
@@ -196,11 +197,25 @@ Spinner mSpinnerInitGenerations = new Spinner<>(RocketConstants.INIT_MIN_GENERAT
     );
     mPlanetDropDown.setStyle(
             "-fx-padding: 5;" +
-            "-fx-background-color: #4C4C4C;"
+            "-fx-background-color: #8C8C8C;" +
+            "-fx-fill: #ffffff;"
     );
     algoLabel.setStyle(
-            "-fx-font-size: 15px;"
+            "-fx-font-size: 17px;" +
+            "-fx-padding: 0px 0px 20px 0px"
     );
+    rocketLabel.setStyle(
+            "-fx-font-size: 17px;"+
+            "-fx-padding: 0px 0px 20px 0px"
+    );
+    planetLabel.setStyle(
+            "-fx-font-size: 17px;"
+    );
+    mPopSizeDropDown.setStyle(
+            "margin-left: auto;" +
+                    "margin-right: auto"
+    );
+
 
 
 
@@ -267,6 +282,21 @@ Spinner mSpinnerInitGenerations = new Spinner<>(RocketConstants.INIT_MIN_GENERAT
             "-fx-border-radius: 5;" +
             "-fx-border-color: blue;"
     );*/
+
+
+    mSimExitButton.setStyle(
+            "-fx-padding: 10px;" +
+            "-fx-background-color: #FF5244;"
+
+    );
+    mReturnButton.setStyle(
+            "-fx-padding: 10px;" +
+            "-fx-background-color: #FFC601;"
+    );
+    mClearButton.setStyle(
+            "-fx-padding: 10px;" +
+            "-fx-background-color: #8C8C8C;"
+    );
     mSimScene = new Scene(root, mScreenRes.getWidth(), mScreenRes.getHeight());
     return mSimScene;
   }

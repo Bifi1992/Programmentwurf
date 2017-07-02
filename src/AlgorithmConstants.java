@@ -15,8 +15,8 @@ public final class AlgorithmConstants {
   /**
    * The Ratings have to add up to 1
    */
-  public static final double RATING_TIME = 0.3;
-  public static final double RATING_FUEL = 0.1;
+  public static final double RATING_TIME = 0.2;
+  public static final double RATING_FUEL = 0.2;
   public static final double RATING_DISTANCE = 0.55;
   public static final double RATING_SPEED = 0.05;
 

@@ -96,8 +96,12 @@ public class GeneticLearningAbstract {
           mInterface.mSliderInitDistance.getValue(),
           processAcc
       );
-      mThreadPool.execute(new RocketRunnable(rocket, mInterface));
       this.population.add(rocket);
+    }
+
+    // start runnable for each rocket
+    for (Rocket r : population) {
+      mThreadPool.execute(new RocketRunnable(r, mInterface));
     }
 
     /*
@@ -347,14 +351,16 @@ public class GeneticLearningAbstract {
     Platform.runLater(() -> {
       mInterface.drawTransparentRect();
       mInterface.displayGrid(30, 30);
+      double xFactor = RocketRunnable.COORD_X_FACTOR;
+      double yFactor = RocketRunnable.COORD_Y_FACTOR;
       for (int i = 0; i < 2; i++) {
         Rocket r = i == 0 ? pRocket1 : pRocket2;
         mGC.setFill((Color) RocketConstants.COLOR_PALETTE[r.getRocketID()][0]);
         mGC.setStroke((Color) RocketConstants.COLOR_PALETTE[r.getRocketID()][0]);
-        mGC.fillOval(r.getCurCoordinates().getX() * RocketRunnable.COORD_X_FACTOR - 3,
-            r.getCurCoordinates().getY() * RocketRunnable.COORD_Y_FACTOR - 3, 6, 6);
-        mGC.strokeText(String.valueOf(r.getRocketID()), r.getCurCoordinates().getX() * RocketRunnable.COORD_X_FACTOR - 3,
-            r.getCurCoordinates().getY() * RocketRunnable.COORD_Y_FACTOR - 3);
+        mGC.fillOval(r.getCurCoordinates().getX() * xFactor - 3,
+            r.getCurCoordinates().getY() * yFactor - 3, 6, 6);
+        mGC.strokeText(String.valueOf(r.getRocketID()), r.getCurCoordinates().getX() * xFactor - 3,
+            r.getCurCoordinates().getY() * yFactor - 3);
       }
       mTextArea.appendText("Generation " + pRocket1.getGenerationId() + ":\n" +
           "Parents:\n" +

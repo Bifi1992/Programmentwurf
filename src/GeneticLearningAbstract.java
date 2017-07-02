@@ -247,7 +247,7 @@ public class GeneticLearningAbstract {
       if (write) {
         createDocument();
       }
-      for (int i = 0; i < 5; i++) {
+      for (int i = 0; i < mInterface.mSpinnerInitGenerations.getValue(); i++) {
         if (allElites.size() > i) {
           curRocket = allElites.get(allElites.size() - (i + 1));
           if (write) {

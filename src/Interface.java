@@ -103,7 +103,7 @@ public class Interface extends Application {
   /**
    * checkbox which lets user decides to write raw acceleration data in file
    */
-   CheckBox writeInDokument = new CheckBox("Write in document");
+   CheckBox writeInDokument = new CheckBox("Write best accelerations in document");
 
   @Override
   public void start(Stage pPrimaryStage) throws Exception{
@@ -187,7 +187,7 @@ public class Interface extends Application {
     HBox popSizeVBox = new HBox(5, popSizeLabel, mPopSizeDropDown);
     popSizeVBox.setAlignment(Pos.CENTER_LEFT);
     Label modeLabel = new Label("Select calculation mode:");
-    VBox RadioButtonBox = new VBox(5, modeLabel, mRadioButtonFastMode, mRadioButtonSlowMode);
+    VBox RadioButtonBox = new VBox(5, modeLabel, mRadioButtonFastMode, mRadioButtonSlowMode, writeInDokument);
     RadioButtonBox.setAlignment(Pos.CENTER_LEFT);
     VBox algoBox = new VBox(10, algoLabel, popSizeVBox, generationHBox, RadioButtonBox);
     algoBox.setPrefSize(mScreenRes.getWidth() * 0.5, mScreenRes.getHeight() * 0.4);

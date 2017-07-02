@@ -3,9 +3,6 @@ import gui.CustomProgressVBox;
 import gui.CustomSliderVBox;
 import javafx.application.Application;
 import javafx.application.Platform;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
-import javafx.geometry.HPos;
 import javafx.geometry.Orientation;
 import javafx.geometry.Pos;
 import javafx.scene.canvas.Canvas;
@@ -42,10 +39,12 @@ public class Interface extends Application {
   Button mClearButton = new Button();
   final Canvas mCanvas = new Canvas();
   GraphicsContext mGC = mCanvas.getGraphicsContext2D();
-  //Dimension mScreenRes = new Dimension(800,600);
   Dimension mScreenRes = Toolkit.getDefaultToolkit().getScreenSize();
   Planet mDefaultPlanet = Planet.MARS;
   GeneticLearningAbstract mLearner;
+  ToggleGroup mRadioButtonGroup = new ToggleGroup();
+  RadioButton mRadioButtonFastMode = new RadioButton();
+  RadioButton mRadioButtonSlowMode = new RadioButton();
 
   /**
    * holds the initial distance chosen via the slider
@@ -79,12 +78,12 @@ public class Interface extends Application {
   /**
    *initial generations
    */
-  int mInitGenerations = RocketConstants.INIT_MIN_GENERATIONS;
+  int mInitGenerations = AlgorithmConstants.MIN_GENERATIONS;
 /**
  * slider for initial generations
  */
-  Spinner<Integer> mSpinnerInitGenerations = new Spinner<>(RocketConstants.INIT_MIN_GENERATIONS, RocketConstants.INIT_MAX_GENERATIONS,
-        mInitGenerations);
+  Spinner<Integer> mSpinnerInitGenerations = new Spinner<>(AlgorithmConstants.MIN_GENERATIONS,
+    AlgorithmConstants.MAX_GENERATIONS, mInitGenerations, 5);
 
 
   /**
@@ -150,7 +149,6 @@ public class Interface extends Application {
     topBox.setAlignment(Pos.TOP_LEFT);
 
     /*
-     * TODO (maybe) initial speed / angle
      * right side - Rocket
       */
     Label rocketLabel = new Label("Rocket");
@@ -170,18 +168,25 @@ public class Interface extends Application {
     mPopSizeDropDown.setValue(RocketConstants.ROCKETS_PER_GENERATION);
     mPopSizeDropDown.getSelectionModel().selectedItemProperty()
         .addListener((observable, oldValue, newValue) -> mSimScene = getSimScene());
-    //CustomSliderVBox initGenerationsLevelSliderBox = new S(5, "Generations: ", mSliderInitGenerations, "Gens");
 
+    mRadioButtonFastMode.setText("Fast mode");
+    mRadioButtonFastMode.setToggleGroup(mRadioButtonGroup);
+    mRadioButtonSlowMode.setText("Visual mode");
+    mRadioButtonSlowMode.setToggleGroup(mRadioButtonGroup);
+    mRadioButtonFastMode.setSelected(true);
 
-    Label popSizeLabel = new Label("Rockets per Population: ");
-    Label generationsLabel = new Label("Maximum of Generations: ");
-    HBox generationHBox = new HBox(5, mSpinnerInitGenerations);
-    HBox popSizeVBox = new HBox(5, mPopSizeDropDown);
-    VBox algoBox = new VBox(10, algoLabel,popSizeLabel, popSizeVBox,generationsLabel, generationHBox,writeInDokument);
+    Label generationsLabel = new Label("Number of Generations:");
+    HBox generationHBox = new HBox(5, generationsLabel, mSpinnerInitGenerations);
+    generationHBox.setAlignment(Pos.CENTER_LEFT);
+    Label popSizeLabel = new Label("Rockets per Population:");
+    HBox popSizeVBox = new HBox(5, popSizeLabel, mPopSizeDropDown);
+    popSizeVBox.setAlignment(Pos.CENTER_LEFT);
+    Label modeLabel = new Label("Select calculation mode:");
+    VBox RadioButtonBox = new VBox(5, modeLabel, mRadioButtonFastMode, mRadioButtonSlowMode);
+    RadioButtonBox.setAlignment(Pos.CENTER_LEFT);
+    VBox algoBox = new VBox(10, algoLabel, popSizeVBox, generationHBox, RadioButtonBox);
     algoBox.setPrefSize(mScreenRes.getWidth() * 0.5, mScreenRes.getHeight() * 0.4);
     algoBox.setAlignment(Pos.TOP_CENTER);
-    generationHBox.setAlignment(Pos.CENTER);
-    popSizeVBox.setAlignment(Pos.CENTER);
 
     HBox middleBox = new HBox(5, algoBox, new Separator(Orientation.VERTICAL), rocketBox);
 

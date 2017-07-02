@@ -29,13 +29,17 @@ public class Interface extends Application {
 
   Scene mStartScene;
   Scene mSimScene;
+  Scene mFastSimScene;
   Stage mPrimaryStage;
   TextArea mTextArea = new TextArea();
+  TextArea mFastSimTextArea = new TextArea();
   ChoiceBox<Planet> mPlanetDropDown = new ChoiceBox<>();
   Button mStartButton = new Button();
   Button mStartExitButton = new Button();
   Button mSimExitButton = new Button();
+  Button mFastSimExitButton = new Button();
   Button mReturnButton = new Button();
+  Button mFastSimReturnButton = new Button();
   Button mClearButton = new Button();
   final Canvas mCanvas = new Canvas();
   GraphicsContext mGC = mCanvas.getGraphicsContext2D();
@@ -108,6 +112,7 @@ public class Interface extends Application {
     mPrimaryStage = pPrimaryStage;
     mStartScene = getStartScene();
     mSimScene = getSimScene();
+    mFastSimScene = getFastSimScene();
     mPrimaryStage.setTitle("Planet Lander");
     mPrimaryStage.setOnCloseRequest(e -> {
         e.consume();
@@ -137,7 +142,7 @@ public class Interface extends Application {
     mStartButton.setText("Start");
     mStartButton.setDefaultButton(true);
     mStartButton.setOnAction(e -> {
-      mPrimaryStage.setScene(mSimScene);
+      mPrimaryStage.setScene(mRadioButtonFastMode.isSelected() ? mFastSimScene : mSimScene);
       mGC.clearRect(0, 0, mCanvas.getWidth(), mCanvas.getHeight());
       displayGrid(30, 30);
       startCalculations();
@@ -173,7 +178,7 @@ public class Interface extends Application {
     mRadioButtonFastMode.setToggleGroup(mRadioButtonGroup);
     mRadioButtonSlowMode.setText("Visual mode");
     mRadioButtonSlowMode.setToggleGroup(mRadioButtonGroup);
-    mRadioButtonFastMode.setSelected(true);
+    mRadioButtonSlowMode.setSelected(true);
 
     Label generationsLabel = new Label("Number of Generations:");
     HBox generationHBox = new HBox(5, generationsLabel, mSpinnerInitGenerations);
@@ -304,7 +309,6 @@ public class Interface extends Application {
     mSimExitButton.setStyle(
             "-fx-padding: 10px;" +
             "-fx-background-color: #FF5244;"
-
     );
     mReturnButton.setStyle(
             "-fx-padding: 10px;" +
@@ -316,6 +320,44 @@ public class Interface extends Application {
     );
     mSimScene = new Scene(root, mScreenRes.getWidth(), mScreenRes.getHeight());
     return mSimScene;
+  }
+
+  private Scene getFastSimScene() {
+    //return to StartScene
+    mFastSimReturnButton.setText("Return");
+    mFastSimReturnButton.setOnAction(e -> {
+      if (mLearner != null) {
+        mLearner.terminate();
+      }
+      ThreadPool.getInstance().stop();
+      ThreadPool.getInstance().terminate();
+      mPrimaryStage.setScene(mStartScene);
+      mGC.clearRect(0, 0, mCanvas.getWidth(), mCanvas.getHeight());
+    });
+    mFastSimReturnButton.setPrefWidth(mScreenRes.getWidth() * 0.1);
+
+    //close via click or ESC button
+    mFastSimExitButton.setText("Exit");
+    mFastSimExitButton.setCancelButton(true);
+    mFastSimExitButton.setOnAction(e -> closeProgram());
+    mFastSimExitButton.setPrefWidth(mScreenRes.getWidth() * 0.1);
+
+    VBox ButtonBox = new VBox(5, mFastSimExitButton, mFastSimReturnButton);
+    mFastSimTextArea.setPrefSize(mScreenRes.getWidth(), mScreenRes.getHeight());
+    VBox topTextAndButtonsBox = new VBox(5, ButtonBox, mFastSimTextArea);
+
+    VBox root = new VBox(5, topTextAndButtonsBox);
+    root.setAlignment(Pos.TOP_CENTER);
+
+    mFastSimExitButton.setStyle(
+        "-fx-padding: 10px;" +
+            "-fx-background-color: #FF5244;"
+    );
+    mFastSimReturnButton.setStyle(
+        "-fx-padding: 10px;" +
+            "-fx-background-color: #FFC601;"
+    );
+    return mFastSimScene;
   }
 
   private void startCalculations() {

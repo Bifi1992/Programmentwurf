@@ -101,7 +101,11 @@ public class GeneticLearningAbstract {
 
     // start runnable for each rocket
     for (Rocket r : population) {
-      mThreadPool.execute(new RocketRunnable(r, mInterface));
+      if (mInterface.mRadioButtonFastMode.isSelected()){
+        mThreadPool.execute(new FastRocketRunnable(r, mInterface));
+      } else {
+        mThreadPool.execute(new RocketRunnable(r, mInterface));
+      }
     }
 
     /*
@@ -231,8 +235,11 @@ public class GeneticLearningAbstract {
           ));
 
           System.out.println("Elite " + allElites.get(allElites.size() - (i + 1)).getRocketID());
-          mThreadPool.execute(new RocketRunnable(population.get(i), mInterface));
-
+          if (mInterface.mRadioButtonFastMode.isSelected()){
+            mThreadPool.execute(new FastRocketRunnable(population.get(i), mInterface));
+          } else {
+            mThreadPool.execute(new RocketRunnable(population.get(i), mInterface));
+          }
         }
       }
       System.out.println("DONE! BEST RESULTS FOUND");
@@ -301,7 +308,11 @@ public class GeneticLearningAbstract {
 
       // start all runnables
       for (Rocket r : population) {
-        mThreadPool.execute(new RocketRunnable(r, mInterface));
+        if (mInterface.mRadioButtonFastMode.isSelected()){
+          mThreadPool.execute(new FastRocketRunnable(r, mInterface));
+        } else {
+          mThreadPool.execute(new RocketRunnable(r, mInterface));
+        }
       }
 
       Thread t = new Thread(() -> {
@@ -351,8 +362,8 @@ public class GeneticLearningAbstract {
     Platform.runLater(() -> {
       mInterface.drawTransparentRect();
       mInterface.displayGrid(30, 30);
-      double xFactor = RocketRunnable.COORD_X_FACTOR;
-      double yFactor = RocketRunnable.COORD_Y_FACTOR;
+      double xFactor = mInterface.mRadioButtonFastMode.isSelected() ? FastRocketRunnable.COORD_X_FACTOR : RocketRunnable.COORD_X_FACTOR;
+      double yFactor = mInterface.mRadioButtonFastMode.isSelected() ? FastRocketRunnable.COORD_Y_FACTOR : RocketRunnable.COORD_Y_FACTOR;
       for (int i = 0; i < 2; i++) {
         Rocket r = i == 0 ? pRocket1 : pRocket2;
         mGC.setFill((Color) RocketConstants.COLOR_PALETTE[r.getRocketID()][0]);

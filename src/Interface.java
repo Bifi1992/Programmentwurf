@@ -3,6 +3,8 @@ import gui.CustomProgressVBox;
 import gui.CustomSliderVBox;
 import javafx.application.Application;
 import javafx.application.Platform;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.geometry.HPos;
 import javafx.geometry.Orientation;
 import javafx.geometry.Pos;
@@ -95,6 +97,11 @@ public class Interface extends Application {
    */
   ScrollPane mScrollPane;
 
+  /**
+   * checkbox which lets user decides to write raw acceleration data in file
+   */
+   CheckBox writeInDokument = new CheckBox("Write in document");
+
   @Override
   public void start(Stage pPrimaryStage) throws Exception{
     mScreenRes = mScreenRes.getWidth() > 1280 ? new Dimension(1280, 800) : mScreenRes;
@@ -170,7 +177,7 @@ public class Interface extends Application {
     Label generationsLabel = new Label("Maximum of Generations: ");
     HBox generationHBox = new HBox(5, mSpinnerInitGenerations);
     HBox popSizeVBox = new HBox(5, mPopSizeDropDown);
-    VBox algoBox = new VBox(10, algoLabel,popSizeLabel, popSizeVBox,generationsLabel, generationHBox);
+    VBox algoBox = new VBox(10, algoLabel,popSizeLabel, popSizeVBox,generationsLabel, generationHBox,writeInDokument);
     algoBox.setPrefSize(mScreenRes.getWidth() * 0.5, mScreenRes.getHeight() * 0.4);
     algoBox.setAlignment(Pos.TOP_CENTER);
     generationHBox.setAlignment(Pos.CENTER);

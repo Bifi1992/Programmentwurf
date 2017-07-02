@@ -72,8 +72,19 @@ public class GeneticLearningAbstract {
    */
   private EliteRocket mEliteRocket;
 
+  /**
+   * holds all elite rockets
+   */
   private ArrayList<EliteRocket> allElites = new ArrayList<>();
-  private boolean write = true;
+
+  /**
+   * boolean, if acceleration raw values should be written in text document
+   */
+  private boolean write;
+
+  /**
+   * writer for text document
+   */
   private PrintWriter writer;
 
   /**
@@ -86,6 +97,7 @@ public class GeneticLearningAbstract {
     mTextArea = pInterface.mTextArea;
     mCanvas = pInterface.mCanvas;
     mGC = pInterface.mGC;
+    write = mInterface.writeInDokument.selectedProperty().getValue();
   }
 
   /**
@@ -232,14 +244,13 @@ public class GeneticLearningAbstract {
     Rocket curRocket;
     System.out.println("Interface Generations: " + mInterface.mSpinnerInitGenerations.getValue());
     if (mGeneration >= mInterface.mSpinnerInitGenerations.getValue()) {
-      if (write == true) {
+      if (write) {
         createDocument();
-
       }
       for (int i = 0; i < 5; i++) {
         if (allElites.size() > i) {
           curRocket = allElites.get(allElites.size() - (i + 1));
-          if (write == true) {
+          if (write) {
             writeInFile(curRocket);
           }
           this.population.add(new Rocket(
@@ -254,10 +265,12 @@ public class GeneticLearningAbstract {
 
           System.out.println("Elite " + allElites.get(allElites.size() - (i + 1)).getRocketID());
           mThreadPool.execute(new RocketRunnable(population.get(i), mInterface));
-
         }
       }
-      writer.close();
+      if(write) {
+        writer.close();
+        write = false;
+      }
       System.out.println("DONE! BEST RESULTS FOUND");
       Thread t = new Thread(() -> {
         try {

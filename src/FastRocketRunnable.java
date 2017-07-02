@@ -9,7 +9,7 @@ import javafx.scene.paint.Color;
 /**
  * Created by y.brisch on 17.05.17.
  */
-public class RocketRunnable implements Runnable {
+public class FastRocketRunnable implements Runnable {
 
   /**
    * holds the time difference between every calculation
@@ -68,11 +68,11 @@ public class RocketRunnable implements Runnable {
   private Interface mInterface;
 
   /**
-   * The constructor for {@link RocketRunnable}
+   * The constructor for {@link FastRocketRunnable}
    * @param pRocket the rocket which is to be calculated
    * @param pInterface holds all nodes of the application interface
    */
-  public RocketRunnable(Rocket pRocket, Interface pInterface){
+  public FastRocketRunnable(Rocket pRocket, Interface pInterface){
     mInterface = pInterface;
     mRocket = pRocket;
     mPlanet = pInterface.mPlanetDropDown.getValue();
@@ -85,6 +85,7 @@ public class RocketRunnable implements Runnable {
     TIME_INTERVAL = (int) Math.ceil((double) mPlanet.getMaxLandingTime() / 10000);
     mRocket.setInitCoordinates(new Coordinate2D(mCanvas.getWidth() / 2 / COORD_X_FACTOR,
         mRocket.getInitCoordinates().getY() / COORD_Y_FACTOR));
+    mRocket.getCoordinateList().add(mRocket.getInitCoordinates());
   }
 
   /**
@@ -97,34 +98,21 @@ public class RocketRunnable implements Runnable {
     while (mRocket.getCurCoordinates().getY() < mRocket.getInitDistance()
         && mRocket.mTime < mPlanet.getMaxLandingTime()
         && mRocket.getCurFuelLevel() >= 0) {
-      Platform.runLater(() -> {
-        // different color for each rocket
-        mGC.setStroke((Color) RocketConstants.COLOR_PALETTE[mRocket.getRocketID()][0]);
-        Coordinate2D oldCoord = mRocket.getCurCoordinates();
-        calcNewCoordinates();
-        Coordinate2D newCoord = mRocket.getCurCoordinates();
-        mGC.strokeLine(oldCoord.getX() * COORD_X_FACTOR, oldCoord.getY() * COORD_Y_FACTOR,
-            newCoord.getX() * COORD_X_FACTOR, newCoord.getY() * COORD_Y_FACTOR);
-        mRocket.mTime += TIME_INTERVAL;
-        updateProgressIndicator();
-      });
+      calcNewCoordinates();
+      /*
       // Sleep for a ms to not spam the application thread with runnables
       try {
         Thread.sleep(1);
       } catch (InterruptedException e) {
         mTextArea.appendText(e.getMessage());
       }
+      */
+      // Setting process speed every second
+      mRocket.mTime += TIME_INTERVAL;
     }
     mRocket.setCurCoordinates(mRocket.getCurCoordinates().getX(),
         mRocket.getCurCoordinates().getY() < 0 ? 0 : mRocket.getCurCoordinates().getY());
-    Platform.runLater(() -> {
-      mGC.setFill((Color) RocketConstants.COLOR_PALETTE[mRocket.getRocketID()][0]);
-      mGC.setStroke((Color) RocketConstants.COLOR_PALETTE[mRocket.getRocketID()][0]);
-      mGC.fillOval(mRocket.getCurCoordinates().getX() * COORD_X_FACTOR - 3,
-          mRocket.getCurCoordinates().getY() * COORD_Y_FACTOR - 3, 6, 6);
-      mGC.strokeText(String.valueOf(mRocket.getRocketID()), mRocket.getCurCoordinates().getX() * COORD_X_FACTOR - 3,
-          mRocket.getCurCoordinates().getY() * COORD_Y_FACTOR - 3);
-    });
+    displayRocket();
   }
 
   /**
@@ -159,18 +147,18 @@ public class RocketRunnable implements Runnable {
   /**
    * Calculate and set acceleration by getting processAcceleration value
    */
-  public void calcCurAcceleration() {
-    if ((mRocket.mTime / TIME_INTERVAL_FOR_ACCELERATION) < mRocket.getProcessAcc().size()) {
-      if(mRocket.mTime % TIME_INTERVAL_FOR_ACCELERATION == 0){
-        // Take Value out of array from array[counter]
-        mRocket.setCurAcceleration(mRocket.getProcessAcc().get(mRocket.getProcessAccIndex()));
-        mRocket.setProcessAccIndex(mRocket.getProcessAccIndex() + 1);
+   public void calcCurAcceleration() {
+      if ((mRocket.mTime / TIME_INTERVAL_FOR_ACCELERATION) < mRocket.getProcessAcc().size()) {
+        if(mRocket.mTime % TIME_INTERVAL_FOR_ACCELERATION == 0){
+          // Take Value out of array from array[counter]
+          mRocket.setCurAcceleration(mRocket.getProcessAcc().get(mRocket.getProcessAccIndex()));
+          mRocket.setProcessAccIndex(mRocket.getProcessAccIndex() + 1);
+        }
+      } else {
+        System.out.println(mRocket.getRocketID() + ": Not enough mTime" + mRocket.mTime);
+        mRocket.setCurAcceleration(new Coordinate2D((Math.random() * ((5)) - 2.5), Math.random() * ((300)) - 150));
+        mRocket.addCurAccToProcessAcc();
       }
-    } else {
-      System.out.println(mRocket.getRocketID() + ": Not enough mTime" + mRocket.mTime);
-      mRocket.setCurAcceleration(new Coordinate2D((Math.random() * ((5)) - 2.5), Math.random() * ((300)) - 150));
-      mRocket.addCurAccToProcessAcc();
-    }
   }
 
   /**
@@ -201,6 +189,7 @@ public class RocketRunnable implements Runnable {
     // v * sin(alpha) * t + 0.5 * (g + aY) * t^2
     double newYCoord = mRocket.getCurCoordinates().getY() + vY * TIME_INTERVAL * sinAlpha + 0.5 * (g + aY) * TIME_INTERVAL * TIME_INTERVAL;
     mRocket.setCurCoordinates(newXCoord, newYCoord);
+    mRocket.getCoordinateList().add(new Coordinate2D(newXCoord, newYCoord));
 
     // Calculation of the new Speed
     // v * cos(alpha) + aX * t
@@ -230,9 +219,9 @@ public class RocketRunnable implements Runnable {
     CustomProgressVBox box = mInterface.mProgressIndicatorMap.get(mRocket.getRocketID());
     box.setStyle(
         "-fx-background-color: " + col + ";" +
-            "-fx-border-style: solid;" +
-            "-fx-border-width: 2;" +
-            "-fx-border-color: black;"
+        "-fx-border-style: solid;" +
+        "-fx-border-width: 2;" +
+        "-fx-border-color: black;"
     );
     // update time Label
     box.getLabelDistance().setText(String.format("%.2f", d < 0 ? 0 : d));
@@ -245,5 +234,17 @@ public class RocketRunnable implements Runnable {
     box.getLabelTime().setText(mRocket.mTime > mPlanet.getMaxLandingTime() ?
         String.valueOf(mPlanet.getMaxLandingTime()) : String.valueOf(mRocket.mTime));
     box.getLabelSpeed().setText(String.format("%.2f", mRocket.getCurSpeed().abs()));
+  }
+
+  private void displayRocket() {
+    Platform.runLater(() -> {
+      mGC.setStroke((Color) RocketConstants.COLOR_PALETTE[mRocket.getRocketID()][0]);
+      for (int i = 0; i < mRocket.getCoordinateList().size() -1; i++) {
+        Coordinate2D oldCoord = mRocket.getCoordinateList().get(i);
+        Coordinate2D newCoord = mRocket.getCoordinateList().get(i + 1);
+        mGC.strokeLine(oldCoord.getX() * COORD_X_FACTOR, oldCoord.getY() * COORD_Y_FACTOR,
+            newCoord.getX() * COORD_X_FACTOR, newCoord.getY() * COORD_Y_FACTOR);
+      }
+    });
   }
 }

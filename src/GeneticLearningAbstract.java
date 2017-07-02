@@ -9,18 +9,11 @@ import java.io.PrintWriter;
 import java.util.*;
 import java.util.concurrent.*;
 
-import static java.lang.Math.abs;
-
-
 /**
  * Created by ludwig on 17.05.17.
- */
-
-/**
- * THIS IS A PROTOTYPE CLASS FOR UNDERSTANDING GENETIC ALGORITHM's
+ * THIS IS A PROTOTYPE CLASS FOR UNDERSTANDING GENETIC ALGORITHMS
  */
 public class GeneticLearningAbstract {
-  CountDownLatch latch = new CountDownLatch(1);
 
   /**
    * responsible to manage runnables
@@ -31,11 +24,6 @@ public class GeneticLearningAbstract {
    * holds the information, if the genetic learner should generate new rockets and, thus, continue to work
    */
   private boolean isRunning = true;
-
-  /**
-   * gets initialised in constructor
-   */
-  private Planet mPlanet;
 
   /**
    * gets initialised in constructor
@@ -93,7 +81,6 @@ public class GeneticLearningAbstract {
   public GeneticLearningAbstract(Interface pInterface) {
     mInterface = pInterface;
     mThreadPool = ThreadPool.getInstance(mInterface.mPopSizeDropDown.getValue());
-    mPlanet = pInterface.mPlanetDropDown.getValue();
     mTextArea = pInterface.mTextArea;
     mCanvas = pInterface.mCanvas;
     mGC = pInterface.mGC;
@@ -126,8 +113,16 @@ public class GeneticLearningAbstract {
               mInterface.mSliderInitDistance.getValue(),
               processAcc
       );
-      mThreadPool.execute(new RocketRunnable(rocket, mInterface));
       this.population.add(rocket);
+    }
+
+    // start runnable for each rocket
+    for (Rocket r : population) {
+      if (mInterface.mRadioButtonFastMode.isSelected()){
+        mThreadPool.execute(new FastRocketRunnable(r, mInterface));
+      } else {
+        mThreadPool.execute(new RocketRunnable(r, mInterface));
+      }
     }
 
     /*
@@ -264,7 +259,11 @@ public class GeneticLearningAbstract {
           ));
 
           System.out.println("Elite " + allElites.get(allElites.size() - (i + 1)).getRocketID());
-          mThreadPool.execute(new RocketRunnable(population.get(i), mInterface));
+          if (mInterface.mRadioButtonFastMode.isSelected()){
+            mThreadPool.execute(new FastRocketRunnable(population.get(i), mInterface));
+          } else {
+            mThreadPool.execute(new RocketRunnable(population.get(i), mInterface));
+          }
         }
       }
       if(write) {
@@ -338,7 +337,11 @@ public class GeneticLearningAbstract {
 
       // start all runnables
       for (Rocket r : population) {
-        mThreadPool.execute(new RocketRunnable(r, mInterface));
+        if (mInterface.mRadioButtonFastMode.isSelected()){
+          mThreadPool.execute(new FastRocketRunnable(r, mInterface));
+        } else {
+          mThreadPool.execute(new RocketRunnable(r, mInterface));
+        }
       }
 
       Thread t = new Thread(() -> {
@@ -389,14 +392,16 @@ public class GeneticLearningAbstract {
     Platform.runLater(() -> {
       mInterface.drawTransparentRect();
       mInterface.displayGrid(30, 30);
+      double xFactor = mInterface.mRadioButtonFastMode.isSelected() ? FastRocketRunnable.COORD_X_FACTOR : RocketRunnable.COORD_X_FACTOR;
+      double yFactor = mInterface.mRadioButtonFastMode.isSelected() ? FastRocketRunnable.COORD_Y_FACTOR : RocketRunnable.COORD_Y_FACTOR;
       for (int i = 0; i < 2; i++) {
         Rocket r = i == 0 ? pRocket1 : pRocket2;
         mGC.setFill((Color) RocketConstants.COLOR_PALETTE[r.getRocketID()][0]);
         mGC.setStroke((Color) RocketConstants.COLOR_PALETTE[r.getRocketID()][0]);
-        mGC.fillOval(r.getCurCoordinates().getX() * RocketRunnable.COORD_X_FACTOR - 3,
-                r.getCurCoordinates().getY() * RocketRunnable.COORD_Y_FACTOR - 3, 6, 6);
-        mGC.strokeText(String.valueOf(r.getRocketID()), r.getCurCoordinates().getX() * RocketRunnable.COORD_X_FACTOR - 3,
-                r.getCurCoordinates().getY() * RocketRunnable.COORD_Y_FACTOR - 3);
+        mGC.fillOval(r.getCurCoordinates().getX() * xFactor - 3,
+            r.getCurCoordinates().getY() * yFactor - 3, 6, 6);
+        mGC.strokeText(String.valueOf(r.getRocketID()), r.getCurCoordinates().getX() * xFactor - 3,
+            r.getCurCoordinates().getY() * yFactor - 3);
       }
       mTextArea.appendText("Generation " + pRocket1.getGenerationId() + ":\n" +
               "Parents:\n" +

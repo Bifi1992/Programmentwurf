@@ -61,11 +61,6 @@ public class Rocket {
   private Coordinate2D mInitCoordinates;
 
   /**
-   * A Map of the speed process per second <Second, Speed>
-   */
-  private ConcurrentHashMap<Integer, Coordinate2D> mProcessSpeed = new ConcurrentHashMap<>();
-
-  /**
    * A ArrayList of the acceleration process <acceleration>
    */
   private ArrayList<Coordinate2D> mProcessAcc = new ArrayList<>();
@@ -94,6 +89,11 @@ public class Rocket {
    * necessary for choosing randomly a parent, but the parent with highest store is more likely to be chosen
    */
   private double mCumulativeProbabilities;
+
+  /**
+   * holds all coordinates for the fast mode
+   */
+  private ArrayList<Coordinate2D> mCoordinateList = new ArrayList<>();
 
   /**
    * constructor for rocket
@@ -178,20 +178,12 @@ public class Rocket {
     return mInitDistance;
   }
 
-  public void setProcessSpeed() {
-    mProcessSpeed.put(mTime, mCurSpeed);
-  }
-
   public ArrayList<Coordinate2D> getProcessAcc(){
     return mProcessAcc;
   }
 
   public void setProcessAcc(ArrayList<Coordinate2D> pProcessAcc) {
     mProcessAcc = pProcessAcc;
-  }
-
-  public ConcurrentHashMap<Integer, Coordinate2D> getProcessSpeed() {
-    return mProcessSpeed;
   }
 
   public int getTime() {
@@ -259,6 +251,14 @@ public class Rocket {
     mProcessAccIndex = pProcessAccIndex;
   }
 
+  public ArrayList<Coordinate2D> getCoordinateList() {
+    return mCoordinateList;
+  }
+
+  public void setCoordinateList(ArrayList<Coordinate2D> pCoordinateList) {
+    mCoordinateList = pCoordinateList;
+  }
+
   public void addCurAccToProcessAcc() {
     mProcessAcc.add(mCurAcceleration);
   }
@@ -280,19 +280,5 @@ public class Rocket {
       fitness += AlgorithmConstants.LANDING_BONUS;
     }
     this.setTotalFitness(fitness);
-    //DEBUG TODO REMOVE
-    if (mTotalFitness < 0 || mTotalFitness > 1) {
-      System.out.println("--------------------");
-      System.out.println("TOTAL: " + mTotalFitness);
-      System.out.println("curFuel: " + mCurFuelLevel);
-      System.out.println("fuelSum: " + pFuelSum);
-      System.out.println("time: " + mTime);
-      System.out.println("timeSum: " + pTimeSum);
-      System.out.println("CurSpeed: " + mCurSpeed.abs());
-      System.out.println("speedSum: " + pSpeedSum);
-      System.out.println("curDist: " + (mInitDistance - mCurCoordinates.getY()));
-      System.out.println("distSum: " + pDistanceSum);
-      System.out.println("--------------------");
-    }
   }
 }

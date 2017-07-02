@@ -281,6 +281,7 @@ public class GeneticLearningAbstract {
         }
         mGeneration++;
         mInterface.drawTransparentRect();
+        mInterface.displayGrid(30, 30);
         createNextGeneration(population, false);
       });
       t.start();

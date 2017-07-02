@@ -7,18 +7,11 @@ import javafx.scene.paint.Color;
 import java.util.*;
 import java.util.concurrent.*;
 
-import static java.lang.Math.abs;
-
-
 /**
  * Created by ludwig on 17.05.17.
- */
-
-/**
- * THIS IS A PROTOTYPE CLASS FOR UNDERSTANDING GENETIC ALGORITHM's
+ * THIS IS A PROTOTYPE CLASS FOR UNDERSTANDING GENETIC ALGORITHMS
  */
 public class GeneticLearningAbstract {
-  CountDownLatch latch = new CountDownLatch(1);
 
   /**
    * responsible to manage runnables
@@ -29,11 +22,6 @@ public class GeneticLearningAbstract {
    * holds the information, if the genetic learner should generate new rockets and, thus, continue to work
    */
   private boolean isRunning = true;
-
-  /**
-   * gets initialised in constructor
-   */
-  private Planet mPlanet;
 
   /**
    * gets initialised in constructor
@@ -77,7 +65,6 @@ public class GeneticLearningAbstract {
   public GeneticLearningAbstract(Interface pInterface) {
     mInterface = pInterface;
     mThreadPool = ThreadPool.getInstance(mInterface.mPopSizeDropDown.getValue());
-    mPlanet = pInterface.mPlanetDropDown.getValue();
     mTextArea = pInterface.mTextArea;
     mCanvas = pInterface.mCanvas;
     mGC = pInterface.mGC;

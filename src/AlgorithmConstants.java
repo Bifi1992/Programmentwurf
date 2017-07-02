@@ -13,6 +13,16 @@ public final class AlgorithmConstants {
   public static final double LANDING_BONUS = 0.2;
 
   /**
+   * Holds the min initial generations
+   */
+  public static final int MIN_GENERATIONS = 5;
+
+  /**
+   * Holds the min initial generations
+   */
+  public static final int MAX_GENERATIONS = 800;
+
+  /**
    * The Ratings have to add up to 1
    */
   public static final double RATING_TIME = 0.3;

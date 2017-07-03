@@ -305,6 +305,7 @@ public class Interface extends Application {
     mTextArea.setPrefHeight(topProgressVBox.getHeight());
     mTextArea.setPrefWidth(mScreenRes.getWidth() * 0.3);
     mTextArea.setMaxWidth(mScreenRes.getWidth() * 0.3);
+    mTextArea.setEditable(false);
     HBox topTextAndButtonsBox = new HBox(5, topProgressVBox, ButtonBox, mTextArea);
 
     VBox root = new VBox(5, topTextAndButtonsBox, mScrollPane);
@@ -359,6 +360,7 @@ public class Interface extends Application {
 
     HBox ButtonBox = new HBox(5, mFastSimExitButton, mFastSimReturnButton);
     mFastSimTextArea.setPrefSize(mScreenRes.getWidth(), mScreenRes.getHeight());
+    mFastSimTextArea.setEditable(false);
     VBox topTextAndButtonsBox = new VBox(5, ButtonBox, mFastSimTextArea);
 
     VBox root = new VBox(5, topTextAndButtonsBox);

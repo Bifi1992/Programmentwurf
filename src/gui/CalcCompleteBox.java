@@ -11,11 +11,9 @@ import javafx.stage.Stage;
 /**
  * Created by y.brisch on 15.06.17.
  */
-public class ConfirmBox {
+public class CalcCompleteBox {
 
-  private static boolean mAnswer;
-
-  public static boolean display(String pTitle, String pMessage) {
+  public static void display(String pTitle, String pMessage) {
     Stage stage = new Stage();
 
     stage.initModality(Modality.APPLICATION_MODAL);
@@ -24,27 +22,16 @@ public class ConfirmBox {
 
     Label label = new Label(pMessage);
 
-    Button yesButton = new Button("Yes");
-    yesButton.setDefaultButton(true);
-    yesButton.setOnAction(e -> {
-      mAnswer = true;
-      stage.close();
-    });
-
-    Button noButton = new Button("No");
-    noButton.setCancelButton(true);
-    noButton.setOnAction(e -> {
-      mAnswer = false;
-      stage.close();
-    });
+    Button okButton = new Button("Ok");
+    okButton.setDefaultButton(true);
+    okButton.setOnAction(e -> stage.close());
 
     VBox buttonBox = new VBox(5);
-    buttonBox.getChildren().addAll(label, yesButton, noButton);
+    buttonBox.getChildren().addAll(label, okButton);
     buttonBox.setAlignment(Pos.CENTER);
 
     Scene scene = new Scene(buttonBox);
     stage.setScene(scene);
     stage.showAndWait();
-    return mAnswer;
   }
 }

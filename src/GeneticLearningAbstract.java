@@ -1,4 +1,5 @@
 
+import gui.CalcCompleteBox;
 import javafx.application.Platform;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
@@ -75,6 +76,11 @@ public class GeneticLearningAbstract {
    * writer for text document
    */
   private PrintWriter writer;
+
+  /**
+   * holds a boolean value that is set to true after the final popup has been displayed
+   */
+  private boolean finalPopUpShown = false;
 
   /**
    * @param pInterface the Interface from the Application Thread
@@ -286,7 +292,7 @@ public class GeneticLearningAbstract {
   }
 
   public void createNextGeneration(List<Rocket> pParents, boolean pUseElite) {
-    if (mInterface.mRadioButtonSlowMode.isSelected()) {
+    if (mInterface.mRadioButtonSlowMode.isSelected() && mGeneration <= mInterface.mSpinnerInitGenerations.getValue()) {
       Platform.runLater(() -> mInterface.mTextArea.appendText("\nStarting Calculation of Generation " + mGeneration + "\n"));
     } else {
       Platform.runLater(() -> mInterface.mFastSimTextArea.appendText("\nStarting Calculation of Generation " + mGeneration + "\n"));
@@ -298,14 +304,19 @@ public class GeneticLearningAbstract {
     mThreadPool = ThreadPool.getInstance(mInterface.mPopSizeDropDown.getValue());
     ArrayList<Coordinate2D> newProcessAcc = new ArrayList<>();
     ArrayList<Coordinate2D> individualProcessAcc;
-    //Rocket curRocket;
-    System.out.println("Interface Generations: " + mInterface.mSpinnerInitGenerations.getValue());
 
     // loop through best rockets if generations
     if (mGeneration > mInterface.mSpinnerInitGenerations.getValue()) {
-      //TODO PopUp to tell the user that the calculations finished
       if (mInterface.mRadioButtonFastMode.isSelected()) {
         Platform.runLater(() -> mInterface.mPrimaryStage.setScene(mInterface.mSimScene));
+      }
+      if (!finalPopUpShown) {
+        String message = "Calculations finished after " + mInterface.mSpinnerInitGenerations.getValue() + " generations.\n" +
+            "The top " + mInterface.mPopSizeDropDown.getValue() + " rockets will be looped until you hit Return or Exit.";
+        Platform.runLater(() -> {
+          CalcCompleteBox.display("Calculation complete!", message);
+          finalPopUpShown = true;
+        });
       }
       if (write) {
         createDocument();
@@ -334,7 +345,6 @@ public class GeneticLearningAbstract {
         writer.close();
         write = false;
       }
-      System.out.println("DONE! BEST RESULTS FOUND");
       Thread t = new Thread(() -> {
         try {
           mThreadPool.stop();
@@ -347,7 +357,9 @@ public class GeneticLearningAbstract {
           mInterface.drawTransparentRect();
           mInterface.displayGrid(30, 30);
         });
-        createNextGeneration(population, false);
+        if (isRunning) {
+          createNextGeneration(population, false);
+        }
       });
       t.start();
     } else {

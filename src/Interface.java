@@ -80,12 +80,24 @@ public class Interface extends Application {
       mInitFuelLevel);
 
   /**
+   * init mutation rate
+   */
+  double mInitMutationRate = AlgorithmConstants.INIT_MUTATION;
+
+  /**
+   * spinner which holds mutation rate
+   */
+  Spinner<Double> mSpinnerMutationRate = new Spinner<>(AlgorithmConstants.MIN_MUTATION,
+    AlgorithmConstants.MAX_MUTATION, mInitMutationRate, 0.05);
+
+  /**
    *initial generations
    */
   int mInitGenerations = AlgorithmConstants.MIN_GENERATIONS;
-/**
- * slider for initial generations
- */
+
+  /**
+   * slider for initial generations
+   */
   Spinner<Integer> mSpinnerInitGenerations = new Spinner<>(AlgorithmConstants.MIN_GENERATIONS,
     AlgorithmConstants.MAX_GENERATIONS, mInitGenerations, 5);
 
@@ -179,17 +191,19 @@ public class Interface extends Application {
     mRadioButtonSlowMode.setText("Visual mode");
     mRadioButtonSlowMode.setToggleGroup(mRadioButtonGroup);
     mRadioButtonSlowMode.setSelected(true);
-
     Label generationsLabel = new Label("Number of Generations:");
     HBox generationHBox = new HBox(5, generationsLabel, mSpinnerInitGenerations);
     generationHBox.setAlignment(Pos.CENTER_LEFT);
     Label popSizeLabel = new Label("Rockets per Population:");
     HBox popSizeVBox = new HBox(5, popSizeLabel, mPopSizeDropDown);
     popSizeVBox.setAlignment(Pos.CENTER_LEFT);
+    Label mutationRateLabel = new Label("Mutation rate:                 ");
+    HBox mutationRateHBox = new HBox(5, mutationRateLabel, mSpinnerMutationRate);
+    mutationRateHBox.setAlignment(Pos.CENTER_LEFT);
     Label modeLabel = new Label("Select calculation mode:");
     VBox RadioButtonBox = new VBox(5, modeLabel, mRadioButtonFastMode, mRadioButtonSlowMode, writeInDokument);
     RadioButtonBox.setAlignment(Pos.CENTER_LEFT);
-    VBox algoBox = new VBox(10, algoLabel, popSizeVBox, generationHBox, RadioButtonBox);
+    VBox algoBox = new VBox(10, algoLabel, popSizeVBox, generationHBox,mutationRateHBox, RadioButtonBox);
     algoBox.setPrefSize(mScreenRes.getWidth() * 0.5, mScreenRes.getHeight() * 0.4);
     algoBox.setAlignment(Pos.TOP_CENTER);
 

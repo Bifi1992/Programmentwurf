@@ -12,6 +12,12 @@ public final class AlgorithmConstants {
 
   public static final double LANDING_BONUS = 0.2;
 
+  public static final double INIT_MUTATION = 0.1;
+
+  public static final double MIN_MUTATION = 0;
+
+  public static final double MAX_MUTATION = 0.9;
+
   /**
    * Holds the min initial generations
    */

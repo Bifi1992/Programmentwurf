@@ -332,7 +332,7 @@ public class GeneticLearningAbstract {
 
         individualProcessAcc = new ArrayList<>();
         for (int j = 0; j < newProcessAcc.size(); j++) {
-          if (Math.random() <= AlgorithmConstants.MUTATION) {
+          if (Math.random() <= mInterface.mSpinnerMutationRate.getValue()) {
             individualProcessAcc.add(new Coordinate2D((Math.random() * ((5)) - 2.5), Math.random() * ((200)) - 100));
           } else {
             individualProcessAcc.add(newProcessAcc.get(j));

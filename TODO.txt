@@ -1,4 +1,3 @@
-- (important) start painting in center of window
 - css
    http://docs.oracle.com/javafx/2/css_tutorial/jfxpub-css_tutorial.htm
 - monitor all Runnables
@@ -8,14 +7,9 @@
 - GUI *
    - Sliders
         - Mutation rate
-   - Generation Size
    - (maybe) smaller start scene window
    - Number of Threads (in order to save resources)
    - Max landing time
-- correct calculation of landing (TOCHECK)
-   - fix distance (TOCHECK)
 - boolean successful Landing as rocket member
-- negative algorithm weights if not Rocket ends out of Canvas
-- save final Coordinates for all rockets of all generations, clear canvas after each tun and repaint those coordinates
 - min / max accel as constants
     - adjust a little for planets

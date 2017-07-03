@@ -227,17 +227,28 @@ public class GeneticLearningAbstract {
       }
       Rocket bestForTextArea = best;
       mEliteRocket = new EliteRocket(best);
-      Platform.runLater(() -> mInterface.mTextArea.appendText("Set rocket" + bestForTextArea.getRocketID() + " as new elite!\n"));
+      if (mInterface.mRadioButtonSlowMode.isSelected()) {
+        Platform.runLater(() -> mInterface.mTextArea.appendText("Set rocket" + bestForTextArea.getRocketID() + " as new elite!\n"));
+      } else {
+        Platform.runLater(() -> mInterface.mFastSimTextArea.appendText("Set rocket" + bestForTextArea.getRocketID() + " as new elite!\n"));
+      }
     } else if (best.getGenerationId() > 1) {
       useElite = true;
       Rocket bestForTextArea = best;
-      Platform.runLater(() ->
-          mInterface.mTextArea.appendText(
-              "Using Elite!\n" +
-                  "Best Fitness: " + bestForTextArea.getTotalFitness() + "\n" +
-                  "Elite Fitness: " + mEliteRocket.getTotalFitness() + "\n"
-          )
-      );
+      if (mInterface.mRadioButtonSlowMode.isSelected()) {
+        mInterface.mTextArea.appendText(
+            "Using Elite!\n" +
+                "Best Fitness: " + bestForTextArea.getTotalFitness() + "\n" +
+                "Elite Fitness: " + mEliteRocket.getTotalFitness() + "\n"
+        );
+      } else {
+        mInterface.mFastSimTextArea.appendText(
+            "Using Elite!\n" +
+                "Best Fitness: " + bestForTextArea.getTotalFitness() + "\n" +
+                "Elite Fitness: " + mEliteRocket.getTotalFitness() + "\n"
+        );
+      }
+
     }
     if (isRunning) {
       createNextGeneration(parents, useElite);

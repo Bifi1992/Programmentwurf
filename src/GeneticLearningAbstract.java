@@ -1,3 +1,4 @@
+
 import javafx.application.Platform;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
@@ -51,7 +52,7 @@ public class GeneticLearningAbstract {
   private int mGeneration = 1;
 
   /**
-   * list of population wich gets recreated on every generation
+   * list of population which gets recreated on every generation
    */
   private List<Rocket> population = new ArrayList<>();
 
@@ -76,7 +77,7 @@ public class GeneticLearningAbstract {
   private PrintWriter writer;
 
   /**
-   * @param pInterface
+   * @param pInterface the Interface from the Application Thread
    */
   public GeneticLearningAbstract(Interface pInterface) {
     mInterface = pInterface;
@@ -91,6 +92,12 @@ public class GeneticLearningAbstract {
    * Create random population and values of rockets
    */
   public void initPopulationRandom() {
+    if (mInterface.mRadioButtonSlowMode.isSelected()) {
+      Platform.runLater(() -> mInterface.mTextArea.appendText("Starting Calculation of Generation " + mGeneration + "\n"));
+    } else {
+      Platform.runLater(() -> mInterface.mFastSimTextArea.appendText("Starting Calculation of Generation " + mGeneration + "\n"));
+    }
+    long startTime = System.currentTimeMillis();
     /*
      * processAcc keeps the acceleration values over time of a certain rocket
      * processAcc gets filled randomly the first time
@@ -118,7 +125,7 @@ public class GeneticLearningAbstract {
 
     // start runnable for each rocket
     for (Rocket r : population) {
-      if (mInterface.mRadioButtonFastMode.isSelected()){
+      if (mInterface.mRadioButtonFastMode.isSelected()) {
         mThreadPool.execute(new FastRocketRunnable(r, mInterface));
       } else {
         mThreadPool.execute(new RocketRunnable(r, mInterface));
@@ -132,6 +139,14 @@ public class GeneticLearningAbstract {
       try {
         mThreadPool.stop();
         mThreadPool.awaitTermination();
+        long endTime = System.currentTimeMillis() - startTime;
+        if (mInterface.mRadioButtonSlowMode.isSelected()) {
+          Platform.runLater(() -> mInterface.mTextArea.appendText("Calculation of Generation " +
+              mGeneration + " took " + endTime + "ms\n\n"));
+        } else {
+          Platform.runLater(() -> mInterface.mFastSimTextArea.appendText("Calculation of Generation " +
+              mGeneration + " took " + endTime + "ms\n\n"));
+        }
         System.out.println("Threads terminated!");
       } catch (TimeoutException e) {
         e.printStackTrace(System.err);
@@ -215,6 +230,18 @@ public class GeneticLearningAbstract {
       }
     }
 
+    if (mInterface.mRadioButtonFastMode.isSelected()) {
+      sortPopulationByFitness();
+      List<Rocket> popForTextarea = population;
+      Platform.runLater(() -> {
+        for (Rocket r : popForTextarea) {
+          mInterface.mFastSimTextArea.appendText(
+              "rocket" + r.getRocketID() + " fitness: " + r.getTotalFitness() + "\n"
+          );
+        }
+      });
+    }
+
     parents.add(best);
     parents.add(secondBest);
     prepareCanvasForNextGen(best, secondBest);
@@ -223,7 +250,7 @@ public class GeneticLearningAbstract {
     if (best.getTotalFitness() > mEliteRocket.getTotalFitness()) {
       if (mEliteRocket.getTotalFitness() > parents.get(1).getTotalFitness()) {
         parents.set(1, mEliteRocket);
-        System.out.println("Use old Elite as secoundbest | fitness Elite: " + mEliteRocket.getTotalFitness());
+        System.out.println("Use old Elite as secondbest | fitness Elite: " + mEliteRocket.getTotalFitness());
       }
       Rocket bestForTextArea = best;
       mEliteRocket = new EliteRocket(best);
@@ -236,19 +263,22 @@ public class GeneticLearningAbstract {
       useElite = true;
       Rocket bestForTextArea = best;
       if (mInterface.mRadioButtonSlowMode.isSelected()) {
-        mInterface.mTextArea.appendText(
-            "Using Elite!\n" +
-                "Best Fitness: " + bestForTextArea.getTotalFitness() + "\n" +
-                "Elite Fitness: " + mEliteRocket.getTotalFitness() + "\n"
+        Platform.runLater(() ->
+            mInterface.mTextArea.appendText(
+                "Using Elite!\n" +
+                    "Best Fitness: " + bestForTextArea.getTotalFitness() + "\n" +
+                    "Elite Fitness: " + mEliteRocket.getTotalFitness() + "\n"
+            )
         );
       } else {
-        mInterface.mFastSimTextArea.appendText(
-            "Using Elite!\n" +
-                "Best Fitness: " + bestForTextArea.getTotalFitness() + "\n" +
-                "Elite Fitness: " + mEliteRocket.getTotalFitness() + "\n"
+        Platform.runLater(() ->
+            mInterface.mFastSimTextArea.appendText(
+                "Using Elite!\n" +
+                    "Best Fitness: " + bestForTextArea.getTotalFitness() + "\n" +
+                    "Elite Fitness: " + mEliteRocket.getTotalFitness() + "\n"
+            )
         );
       }
-
     }
     if (isRunning) {
       createNextGeneration(parents, useElite);
@@ -256,6 +286,13 @@ public class GeneticLearningAbstract {
   }
 
   public void createNextGeneration(List<Rocket> pParents, boolean pUseElite) {
+    if (mInterface.mRadioButtonSlowMode.isSelected()) {
+      Platform.runLater(() -> mInterface.mTextArea.appendText("\nStarting Calculation of Generation " + mGeneration + "\n"));
+    } else {
+      Platform.runLater(() -> mInterface.mFastSimTextArea.appendText("\nStarting Calculation of Generation " + mGeneration + "\n"));
+    }
+    long startTime = System.currentTimeMillis();
+
     // clear population
     population = new ArrayList<>();
     mThreadPool = ThreadPool.getInstance(mInterface.mPopSizeDropDown.getValue());
@@ -266,6 +303,10 @@ public class GeneticLearningAbstract {
 
     // loop through best rockets if generations
     if (mGeneration > mInterface.mSpinnerInitGenerations.getValue()) {
+      //TODO PopUp to tell the user that the calculations finished
+      if (mInterface.mRadioButtonFastMode.isSelected()) {
+        Platform.runLater(() -> mInterface.mPrimaryStage.setScene(mInterface.mSimScene));
+      }
       if (write) {
         createDocument();
       }
@@ -287,13 +328,9 @@ public class GeneticLearningAbstract {
 
       // start all runnables
       for (Rocket r : population) {
-        if (mInterface.mRadioButtonFastMode.isSelected()){
-          mThreadPool.execute(new FastRocketRunnable(r, mInterface));
-        } else {
-          mThreadPool.execute(new RocketRunnable(r, mInterface));
-        }
+        mThreadPool.execute(new RocketRunnable(r, mInterface));
       }
-      if(write) {
+      if (write) {
         writer.close();
         write = false;
       }
@@ -306,8 +343,10 @@ public class GeneticLearningAbstract {
           e.printStackTrace(System.err);
         }
         mGeneration++;
-        mInterface.drawTransparentRect();
-        mInterface.displayGrid(30, 30);
+        Platform.runLater(() -> {
+          mInterface.drawTransparentRect();
+          mInterface.displayGrid(30, 30);
+        });
         createNextGeneration(population, false);
       });
       t.start();
@@ -364,7 +403,7 @@ public class GeneticLearningAbstract {
 
       // start all runnables
       for (Rocket r : population) {
-        if (mInterface.mRadioButtonFastMode.isSelected()){
+        if (mInterface.mRadioButtonFastMode.isSelected()) {
           mThreadPool.execute(new FastRocketRunnable(r, mInterface));
         } else {
           mThreadPool.execute(new RocketRunnable(r, mInterface));
@@ -375,6 +414,14 @@ public class GeneticLearningAbstract {
         try {
           mThreadPool.stop();
           mThreadPool.awaitTermination();
+          long endTime = System.currentTimeMillis() - startTime;
+          if (mInterface.mRadioButtonSlowMode.isSelected()) {
+            Platform.runLater(() -> mInterface.mTextArea.appendText("Calculation of Generation " +
+                mGeneration + " took " + endTime + "ms\n\n"));
+          } else {
+            Platform.runLater(() -> mInterface.mFastSimTextArea.appendText("Calculation of Generation " +
+                mGeneration + " took " + endTime + "ms\n\n"));
+          }
         } catch (TimeoutException e) {
           e.printStackTrace(System.err);
         }
@@ -416,33 +463,37 @@ public class GeneticLearningAbstract {
    * @param pRocket2 the second parent rocket
    */
   private void prepareCanvasForNextGen(Rocket pRocket1, Rocket pRocket2) {
-    Platform.runLater(() -> {
-      mInterface.drawTransparentRect();
-      mInterface.displayGrid(30, 30);
-      double xFactor = mInterface.mRadioButtonFastMode.isSelected() ? FastRocketRunnable.COORD_X_FACTOR : RocketRunnable.COORD_X_FACTOR;
-      double yFactor = mInterface.mRadioButtonFastMode.isSelected() ? FastRocketRunnable.COORD_Y_FACTOR : RocketRunnable.COORD_Y_FACTOR;
-      for (int i = 0; i < 2; i++) {
-        Rocket r = i == 0 ? pRocket1 : pRocket2;
-        mGC.setFill((Color) RocketConstants.COLOR_PALETTE[r.getRocketID()][0]);
-        mGC.setStroke((Color) RocketConstants.COLOR_PALETTE[r.getRocketID()][0]);
-        mGC.fillOval(r.getCurCoordinates().getX() * xFactor - 3,
-            r.getCurCoordinates().getY() * yFactor - 3, 6, 6);
-        mGC.strokeText(String.valueOf(r.getRocketID()), r.getCurCoordinates().getX() * xFactor - 3,
-            r.getCurCoordinates().getY() * yFactor - 3);
-      }
-      mTextArea.appendText("Generation " + pRocket1.getGenerationId() + ":\n" +
-          "Parents:\n" +
-          "Rocket " + pRocket1.getRocketID() + " fitness: " + pRocket1.getTotalFitness() + "\n" +
-          "Rocket " + pRocket2.getRocketID() + " fitness: " + pRocket2.getTotalFitness() + "\n");
-    });
+    if (mInterface.mRadioButtonSlowMode.isSelected()) {
+      Platform.runLater(() -> {
+        mInterface.drawTransparentRect();
+        mInterface.displayGrid(30, 30);
+        double xFactor = mInterface.mRadioButtonFastMode.isSelected() ? FastRocketRunnable.COORD_X_FACTOR : RocketRunnable.COORD_X_FACTOR;
+        double yFactor = mInterface.mRadioButtonFastMode.isSelected() ? FastRocketRunnable.COORD_Y_FACTOR : RocketRunnable.COORD_Y_FACTOR;
+        for (int i = 0; i < 2; i++) {
+          Rocket r = i == 0 ? pRocket1 : pRocket2;
+          mGC.setFill((Color) RocketConstants.COLOR_PALETTE[r.getRocketID()][0]);
+          mGC.setStroke((Color) RocketConstants.COLOR_PALETTE[r.getRocketID()][0]);
+          mGC.fillOval(r.getCurCoordinates().getX() * xFactor - 3,
+              r.getCurCoordinates().getY() * yFactor - 3, 6, 6);
+          mGC.strokeText(String.valueOf(r.getRocketID()), r.getCurCoordinates().getX() * xFactor - 3,
+              r.getCurCoordinates().getY() * yFactor - 3);
+        }
+        mTextArea.appendText("Generation " + pRocket1.getGenerationId() + ":\n" +
+            "Parents:\n" +
+            "Rocket " + pRocket1.getRocketID() + " fitness: " + pRocket1.getTotalFitness() + "\n" +
+            "Rocket " + pRocket2.getRocketID() + " fitness: " + pRocket2.getTotalFitness() + "\n");
+      });
+    }
   }
-  public void createDocument(){
+
+  public void createDocument() {
     try {
       writer = new PrintWriter("best-results-accelerations.txt", "UTF-8");
     } catch (IOException e) {
       throw new RuntimeException(e);
     }
   }
+
   public void writeInFile(Rocket curRocket) {
     writer.println(" ");
     writer.println("########## RESULTS ROCKET: " + curRocket.getRocketID() +
@@ -457,6 +508,16 @@ public class GeneticLearningAbstract {
     Collections.sort(topRockets, new Comparator<EliteRocket>() {
       @Override
       public int compare(EliteRocket o1, EliteRocket o2) {
+        return (o2.getTotalFitness() > o1.getTotalFitness()) ? 1 : -1;
+      }
+    });
+  }
+
+
+  public void sortPopulationByFitness() {
+    Collections.sort(population, new Comparator<Rocket>() {
+      @Override
+      public int compare(Rocket o1, Rocket o2) {
         return (o2.getTotalFitness() > o1.getTotalFitness()) ? 1 : -1;
       }
     });

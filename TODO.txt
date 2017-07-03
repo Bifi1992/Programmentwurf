@@ -1,3 +1,4 @@
+- (important) Popup to tell user that calculations finished -> see TODO in GeneticLearningAbstract
 - css
    http://docs.oracle.com/javafx/2/css_tutorial/jfxpub-css_tutorial.htm
 - monitor all Runnables

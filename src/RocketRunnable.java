@@ -94,7 +94,7 @@ public class RocketRunnable implements Runnable {
   @Override
   public void run() {
     Platform.runLater(this::updateProgressIndicator);
-    while (mRocket.getCurCoordinates().getY() < mRocket.getInitDistance()
+      while (mRocket.getCurCoordinates().getY() < mRocket.getInitDistance()
         && mRocket.mTime < mPlanet.getMaxLandingTime()
         && mRocket.getCurFuelLevel() >= 0) {
       Platform.runLater(() -> {

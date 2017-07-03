@@ -2,7 +2,7 @@
  * Created by y.brisch on 26.06.17.
  */
 public final class AlgorithmConstants {
-  private AlgorithmConstants() {};
+  private AlgorithmConstants() {}
 
   public static final int MIN_POP_SIZE = 4;
 
@@ -15,7 +15,7 @@ public final class AlgorithmConstants {
   /**
    * Holds the min initial generations
    */
-  public static final int MIN_GENERATIONS = 5;
+  public static final int MIN_GENERATIONS = 2;
 
   /**
    * Holds the min initial generations

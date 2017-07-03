@@ -148,10 +148,10 @@ public class GeneticLearningAbstract {
         long endTime = System.currentTimeMillis() - startTime;
         if (mInterface.mRadioButtonSlowMode.isSelected()) {
           Platform.runLater(() -> mInterface.mTextArea.appendText("Calculation of Generation " +
-              mGeneration + " took " + endTime + "ms\n\n"));
+              (mGeneration - 1) + " took " + endTime + "ms\n\n"));
         } else {
           Platform.runLater(() -> mInterface.mFastSimTextArea.appendText("Calculation of Generation " +
-              mGeneration + " took " + endTime + "ms\n\n"));
+              (mGeneration - 1) + " took " + endTime + "ms\n\n"));
         }
         System.out.println("Threads terminated!");
       } catch (TimeoutException e) {
@@ -178,9 +178,6 @@ public class GeneticLearningAbstract {
     Rocket secondBest = null;
     List<Rocket> parents = new ArrayList<>();
 
-    //set the EliteRocket as the first rocket in the first run
-    mEliteRocket = mEliteRocket == null ? new EliteRocket(population.get(0)) : mEliteRocket;
-
     // get sum of all values
     for (Rocket r : population) {
       fuelSum += r.getCurFuelLevel();
@@ -204,8 +201,20 @@ public class GeneticLearningAbstract {
       }
     }
 
+    if (mEliteRocket == null) {
+      mEliteRocket = new EliteRocket(population.get(0));
+    } else {
+      fuelSum += mEliteRocket.getFinalFuelLevel();
+      speedSum += mEliteRocket.getFinalSpeed();
+      timeSum += mEliteRocket.getFinalTime();
+      distanceSum += mEliteRocket.getFinalDistance();
+    }
+
     // set distance to 1 if smaller than 1
     distanceSum = distanceSum < 1 ? 1 : distanceSum;
+
+    // recalc fitness of mEliteRocket
+    mEliteRocket.calculateAndSetFitness(fuelSum, timeSum, speedSum, distanceSum);
 
     // recalc fitness for the topRockets proportionate to the current pop
     for (EliteRocket er : topRockets) {
@@ -254,12 +263,23 @@ public class GeneticLearningAbstract {
 
     boolean useElite = false;
     if (best.getTotalFitness() > mEliteRocket.getTotalFitness()) {
+      /*
       if (mEliteRocket.getTotalFitness() > parents.get(1).getTotalFitness()) {
         parents.set(1, mEliteRocket);
         System.out.println("Use old Elite as secondbest | fitness Elite: " + mEliteRocket.getTotalFitness());
       }
+      */
       Rocket bestForTextArea = best;
+
+      
+      //TODO REMOVE
+      EliteRocket eliteRocketForTextArea = mEliteRocket;
+      Platform.runLater(() -> mInterface.mTextArea.appendText(eliteRocketForTextArea.getTotalFitness() + " < " +
+          bestForTextArea.getTotalFitness() + "\n"));
+
+
       mEliteRocket = new EliteRocket(best);
+
       if (mInterface.mRadioButtonSlowMode.isSelected()) {
         Platform.runLater(() -> mInterface.mTextArea.appendText("Set rocket" + bestForTextArea.getRocketID() + " as new elite!\n"));
       } else {

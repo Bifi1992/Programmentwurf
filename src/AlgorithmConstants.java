@@ -15,7 +15,7 @@ public final class AlgorithmConstants {
   /**
    * Holds the min initial generations
    */
-  public static final int MIN_GENERATIONS = 2;
+  public static final int MIN_GENERATIONS = 5;
 
   /**
    * Holds the min initial generations

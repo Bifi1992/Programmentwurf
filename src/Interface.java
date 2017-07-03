@@ -135,7 +135,7 @@ public class Interface extends Application {
   }
 
   private Scene getStartScene() {
-    /**
+    /*
      * top side - buttons and PlanetDropDown
      */
     for (Planet p : Planet.values()) {
@@ -349,6 +349,7 @@ public class Interface extends Application {
       mGC.clearRect(0, 0, mCanvas.getWidth(), mCanvas.getHeight());
     });
     mFastSimReturnButton.setPrefWidth(mScreenRes.getWidth() * 0.1);
+    mFastSimReturnButton.setPrefWidth(mScreenRes.getWidth() * 0.1);
 
     //close via click or ESC button
     mFastSimExitButton.setText("Exit");
@@ -356,7 +357,7 @@ public class Interface extends Application {
     mFastSimExitButton.setOnAction(e -> closeProgram());
     mFastSimExitButton.setPrefWidth(mScreenRes.getWidth() * 0.1);
 
-    VBox ButtonBox = new VBox(5, mFastSimExitButton, mFastSimReturnButton);
+    HBox ButtonBox = new HBox(5, mFastSimExitButton, mFastSimReturnButton);
     mFastSimTextArea.setPrefSize(mScreenRes.getWidth(), mScreenRes.getHeight());
     VBox topTextAndButtonsBox = new VBox(5, ButtonBox, mFastSimTextArea);
 
@@ -371,6 +372,8 @@ public class Interface extends Application {
         "-fx-padding: 10px;" +
             "-fx-background-color: #FFC601;"
     );
+
+    mFastSimScene = new Scene(root, mScreenRes.getWidth(), mScreenRes.getHeight());
     return mFastSimScene;
   }
 

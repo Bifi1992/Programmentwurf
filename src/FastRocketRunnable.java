@@ -94,25 +94,22 @@ public class FastRocketRunnable implements Runnable {
    */
   @Override
   public void run() {
-    Platform.runLater(this::updateProgressIndicator);
     while (mRocket.getCurCoordinates().getY() < mRocket.getInitDistance()
         && mRocket.mTime < mPlanet.getMaxLandingTime()
         && mRocket.getCurFuelLevel() >= 0) {
       calcNewCoordinates();
-      /*
+
       // Sleep for a ms to not spam the application thread with runnables
       try {
         Thread.sleep(1);
       } catch (InterruptedException e) {
         mTextArea.appendText(e.getMessage());
       }
-      */
       // Setting process speed every second
       mRocket.mTime += TIME_INTERVAL;
     }
     mRocket.setCurCoordinates(mRocket.getCurCoordinates().getX(),
         mRocket.getCurCoordinates().getY() < 0 ? 0 : mRocket.getCurCoordinates().getY());
-    displayRocket();
   }
 
   /**
@@ -234,17 +231,5 @@ public class FastRocketRunnable implements Runnable {
     box.getLabelTime().setText(mRocket.mTime > mPlanet.getMaxLandingTime() ?
         String.valueOf(mPlanet.getMaxLandingTime()) : String.valueOf(mRocket.mTime));
     box.getLabelSpeed().setText(String.format("%.2f", mRocket.getCurSpeed().abs()));
-  }
-
-  private void displayRocket() {
-    Platform.runLater(() -> {
-      mGC.setStroke((Color) RocketConstants.COLOR_PALETTE[mRocket.getRocketID()][0]);
-      for (int i = 0; i < mRocket.getCoordinateList().size() -1; i++) {
-        Coordinate2D oldCoord = mRocket.getCoordinateList().get(i);
-        Coordinate2D newCoord = mRocket.getCoordinateList().get(i + 1);
-        mGC.strokeLine(oldCoord.getX() * COORD_X_FACTOR, oldCoord.getY() * COORD_Y_FACTOR,
-            newCoord.getX() * COORD_X_FACTOR, newCoord.getY() * COORD_Y_FACTOR);
-      }
-    });
   }
 }

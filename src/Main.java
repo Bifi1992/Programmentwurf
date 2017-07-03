@@ -1,5 +1,3 @@
-import java.util.ArrayList;
-
 /**
  * TODO Rename {@link Interface} to Main, delete {@link Main}
  * Created by y.brisch on 17.05.17.

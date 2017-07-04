@@ -117,6 +117,11 @@ public class Interface extends Application {
    */
    CheckBox writeInDokument = new CheckBox("Write best accelerations in document");
 
+  /**
+   * checkbox fly to goal
+   */
+  CheckBox flyToGoal = new CheckBox("If activated, the rocket tries to reach a goal");
+
   @Override
   public void start(Stage pPrimaryStage) throws Exception{
     mScreenRes = mScreenRes.getWidth() > 1280 ? new Dimension(1280, 800) : mScreenRes;
@@ -201,7 +206,7 @@ public class Interface extends Application {
     HBox mutationRateHBox = new HBox(5, mutationRateLabel, mSpinnerMutationRate);
     mutationRateHBox.setAlignment(Pos.CENTER_LEFT);
     Label modeLabel = new Label("Select calculation mode:");
-    VBox RadioButtonBox = new VBox(5, modeLabel, mRadioButtonFastMode, mRadioButtonSlowMode, writeInDokument);
+    VBox RadioButtonBox = new VBox(5, modeLabel, mRadioButtonFastMode, mRadioButtonSlowMode, writeInDokument, flyToGoal);
     RadioButtonBox.setAlignment(Pos.CENTER_LEFT);
     VBox algoBox = new VBox(10, algoLabel, popSizeVBox, generationHBox,mutationRateHBox, RadioButtonBox);
     algoBox.setPrefSize(mScreenRes.getWidth() * 0.5, mScreenRes.getHeight() * 0.4);
@@ -411,6 +416,11 @@ public class Interface extends Application {
     }
     for (double i = pY; i < mCanvas.getHeight(); i += pY) {
       mGC.strokeLine(0, i, mCanvas.getWidth(), i);
+    }
+    if(flyToGoal.isSelected()) {
+      mGC.setStroke((Color) RocketConstants.COLOR_PALETTE[15][0]);
+      mGC.strokeLine(1.19 * (mCanvas.getWidth() / 2), 0, 1.19 * (mCanvas.getWidth() / 2), this.mSliderInitDistance.getValue());
+      mGC.strokeText("Target", 1.19 * (mCanvas.getWidth() / 2), this.mSliderInitDistance.getValue() - 20);
     }
   }
 

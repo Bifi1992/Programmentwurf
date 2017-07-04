@@ -262,7 +262,7 @@ public class Rocket {
     mProcessAcc.add(mCurAcceleration);
   }
 
-  public void calculateAndSetFitness(double pFuelSum, double pTimeSum, double pSpeedSum, double pDistanceSum){
+  public void calculateAndSetFitnessNormalMode(double pFuelSum, double pTimeSum, double pSpeedSum, double pDistanceSum){
     double fitness =
         // minimize fuel consumption
         (mCurFuelLevel / pFuelSum) * AlgorithmConstants.RATING_FUEL +
@@ -278,6 +278,12 @@ public class Rocket {
     if (mInitDistance - mCurCoordinates.getY() <= 0) {
       fitness += AlgorithmConstants.LANDING_BONUS;
     }
+    this.setTotalFitness(fitness);
+  }
+  public void calculateAndSetFitnessReachGoalMode(double pDistanceSum, double pDistanceXSum, double landingPos){
+    double fitness = 0.4*(1-Math.abs((landingPos-this.getCurCoordinates().getX())/pDistanceXSum)) + 0.6*((this.mCurCoordinates.getY())/pDistanceSum);
+    System.out.println("Fitness all: " + fitness + " fitnessX: " + (1-Math.abs((landingPos-this.getCurCoordinates().getX())/pDistanceXSum)) + " fitnessY " + ((this.mCurCoordinates.getY())/pDistanceSum));
+    System.out.println("Distance: " + (landingPos-this.getCurCoordinates().getX()) + "PosY: " + this.getCurCoordinates().getY() + "PosX: " +this.getCurCoordinates().getX());
     this.setTotalFitness(fitness);
   }
 }

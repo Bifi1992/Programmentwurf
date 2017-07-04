@@ -7,12 +7,14 @@ public class EliteRocket extends Rocket {
   private double mFinalSpeed;
   private double mFinalDistance;
   private int mFinalTime;
+  private  double mFinalDistanceX;
 
   public EliteRocket(Rocket pRocket) {
     super(pRocket.getGenerationId(), pRocket.getRocketID(), pRocket.mInitSpeed, pRocket.mInitFuelLevel, pRocket.getInitDistance());
     mFinalSpeed = pRocket.getCurSpeed().abs();
     this.setCurSpeed(pRocket.getCurSpeed());
-    mFinalDistance = pRocket.getInitDistance() - pRocket.getCurCoordinates().getY();
+    mFinalDistance = pRocket.getCurCoordinates().getY();
+    mFinalDistanceX = pRocket.getInitDistance() - pRocket.getCurCoordinates().getX();
     this.setCurCoordinates(pRocket.getCurCoordinates());
     mFinalTime = pRocket.getTime();
     this.setTime(pRocket.getTime());
@@ -32,6 +34,9 @@ public class EliteRocket extends Rocket {
 
   public double getFinalDistance() {
     return mFinalDistance;
+  }
+  public double getFinalDistanceX() {
+    return mFinalDistanceX;
   }
 
   public int getFinalTime() {

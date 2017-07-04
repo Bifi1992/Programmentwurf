@@ -8,8 +8,6 @@ public final class AlgorithmConstants {
 
   public static final int MAX_POP_SIZE = 12;
 
-  public static final double MUTATION = 0.1;
-
   public static final double LANDING_BONUS = 0.2;
 
   public static final double INIT_MUTATION = 0.1;

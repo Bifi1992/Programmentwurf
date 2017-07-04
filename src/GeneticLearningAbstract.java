@@ -247,18 +247,21 @@ public class GeneticLearningAbstract {
       }else{
         r.calculateAndSetFitnessNormalMode(fuelSum, timeSum, speedSum, distanceSum);
       }
+
+      // potentially substitute the top rockets with better rockets
       if (mGeneration > 2) {
         for (int i = 0; i < topRockets.size(); i++) {
           if (topRockets.get(i).getTotalFitness() < r.getTotalFitness()) {
-            topRockets.add(i, new EliteRocket(r));
-            if(mInterface.flyToGoal.isSelected()) {
-              topRockets.get(i).calculateAndSetFitnessReachGoalMode(distanceSum, distanceXSum, landingPos);
+            if (!topRockets.get(i).getProcessAcc().equals(r.getProcessAcc())) {
+              topRockets.add(i, new EliteRocket(r));
+              if (mInterface.flyToGoal.isSelected()) {
+                topRockets.get(i).calculateAndSetFitnessReachGoalMode(distanceSum, distanceXSum, landingPos);
+              } else {
+                topRockets.get(i).calculateAndSetFitnessNormalMode(fuelSum, timeSum, speedSum, distanceSum);
+              }
+              topRockets.remove(topRockets.size() - 1);
+              break;
             }
-            else{
-              topRockets.get(i).calculateAndSetFitnessNormalMode(fuelSum, timeSum, speedSum, distanceSum);
-            }
-            topRockets.remove(topRockets.size() - 1);
-            break;
           }
         }
       }
@@ -360,8 +363,8 @@ public class GeneticLearningAbstract {
         String message = "Calculations finished after " + mInterface.mSpinnerInitGenerations.getValue() + " generations.\n" +
             "The top " + mInterface.mPopSizeDropDown.getValue() + " rockets will be looped until you hit Return or Exit.";
         Platform.runLater(() -> {
-          CalcCompleteBox.display("Calculation complete!", message);
           finalPopUpShown = true;
+          CalcCompleteBox.display("Calculation complete!", message);
         });
       }
       if (write) {

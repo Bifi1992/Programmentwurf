@@ -6,7 +6,7 @@ public final class AlgorithmConstants {
 
   public static final int MIN_POP_SIZE = 4;
 
-  public static final int MAX_POP_SIZE = 28;
+  public static final int MAX_POP_SIZE = 12;
 
   public static final double MUTATION = 0.1;
 

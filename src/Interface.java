@@ -420,8 +420,10 @@ public class Interface extends Application {
     if(flyToGoal.isSelected()) {
       mGC.setStroke((Color) RocketConstants.COLOR_PALETTE[15][0]);
       mGC.strokeLine(1.19 * (mCanvas.getWidth() / 2), 0, 1.19 * (mCanvas.getWidth() / 2), this.mSliderInitDistance.getValue());
-      mGC.strokeText("Target", 1.19 * (mCanvas.getWidth() / 2), this.mSliderInitDistance.getValue() - 20);
+      mGC.strokeText("Target", 1.19 * (mCanvas.getWidth() / 2) + 5, mCanvas.getHeight() - 20);
     }
+    mGC.setFill(Color.CHOCOLATE);
+    mGC.fillRect(0, mCanvas.getHeight() - 2, mCanvas.getWidth(), mCanvas.getHeight());
   }
 
   /**

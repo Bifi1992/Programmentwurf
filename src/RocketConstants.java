@@ -79,9 +79,6 @@ public final class RocketConstants {
           new Object[]{Color.rgb(194, 0, 136, 1), "194,0,136"},   // "#C20088"}, // Mallow
           new Object[]{Color.rgb(116, 10, 255, 1), "116,10,255"},   // "#740AFF"}, // Violet
           new Object[]{Color.rgb(143, 124, 0, 1), "143,124,0"},   // "#8F7C00"}, // Khaki
-          new Object[]{Color.rgb(157, 204, 0, 1), "157,204,0"},   // "#9DCC00"}, // Lime
-          new Object[]{Color.rgb(255, 168, 187, 1), "255,168,187"},   // "#FFA8BB"}, // Pink
-          new Object[]{Color.rgb(255, 255, 0, 1), "255,255,0"},   // "#FFFF00"}, // Yellow
           new Object[]{Color.rgb(66, 102, 0, 1), "66,102,0"},   // "#426600"}, // Quagmire
           new Object[]{Color.rgb(255, 0, 16, 1), "255,0,16"},   // "#FF0010"}, // Red
           new Object[]{Color.rgb(94, 241, 242, 1), "94,241,242"},   // "#5EF1F2"}, // Sky
@@ -98,6 +95,10 @@ public final class RocketConstants {
           new Object[]{Color.rgb(128, 128, 128, 1), "128,128,128"},   // "#808080"}, // Iron
           new Object[]{Color.rgb(0, 51, 128, 1), "0,51,128"},   // "#003380"}, // Navy
           new Object[]{Color.rgb(255, 80, 5, 1), "255,80,5"},   // "#FF5005"}, // Zinnia
+          new Object[]{Color.rgb(255, 255, 0, 1), "255,255,0"},   // "#FFFF00"}, // Yellow
+          new Object[]{Color.rgb(255, 168, 187, 1), "255,168,187"},   // "#FFA8BB"}, // Pink
+          new Object[]{Color.rgb(157, 204, 0, 1), "157,204,0"},   // "#9DCC00"}, // Lime
           new Object[]{Color.rgb(0, 92, 49, 1), "0,92,49"}
+
       }; // "#005C31"} // Forest
 }

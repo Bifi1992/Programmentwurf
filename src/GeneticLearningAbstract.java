@@ -1,4 +1,5 @@
 
+import com.sun.prism.image.Coords;
 import gui.CalcCompleteBox;
 import javafx.application.Platform;
 import javafx.scene.canvas.Canvas;
@@ -174,18 +175,21 @@ public class GeneticLearningAbstract {
     double speedSum = 0.0f;
     double timeSum = 0.0f;
     double distanceSum = 0.0f;
+    double landingPos = 1.19*((mCanvas.getWidth()/2)/RocketRunnable.COORD_X_FACTOR);
+    double distanceXSum = 0;
     Rocket best = null;
     Rocket secondBest = null;
     List<Rocket> parents = new ArrayList<>();
-
+    System.out.println("Landing PosX Gen Learner : " + landingPos);
     // get sum of all values
     for (Rocket r : population) {
       fuelSum += r.getCurFuelLevel();
       speedSum += r.getCurSpeed().abs();
       timeSum += r.getTime();
-      distanceSum += r.getInitDistance() - r.getCurCoordinates().getY();
+      distanceSum += r.getCurCoordinates().getY();
+      distanceXSum += Math.abs(landingPos - r.getCurCoordinates().getX());
     }
-
+    System.out.println("Distance Sum: " + distanceSum);
     if (topRockets.size() < 6) {
       // fill topRockets in first run
       for (Rocket r : population) {
@@ -197,7 +201,8 @@ public class GeneticLearningAbstract {
         fuelSum += er.getCurFuelLevel();
         speedSum += er.getCurSpeed().abs();
         timeSum += er.getTime();
-        distanceSum += er.getInitDistance() - er.getCurCoordinates().getY();
+        distanceSum += er.getCurCoordinates().getY();
+        distanceXSum += Math.abs(landingPos - er.getCurCoordinates().getX());
       }
     }
 
@@ -207,30 +212,51 @@ public class GeneticLearningAbstract {
       fuelSum += mEliteRocket.getFinalFuelLevel();
       speedSum += mEliteRocket.getFinalSpeed();
       timeSum += mEliteRocket.getFinalTime();
-      distanceSum += mEliteRocket.getFinalDistance();
+      distanceSum += mEliteRocket.getCurCoordinates().getY();
+      distanceXSum += Math.abs(mEliteRocket.getFinalDistanceX());
     }
+    System.out.println("Distance Sum: " + distanceSum);
 
     // set distance to 1 if smaller than 1
     distanceSum = distanceSum < 1 ? 1 : distanceSum;
 
     // recalc fitness of mEliteRocket
-    mEliteRocket.calculateAndSetFitness(fuelSum, timeSum, speedSum, distanceSum);
+    if(mInterface.flyToGoal.isSelected()){
+    mEliteRocket.calculateAndSetFitnessReachGoalMode(distanceSum, distanceXSum, landingPos);
+    }
+    else {
+      mEliteRocket.calculateAndSetFitnessNormalMode(fuelSum, timeSum, speedSum, distanceSum);
+    }
 
     // recalc fitness for the topRockets proportionate to the current pop
     for (EliteRocket er : topRockets) {
-      er.calculateAndSetFitness(fuelSum, timeSum, speedSum, distanceSum);
+      if(mInterface.flyToGoal.isSelected()) {
+        er.calculateAndSetFitnessReachGoalMode(distanceSum, distanceXSum, landingPos);
+      }
+      else {
+        er.calculateAndSetFitnessNormalMode(fuelSum, timeSum, speedSum, distanceSum);
+      }
     }
     sortTopRocketsByFitness();
 
 
     // Choose best rocket of population depending on their fitness
     for (Rocket r : population) {
-      r.calculateAndSetFitness(fuelSum, timeSum, speedSum, distanceSum);
+      if(mInterface.flyToGoal.isSelected()) {
+        r.calculateAndSetFitnessReachGoalMode(distanceSum, distanceXSum, landingPos);
+      }else{
+        r.calculateAndSetFitnessNormalMode(fuelSum, timeSum, speedSum, distanceSum);
+      }
       if (mGeneration > 2) {
         for (int i = 0; i < topRockets.size(); i++) {
           if (topRockets.get(i).getTotalFitness() < r.getTotalFitness()) {
             topRockets.add(i, new EliteRocket(r));
-            topRockets.get(i).calculateAndSetFitness(fuelSum, timeSum, speedSum, distanceSum);
+            if(mInterface.flyToGoal.isSelected()) {
+              topRockets.get(i).calculateAndSetFitnessReachGoalMode(distanceSum, distanceXSum, landingPos);
+            }
+            else{
+              topRockets.get(i).calculateAndSetFitnessNormalMode(fuelSum, timeSum, speedSum, distanceSum);
+            }
             topRockets.remove(topRockets.size() - 1);
             break;
           }
@@ -496,6 +522,7 @@ public class GeneticLearningAbstract {
    */
   private void prepareCanvasForNextGen(Rocket pRocket1, Rocket pRocket2) {
     if (mInterface.mRadioButtonSlowMode.isSelected()) {
+      System.out.println("Interface: " + mInterface.mSliderInitDistance.getValue() + "CoordYFact: " +RocketRunnable.COORD_Y_FACTOR);
       Platform.runLater(() -> {
         mInterface.drawTransparentRect();
         mInterface.displayGrid(30, 30);

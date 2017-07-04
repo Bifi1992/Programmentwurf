@@ -116,7 +116,7 @@ public class RocketRunnable implements Runnable {
       }
     }
     mRocket.setCurCoordinates(mRocket.getCurCoordinates().getX(),
-        mRocket.getCurCoordinates().getY() < 0 ? 0 : mRocket.getCurCoordinates().getY());
+        mRocket.getCurCoordinates().getY() > mRocket.getInitDistance() ? mRocket.getInitDistance() : mRocket.getCurCoordinates().getY());
     Platform.runLater(() -> {
       mGC.setFill((Color) RocketConstants.COLOR_PALETTE[mRocket.getRocketID()][0]);
       mGC.setStroke((Color) RocketConstants.COLOR_PALETTE[mRocket.getRocketID()][0]);

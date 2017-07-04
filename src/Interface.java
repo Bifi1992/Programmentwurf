@@ -136,6 +136,7 @@ public class Interface extends Application {
         closeProgram();
     });
     mPrimaryStage.setScene(mStartScene);
+    mPrimaryStage.centerOnScreen();
     mPrimaryStage.show();
   }
 
@@ -160,6 +161,7 @@ public class Interface extends Application {
     mStartButton.setDefaultButton(true);
     mStartButton.setOnAction(e -> {
       mPrimaryStage.setScene(mRadioButtonFastMode.isSelected() ? mFastSimScene : mSimScene);
+      mPrimaryStage.centerOnScreen();
       mGC.clearRect(0, 0, mCanvas.getWidth(), mCanvas.getHeight());
       displayGrid(30, 30);
       startCalculations();
@@ -252,11 +254,7 @@ public class Interface extends Application {
                     "margin-right: auto"
     );
 
-
-
-
-
-    mStartScene = new Scene(root, mScreenRes.getWidth(), mScreenRes.getHeight());
+    mStartScene = new Scene(root, (mScreenRes.getWidth() * 0.6), (mScreenRes.getHeight()) * 0.5);
     return mStartScene;
   }
 
@@ -288,6 +286,7 @@ public class Interface extends Application {
       ThreadPool.getInstance().stop();
       ThreadPool.getInstance().terminate();
       mPrimaryStage.setScene(mStartScene);
+      mPrimaryStage.centerOnScreen();
       mGC.clearRect(0, 0, mCanvas.getWidth(), mCanvas.getHeight());
     });
     mReturnButton.setPrefWidth(mScreenRes.getWidth() * 0.1);
@@ -352,6 +351,7 @@ public class Interface extends Application {
       ThreadPool.getInstance().stop();
       ThreadPool.getInstance().terminate();
       mPrimaryStage.setScene(mStartScene);
+      mPrimaryStage.centerOnScreen();
       mGC.clearRect(0, 0, mCanvas.getWidth(), mCanvas.getHeight());
     });
     mFastSimReturnButton.setPrefWidth(mScreenRes.getWidth() * 0.1);

@@ -4,7 +4,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 /**
  * Created by y.brisch on 11.05.17.
  */
-public class ThreadPoolThread extends Thread{
+public class ThreadPoolThread extends Thread {
   private AtomicBoolean execute;
   private ConcurrentLinkedQueue<Runnable> runnables;
 

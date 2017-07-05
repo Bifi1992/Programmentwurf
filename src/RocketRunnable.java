@@ -16,11 +16,6 @@ public class RocketRunnable implements Runnable {
    */
   private static int TIME_INTERVAL;
 
-  /**
-   * holds a factor that adjusts the time to write rocket info to the screen
-   */
-  private static int DISPLAY_INTERVAL;
-
 
   /**
    * holds the value for adjustment of y coordinates
@@ -81,7 +76,6 @@ public class RocketRunnable implements Runnable {
     mCanvas = pInterface.mCanvas;
     COORD_Y_FACTOR = mCanvas.getHeight()/pRocket.getInitDistance();
     COORD_X_FACTOR = COORD_Y_FACTOR * 0.05;
-    DISPLAY_INTERVAL = mPlanet.getMaxLandingTime()/10;
     TIME_INTERVAL = (int) Math.ceil((double) mPlanet.getMaxLandingTime() / 10000);
     mRocket.setInitCoordinates(new Coordinate2D(mCanvas.getWidth() / 2 / COORD_X_FACTOR,
         mRocket.getInitCoordinates().getY() / COORD_Y_FACTOR));

@@ -98,7 +98,6 @@ public final class RocketConstants {
           new Object[]{Color.rgb(255, 255, 0, 1), "255,255,0"},   // "#FFFF00"}, // Yellow
           new Object[]{Color.rgb(255, 168, 187, 1), "255,168,187"},   // "#FFA8BB"}, // Pink
           new Object[]{Color.rgb(157, 204, 0, 1), "157,204,0"},   // "#9DCC00"}, // Lime
-          new Object[]{Color.rgb(0, 92, 49, 1), "0,92,49"}
-
-      }; // "#005C31"} // Forest
+          new Object[]{Color.rgb(0, 92, 49, 1), "0,92,49"}      // "#005C31"} // Forest
+      };
 }

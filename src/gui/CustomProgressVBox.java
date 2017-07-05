@@ -16,6 +16,12 @@ public class CustomProgressVBox extends VBox {
   private Label mLabelSpeed;
   private ProgressBar mProgressBarFuelLevel;
 
+  /**
+   * A VBox contriang several constant labels, a progressBar and several updateable labels
+   *
+   * @param pWidth  the width of the outer VBox
+   * @param pHeight the Height of the outer VBox
+   */
   public CustomProgressVBox(double pWidth, double pHeight) {
     super();
     mLabelRocketId = new Label();
@@ -37,6 +43,9 @@ public class CustomProgressVBox extends VBox {
     this.setPrefSize(pWidth * 1.2, pHeight * 1.1);
   }
 
+  /**
+   * Getters and setters of this class
+   */
   public Label getLabelRocketId() {
     return mLabelRocketId;
   }

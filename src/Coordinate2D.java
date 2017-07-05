@@ -5,22 +5,22 @@ public class Coordinate2D {
   private double mX;
   private double mY;
 
-  Coordinate2D() {
-    mX = 0;
-    mY = 0;
-  }
-
+  /**
+   * A Custom 2D Vector
+   *
+   * @param pX the x coordinate
+   * @param pY the y coordinate
+   */
   Coordinate2D(double pX, double pY) {
     mX = pX;
     mY = pY;
   }
 
+  /**
+   * getters and setters of this class
+   */
   public double getX() {
     return mX;
-  }
-
-  public void setX(double pX) {
-    this.mX = pX;
   }
 
   public double getY() {
@@ -31,18 +31,29 @@ public class Coordinate2D {
     this.mY = pY;
   }
 
-  public Coordinate2D getRounded(Coordinate2D pCoord) {
-    return new Coordinate2D(Math.round(pCoord.getX()), Math.round(pCoord.getY()));
-  }
-
+  /**
+   * This method calculates the angle between the x axis and the vector
+   *
+   * @return the angle between the x axis and the vector
+   */
   public double getAngleXAxis() {
-    return Math.atan((mY/mX));
+    return Math.atan((mY / mX));
   }
 
+  /**
+   * This method calculates the length of a vector
+   *
+   * @return the length of a vector
+   */
   public double abs() {
-    return Math.sqrt(mX*mX+mY*mY);
+    return Math.sqrt(mX * mX + mY * mY);
   }
 
+  /**
+   * Override the toString method for convenient output of coordinates
+   *
+   * @return the vector as String representation
+   */
   @Override
   public String toString() {
     return "Coordinate2D{" +

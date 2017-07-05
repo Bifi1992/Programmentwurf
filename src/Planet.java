@@ -32,12 +32,22 @@ public enum Planet {
    */
   public static final double GRAVITATIONAL_CONSTANT = 0.000000000667;
 
+  /**
+   * Planet constructor
+   *
+   * @param pMass   the mass of the planet
+   * @param pRadius the radius of the planet
+   * @param pTime   the maximal landing time for this planet
+   */
   Planet(double pMass, double pRadius, int pTime) {
     mMass = pMass;
     mRadius = pRadius;
     mMaxLandingTime = pTime;
   }
 
+  /**
+   * getters for this class
+   */
   public double getMass() {
     return mMass;
   }

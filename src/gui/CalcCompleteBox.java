@@ -13,6 +13,12 @@ import javafx.stage.Stage;
  */
 public class CalcCompleteBox {
 
+  /**
+   * This method displays a new window with a given title, message and an OK-Button to close it
+   *
+   * @param pTitle   the title of the popup
+   * @param pMessage the message of the popup
+   */
   public static void display(String pTitle, String pMessage) {
     Stage stage = new Stage();
 

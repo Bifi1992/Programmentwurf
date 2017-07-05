@@ -26,14 +26,40 @@ import java.util.stream.IntStream;
  * Created by y.brisch on 11.05.17.
  */
 public class Interface extends Application {
-
+  /**
+   * holds the opening scence
+   */
   Scene mStartScene;
+
+  /**
+   * holds the simulation scene in normal mode
+   */
   Scene mSimScene;
+
+  /**
+   * holds the simulation scene in fast mode
+   */
   Scene mFastSimScene;
+
+  /**
+   * holds the primary stage
+   */
   Stage mPrimaryStage;
+
+  /**
+   * variables that hold TextAreas for fast and normal mode
+   */
   TextArea mTextArea = new TextArea();
   TextArea mFastSimTextArea = new TextArea();
+
+  /**
+   * holds the planet dropdown
+   */
   ChoiceBox<Planet> mPlanetDropDown = new ChoiceBox<>();
+
+  /**
+   * these variables hold the different buttons used in all scenes
+   */
   Button mStartButton = new Button();
   Button mStartExitButton = new Button();
   Button mSimExitButton = new Button();
@@ -41,11 +67,35 @@ public class Interface extends Application {
   Button mReturnButton = new Button();
   Button mFastSimReturnButton = new Button();
   Button mClearButton = new Button();
+
+  /**
+   * holds the canvas of the normal mode sim scene
+   */
   final Canvas mCanvas = new Canvas();
+
+  /**
+   * holds the graphics context of the canvas
+   */
   GraphicsContext mGC = mCanvas.getGraphicsContext2D();
+
+  /**
+   * holds the screen resolution
+   */
   Dimension mScreenRes = Toolkit.getDefaultToolkit().getScreenSize();
-  Planet mDefaultPlanet = Planet.MARS;
-  GeneticLearningAbstract mLearner;
+
+  /**
+   * holds the default planet for the planet drop down
+   */
+  private Planet mDefaultPlanet = Planet.MARS;
+
+  /**
+   * holds the genetic learner
+   */
+  GeneticLearner mLearner;
+
+  /**
+   * these variables hold the group and the radio buttons for mode selection
+   */
   ToggleGroup mRadioButtonGroup = new ToggleGroup();
   RadioButton mRadioButtonFastMode = new RadioButton();
   RadioButton mRadioButtonSlowMode = new RadioButton();
@@ -72,7 +122,6 @@ public class Interface extends Application {
   Double mInitFuelLevel = RocketConstants.MIN_INIT_FUEL_LEVEL +
       (RocketConstants.MAX_INIT_FUEL_LEVEL - RocketConstants.MIN_INIT_FUEL_LEVEL) * 0.5;
 
-
   /**
    * holds the slider for the initial fuel level
    */
@@ -80,27 +129,26 @@ public class Interface extends Application {
       mInitFuelLevel);
 
   /**
-   * init mutation rate
+   * holds the initial mutation rate
    */
   double mInitMutationRate = AlgorithmConstants.INIT_MUTATION;
 
   /**
-   * spinner which holds mutation rate
+   * holds the spinner which defines the mutation rate
    */
   Spinner<Double> mSpinnerMutationRate = new Spinner<>(AlgorithmConstants.MIN_MUTATION,
-    AlgorithmConstants.MAX_MUTATION, mInitMutationRate, 0.05);
+      AlgorithmConstants.MAX_MUTATION, mInitMutationRate, 0.05);
 
   /**
-   *initial generations
+   * holds the number of initial generations for the spinner
    */
   int mInitGenerations = AlgorithmConstants.MIN_GENERATIONS;
 
   /**
-   * slider for initial generations
+   * holds the slider for initial generations
    */
   Spinner<Integer> mSpinnerInitGenerations = new Spinner<>(AlgorithmConstants.MIN_GENERATIONS,
-    AlgorithmConstants.MAX_GENERATIONS, mInitGenerations, 5);
-
+      AlgorithmConstants.MAX_GENERATIONS, mInitGenerations, 5);
 
   /**
    * Holds all ProgressIndicators for the rockets
@@ -113,17 +161,23 @@ public class Interface extends Application {
   ScrollPane mScrollPane;
 
   /**
-   * checkbox which lets user decides to write raw acceleration data in file
+   * holds a checkbox which lets the user decide to write raw acceleration data to a file
    */
-   CheckBox writeInDokument = new CheckBox("Write best accelerations in document");
+  CheckBox mWriteToDocumentCheckBox = new CheckBox("Write final accelerations to document");
 
   /**
-   * checkbox fly to goal
+   * holds a checkbox to toggle fly to goal mode
    */
-  CheckBox flyToGoal = new CheckBox("If activated, the rocket tries to reach a goal");
+  CheckBox mFlyToGoalModeCheckBox = new CheckBox("the rocket tries to reach a goal");
 
+  /**
+   * this method is called when the interface is launched
+   *
+   * @param pPrimaryStage the primary stage
+   * @throws Exception
+   */
   @Override
-  public void start(Stage pPrimaryStage) throws Exception{
+  public void start(Stage pPrimaryStage) throws Exception {
     mScreenRes = mScreenRes.getWidth() > 1280 ? new Dimension(1280, 800) : mScreenRes;
 
     mPrimaryStage = pPrimaryStage;
@@ -132,18 +186,22 @@ public class Interface extends Application {
     mFastSimScene = getFastSimScene();
     mPrimaryStage.setTitle("Planet Lander");
     mPrimaryStage.setOnCloseRequest(e -> {
-        e.consume();
-        closeProgram();
+      e.consume();
+      closeProgram();
     });
     mPrimaryStage.setScene(mStartScene);
     mPrimaryStage.centerOnScreen();
     mPrimaryStage.show();
   }
 
+  /**
+   * This method sets the start scene up
+   *
+   * @return the start scene
+   */
   private Scene getStartScene() {
-    /*
-     * top side - buttons and PlanetDropDown
-     */
+
+    // top side - buttons and PlanetDropDown
     for (Planet p : Planet.values()) {
       mPlanetDropDown.getItems().add(p);
     }
@@ -172,9 +230,8 @@ public class Interface extends Application {
     HBox topBox = new HBox(5, planetLabel, mPlanetDropDown, buttonBox);
     topBox.setAlignment(Pos.TOP_LEFT);
 
-    /*
-     * right side - Rocket
-      */
+
+    // right side - Rocket
     Label rocketLabel = new Label("Rocket");
     CustomSliderVBox initDistanceSliderBox = new CustomSliderVBox(5, "Initial Distance: ", mSliderInitDistance, "km");
     CustomSliderVBox initFuelLevelSliderBox = new CustomSliderVBox(5, "Initial Fuel Level: ", mSliderInitFuelLevel, "l");
@@ -182,9 +239,8 @@ public class Interface extends Application {
     rocketBox.setPrefSize(mScreenRes.getWidth() * 0.5, mScreenRes.getHeight() * 0.4);
     rocketBox.setAlignment(Pos.TOP_CENTER);
 
-    /*
-     * left side - Algorithm
-      */
+
+    // left side - Algorithm
     Label algoLabel = new Label("Algorithm");
     for (Integer popSize : IntStream.rangeClosed(AlgorithmConstants.MIN_POP_SIZE, AlgorithmConstants.MAX_POP_SIZE).boxed().collect(Collectors.toList())) {
       mPopSizeDropDown.getItems().add(popSize);
@@ -208,9 +264,9 @@ public class Interface extends Application {
     HBox mutationRateHBox = new HBox(5, mutationRateLabel, mSpinnerMutationRate);
     mutationRateHBox.setAlignment(Pos.CENTER_LEFT);
     Label modeLabel = new Label("Select calculation mode:");
-    VBox RadioButtonBox = new VBox(5, modeLabel, mRadioButtonFastMode, mRadioButtonSlowMode, writeInDokument, flyToGoal);
+    VBox RadioButtonBox = new VBox(5, modeLabel, mRadioButtonFastMode, mRadioButtonSlowMode, mWriteToDocumentCheckBox, mFlyToGoalModeCheckBox);
     RadioButtonBox.setAlignment(Pos.CENTER_LEFT);
-    VBox algoBox = new VBox(10, algoLabel, popSizeVBox, generationHBox,mutationRateHBox, RadioButtonBox);
+    VBox algoBox = new VBox(10, algoLabel, popSizeVBox, generationHBox, mutationRateHBox, RadioButtonBox);
     algoBox.setPrefSize(mScreenRes.getWidth() * 0.5, mScreenRes.getHeight() * 0.4);
     algoBox.setAlignment(Pos.TOP_CENTER);
 
@@ -226,38 +282,43 @@ public class Interface extends Application {
             "-fx-border-color: #4C4C4C;"
     );
     mStartButton.setStyle(
-            "-fx-padding: 10;"+
-                    "-fx-background-color: #87FF8A;"
+        "-fx-padding: 10;" +
+            "-fx-background-color: #87FF8A;"
     );
     mStartExitButton.setStyle(
-            "-fx-padding: 10;"+
-                    "-fx-background-color: #FF5244;"
+        "-fx-padding: 10;" +
+            "-fx-background-color: #FF5244;"
     );
     mPlanetDropDown.setStyle(
-            "-fx-padding: 5;" +
+        "-fx-padding: 5;" +
             "-fx-background-color: #8C8C8C;" +
             "-fx-fill: #ffffff;"
     );
     algoLabel.setStyle(
-            "-fx-font-size: 17px;" +
+        "-fx-font-size: 17px;" +
             "-fx-padding: 0px 0px 20px 0px"
     );
     rocketLabel.setStyle(
-            "-fx-font-size: 17px;"+
+        "-fx-font-size: 17px;" +
             "-fx-padding: 0px 0px 20px 0px"
     );
     planetLabel.setStyle(
-            "-fx-font-size: 17px;"
+        "-fx-font-size: 17px;"
     );
     mPopSizeDropDown.setStyle(
-            "margin-left: auto;" +
-                    "margin-right: auto"
+        "margin-left: auto;" +
+            "margin-right: auto"
     );
 
     mStartScene = new Scene(root, (mScreenRes.getWidth() * 0.6), (mScreenRes.getHeight()) * 0.5);
     return mStartScene;
   }
 
+  /**
+   * This method sets the simulation scene up for normal mode
+   *
+   * @return the simulation scene scene
+   */
   private Scene getSimScene() {
     // setup scrollable canvas
     mCanvas.setHeight(mScreenRes.getHeight() * 0.8);
@@ -267,7 +328,7 @@ public class Interface extends Application {
     mScrollPane.setMaxSize(Double.MAX_VALUE, Double.MAX_VALUE);
     mScrollPane.setFitToWidth(true);
     mScrollPane.setFitToHeight(true);
-    mScrollPane.setHvalue(mCanvas.getWidth()/2/mCanvas.getWidth());
+    mScrollPane.setHvalue(mCanvas.getWidth() / 2 / mCanvas.getWidth());
 
     mGC.clearRect(0, 0, mCanvas.getWidth(), mCanvas.getHeight());
 
@@ -302,7 +363,7 @@ public class Interface extends Application {
     VBox topProgressVBox = setupProgressBoxes(mPopSizeDropDown.getValue());
     topProgressVBox.setStyle(
         "-fx-border-insets: 5;" +
-        "-fx-border-radius: 2;"
+            "-fx-border-radius: 2;"
     );
 
     VBox ButtonBox = new VBox(5, mSimExitButton, mReturnButton, mClearButton);
@@ -315,32 +376,27 @@ public class Interface extends Application {
     VBox root = new VBox(5, topTextAndButtonsBox, mScrollPane);
     root.setAlignment(Pos.TOP_CENTER);
 
-    /*root.setStyle(
-        "-fx-padding: 10;" +
-            "-fx-border-style: solid inside;" +
-            "-fx-border-width: 2;" +
-            "-fx-border-insets: 5;" +
-            "-fx-border-radius: 5;" +
-            "-fx-border-color: blue;"
-    );*/
-
-
     mSimExitButton.setStyle(
-            "-fx-padding: 10px;" +
+        "-fx-padding: 10px;" +
             "-fx-background-color: #FF5244;"
     );
     mReturnButton.setStyle(
-            "-fx-padding: 10px;" +
+        "-fx-padding: 10px;" +
             "-fx-background-color: #FFC601;"
     );
     mClearButton.setStyle(
-            "-fx-padding: 10px;" +
+        "-fx-padding: 10px;" +
             "-fx-background-color: #8C8C8C;"
     );
     mSimScene = new Scene(root, mScreenRes.getWidth(), mScreenRes.getHeight());
     return mSimScene;
   }
 
+  /**
+   * This method sets the simulation scene up for normal mode
+   *
+   * @return the simulation scene scene
+   */
   private Scene getFastSimScene() {
     //return to StartScene
     mFastSimReturnButton.setText("Return");
@@ -384,14 +440,20 @@ public class Interface extends Application {
     return mFastSimScene;
   }
 
+  /**
+   * This method starts the learner
+   */
   private void startCalculations() {
     Platform.runLater(() -> {
       displayGrid(30, 30);
     });
-    mLearner = new GeneticLearningAbstract(this);
+    mLearner = new GeneticLearner(this);
     mLearner.initPopulationRandom();
   }
 
+  /**
+   * this method terminates the threadpool and the learner and exits all processes
+   */
   private void closeProgram() {
     boolean close = ConfirmBox.display("Close Program", "Are you sure you want to close the application?");
     if (close) {
@@ -417,7 +479,7 @@ public class Interface extends Application {
     for (double i = pY; i < mCanvas.getHeight(); i += pY) {
       mGC.strokeLine(0, i, mCanvas.getWidth(), i);
     }
-    if(flyToGoal.isSelected()) {
+    if (mFlyToGoalModeCheckBox.isSelected()) {
       mGC.setStroke((Color) RocketConstants.COLOR_PALETTE[15][0]);
       mGC.strokeLine(1.19 * (mCanvas.getWidth() / 2), 0, 1.19 * (mCanvas.getWidth() / 2), this.mSliderInitDistance.getValue());
       mGC.strokeText("Target", 1.19 * (mCanvas.getWidth() / 2) + 5, mCanvas.getHeight() - 20);
@@ -434,6 +496,12 @@ public class Interface extends Application {
     mGC.fillRect(0, 0, mCanvas.getWidth(), mCanvas.getHeight());
   }
 
+  /**
+   * this method sets the progress boxes up for the normal mode simulation scene
+   *
+   * @param pNumOfBoxes the number of progress boxes to be created
+   * @return a VBox that contains a progress Box for each rocket
+   */
   private VBox setupProgressBoxes(Integer pNumOfBoxes) {
     mProgressIndicatorMap.clear();
     HBox topHBox1 = new HBox();

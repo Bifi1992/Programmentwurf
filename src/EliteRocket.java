@@ -7,8 +7,13 @@ public class EliteRocket extends Rocket {
   private double mFinalSpeed;
   private double mFinalDistance;
   private int mFinalTime;
-  private  double mFinalDistanceX;
+  private double mFinalDistanceX;
 
+  /**
+   * A Rocket that contains some additional information important after landing with easier access
+   *
+   * @param pRocket the rocket to be converted to an elite rocket
+   */
   public EliteRocket(Rocket pRocket) {
     super(pRocket.getGenerationId(), pRocket.getRocketID(), pRocket.mInitSpeed, pRocket.mInitFuelLevel, pRocket.getInitDistance());
     mFinalSpeed = pRocket.getCurSpeed().abs();
@@ -24,6 +29,9 @@ public class EliteRocket extends Rocket {
     this.setProcessAcc(pRocket.getProcessAcc());
   }
 
+  /**
+   * Getters of this class
+   */
   public double getFinalFuelLevel() {
     return mFinalFuelLevel;
   }
@@ -32,9 +40,6 @@ public class EliteRocket extends Rocket {
     return mFinalSpeed;
   }
 
-  public double getFinalDistance() {
-    return mFinalDistance;
-  }
   public double getFinalDistanceX() {
     return mFinalDistanceX;
   }

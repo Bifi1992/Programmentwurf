@@ -96,11 +96,12 @@ public class Rocket {
 
   /**
    * constructor for rocket
-   * @param pGenerationId the generation id of the Rocket
-   * @param pRocketId the id of the rocket
-   * @param pInitSpeed the initial speed of the rocket
+   *
+   * @param pGenerationId  the generation id of the Rocket
+   * @param pRocketId      the id of the rocket
+   * @param pInitSpeed     the initial speed of the rocket
    * @param pInitFuelLevel the initial fuel level of the rocket
-   * @param pInitDistance the initial distance to the surface of the rocket
+   * @param pInitDistance  the initial distance to the surface of the rocket
    */
   public Rocket(int pGenerationId, int pRocketId, Coordinate2D pInitSpeed, double pInitFuelLevel, double pInitDistance) {
     mGenerationId = pGenerationId;
@@ -119,12 +120,13 @@ public class Rocket {
 
   /**
    * constructor for rocket
-   * @param pGenerationId the generation id of the Rocket
-   * @param pRocketId the id of the rocket
-   * @param pSpeedX the initial x speed of the rocket
-   * @param pSpeedY the initial y speed of the rocket
+   *
+   * @param pGenerationId  the generation id of the Rocket
+   * @param pRocketId      the id of the rocket
+   * @param pSpeedX        the initial x speed of the rocket
+   * @param pSpeedY        the initial y speed of the rocket
    * @param pInitFuelLevel the initial fuel level of the rocket
-   * @param pInitDistance the initial distance to the surface of the rocket
+   * @param pInitDistance  the initial distance to the surface of the rocket
    */
   public Rocket(int pGenerationId, int pRocketId, double pSpeedX, double pSpeedY, double pInitFuelLevel, double pInitDistance, ArrayList<Coordinate2D> pProcessAcc) {
     mGenerationId = pGenerationId;
@@ -177,7 +179,7 @@ public class Rocket {
     return mInitDistance;
   }
 
-  public ArrayList<Coordinate2D> getProcessAcc(){
+  public ArrayList<Coordinate2D> getProcessAcc() {
     return mProcessAcc;
   }
 
@@ -193,7 +195,7 @@ public class Rocket {
     mTime = pTime;
   }
 
-  public void setCurAcceleration(Coordinate2D pCurAcceleration){
+  public void setCurAcceleration(Coordinate2D pCurAcceleration) {
     mCurAcceleration = pCurAcceleration;
   }
 
@@ -205,7 +207,7 @@ public class Rocket {
     return mRocketId;
   }
 
-  public int getGenerationId(){
+  public int getGenerationId() {
     return mGenerationId;
   }
 
@@ -226,21 +228,6 @@ public class Rocket {
   private void setTotalFitness(double pTotalFitness) {
     mTotalFitness = pTotalFitness;
   }
-  public double getChoosingProbability() {
-    return mChoosingProbability;
-  }
-
-  public void setChoosingProbability(double pChoosingProbability) {
-    mChoosingProbability = pChoosingProbability;
-  }
-
-  public double getCumulativeProbabilities() {
-    return mCumulativeProbabilities;
-  }
-
-  public void setCumulativeProbabilities(double pCumulativeProbabilities) {
-    mCumulativeProbabilities = pCumulativeProbabilities;
-  }
 
   public int getProcessAccIndex() {
     return mProcessAccIndex;
@@ -254,24 +241,28 @@ public class Rocket {
     return mCoordinateList;
   }
 
-  public void setCoordinateList(ArrayList<Coordinate2D> pCoordinateList) {
-    mCoordinateList = pCoordinateList;
-  }
-
   public void addCurAccToProcessAcc() {
     mProcessAcc.add(mCurAcceleration);
   }
 
-  public void calculateAndSetFitnessNormalMode(double pFuelSum, double pTimeSum, double pSpeedSum, double pDistanceSum){
+  /**
+   * this method calculates the fitness for a rocket in normal mode
+   *
+   * @param pFuelSum     the sum of all fuel consumed during the last run
+   * @param pTimeSum     the sum of all time consumed during the last run
+   * @param pSpeedSum    the sum of the final speed of all rockets of the last run
+   * @param pDistanceSum the sum of the distance elapsed during the last run
+   */
+  public void calculateAndSetFitnessNormalMode(double pFuelSum, double pTimeSum, double pSpeedSum, double pDistanceSum) {
     double fitness =
         // minimize fuel consumption
         (mCurFuelLevel / pFuelSum) * AlgorithmConstants.RATING_FUEL +
-        // minimize usage of time
-        (1 - (mTime / pTimeSum)) * AlgorithmConstants.RATING_TIME +
-        // minimize end speed
-        (1 - (mCurSpeed.abs() / pSpeedSum)) * AlgorithmConstants.RATING_SPEED +
-        // minimize distance to planet
-        (1 - ((mInitDistance - mCurCoordinates.getY()) / pDistanceSum)) * AlgorithmConstants.RATING_DISTANCE;
+            // minimize usage of time
+            (1 - (mTime / pTimeSum)) * AlgorithmConstants.RATING_TIME +
+            // minimize end speed
+            (1 - (mCurSpeed.abs() / pSpeedSum)) * AlgorithmConstants.RATING_SPEED +
+            // minimize distance to planet
+            (1 - ((mInitDistance - mCurCoordinates.getY()) / pDistanceSum)) * AlgorithmConstants.RATING_DISTANCE;
     // remove landing bonus
     fitness *= (1 - AlgorithmConstants.LANDING_BONUS);
     // add landing bonus if rocket has landed
@@ -280,10 +271,18 @@ public class Rocket {
     }
     this.setTotalFitness(fitness);
   }
-  public void calculateAndSetFitnessReachGoalMode(double pDistanceSum, double pDistanceXSum, double landingPos){
-    double fitness = 0.4*(1-Math.abs((landingPos-this.getCurCoordinates().getX())/pDistanceXSum)) + 0.6*((this.mCurCoordinates.getY())/pDistanceSum);
-    System.out.println("Fitness all: " + fitness + " fitnessX: " + (1-Math.abs((landingPos-this.getCurCoordinates().getX())/pDistanceXSum)) + " fitnessY " + ((this.mCurCoordinates.getY())/pDistanceSum));
-    System.out.println("Distance: " + (landingPos-this.getCurCoordinates().getX()) + "PosY: " + this.getCurCoordinates().getY() + "PosX: " +this.getCurCoordinates().getX());
+
+  /**
+   * this method calculates the fitness for a rocket in normal mode
+   *
+   * @param pDistanceSum  the sum of the distance elapsed during the last run
+   * @param pDistanceXSum the sum of the distance to the target in x direction for all rockets during the last run
+   * @param landingPos    the x coordinate of the target landing position
+   */
+  public void calculateAndSetFitnessReachGoalMode(double pDistanceSum, double pDistanceXSum, double landingPos) {
+    double fitness = 0.4 * (1 - Math.abs((landingPos - this.getCurCoordinates().getX()) / pDistanceXSum)) + 0.6 * ((this.mCurCoordinates.getY()) / pDistanceSum);
+    System.out.println("Fitness all: " + fitness + " fitnessX: " + (1 - Math.abs((landingPos - this.getCurCoordinates().getX()) / pDistanceXSum)) + " fitnessY " + ((this.mCurCoordinates.getY()) / pDistanceSum));
+    System.out.println("Distance: " + (landingPos - this.getCurCoordinates().getX()) + "PosY: " + this.getCurCoordinates().getY() + "PosX: " + this.getCurCoordinates().getX());
     this.setTotalFitness(fitness);
   }
 }

@@ -17,12 +17,6 @@ public class FastRocketRunnable implements Runnable {
   private static int TIME_INTERVAL;
 
   /**
-   * holds a factor that adjusts the time to write rocket info to the screen
-   */
-  private static int DISPLAY_INTERVAL;
-
-
-  /**
    * holds the value for adjustment of y coordinates
    */
   public static double COORD_Y_FACTOR;
@@ -43,11 +37,6 @@ public class FastRocketRunnable implements Runnable {
   private TextArea mTextArea;
 
   /**
-   * Holds the passed GraphicsContext for the Canvas
-   */
-  private GraphicsContext mGC;
-
-  /**
    * holds the passed rocket
    */
   private Rocket mRocket;
@@ -63,25 +52,18 @@ public class FastRocketRunnable implements Runnable {
   private Canvas mCanvas;
 
   /**
-   * holds the interface class
-   */
-  private Interface mInterface;
-
-  /**
    * The constructor for {@link FastRocketRunnable}
-   * @param pRocket the rocket which is to be calculated
+   *
+   * @param pRocket    the rocket which is to be calculated
    * @param pInterface holds all nodes of the application interface
    */
-  public FastRocketRunnable(Rocket pRocket, Interface pInterface){
-    mInterface = pInterface;
+  public FastRocketRunnable(Rocket pRocket, Interface pInterface) {
     mRocket = pRocket;
     mPlanet = pInterface.mPlanetDropDown.getValue();
     mTextArea = pInterface.mTextArea;
-    mGC = pInterface.mGC;
     mCanvas = pInterface.mCanvas;
-    COORD_Y_FACTOR = mCanvas.getHeight()/pRocket.getInitDistance();
+    COORD_Y_FACTOR = mCanvas.getHeight() / pRocket.getInitDistance();
     COORD_X_FACTOR = COORD_Y_FACTOR * 0.05;
-    DISPLAY_INTERVAL = mPlanet.getMaxLandingTime()/10;
     TIME_INTERVAL = (int) Math.ceil((double) mPlanet.getMaxLandingTime() / 10000);
     mRocket.setInitCoordinates(new Coordinate2D(mCanvas.getWidth() / 2 / COORD_X_FACTOR,
         mRocket.getInitCoordinates().getY() / COORD_Y_FACTOR));
@@ -114,19 +96,21 @@ public class FastRocketRunnable implements Runnable {
 
   /**
    * The mass of the Rocket is not accounted for in this calculation
-   *  F = (G * m * M)/r^2
-   *  F = m * a
-   *  => a = (G * M)/r^2 || (m^3 * kg)/(kg * s^2 * m^2) => m/s^2
+   * F = (G * m * M)/r^2
+   * F = m * a
+   * => a = (G * M)/r^2 || (m^3 * kg)/(kg * s^2 * m^2) => m/s^2
+   *
    * @return the gravitational acceleration for the specific planet in dependency of the distance to the rocket
    */
-  public double calculateGravitationalAcceleration(){
+  public double calculateGravitationalAcceleration() {
     double distance = calcDistance();
-    return (Planet.GRAVITATIONAL_CONSTANT * mPlanet.getMass())/(distance * distance);
+    return (Planet.GRAVITATIONAL_CONSTANT * mPlanet.getMass()) / (distance * distance);
   }
 
   /**
    * distance to surface: initial distance minus Y Coordinate
    * plus planet radius for simplification
+   *
    * @return the rockets distance to the planet's core
    */
   public double calcDistance() {
@@ -134,28 +118,20 @@ public class FastRocketRunnable implements Runnable {
   }
 
   /**
-   * this method calculates the rocket's distance to the planet's surface
-   * @return the rockets distance to the planet's surface
-   */
-  private double calcDistanceToSurface() {
-    return mRocket.getInitDistance() - mRocket.getCurCoordinates().getY();
-  }
-
-  /**
    * Calculate and set acceleration by getting processAcceleration value
    */
-   public void calcCurAcceleration() {
-      if ((mRocket.mTime / TIME_INTERVAL_FOR_ACCELERATION) < mRocket.getProcessAcc().size()) {
-        if(mRocket.mTime % TIME_INTERVAL_FOR_ACCELERATION == 0){
-          // Take Value out of array from array[counter]
-          mRocket.setCurAcceleration(mRocket.getProcessAcc().get(mRocket.getProcessAccIndex()));
-          mRocket.setProcessAccIndex(mRocket.getProcessAccIndex() + 1);
-        }
-      } else {
-        System.out.println(mRocket.getRocketID() + ": Not enough mTime" + mRocket.mTime);
-        mRocket.setCurAcceleration(new Coordinate2D((Math.random() * ((5)) - 2.5), Math.random() * ((300)) - 150));
-        mRocket.addCurAccToProcessAcc();
+  public void calcCurAcceleration() {
+    if ((mRocket.mTime / TIME_INTERVAL_FOR_ACCELERATION) < mRocket.getProcessAcc().size()) {
+      if (mRocket.mTime % TIME_INTERVAL_FOR_ACCELERATION == 0) {
+        // Take Value out of array from array[counter]
+        mRocket.setCurAcceleration(mRocket.getProcessAcc().get(mRocket.getProcessAccIndex()));
+        mRocket.setProcessAccIndex(mRocket.getProcessAccIndex() + 1);
       }
+    } else {
+      System.out.println(mRocket.getRocketID() + ": Not enough mTime" + mRocket.mTime);
+      mRocket.setCurAcceleration(new Coordinate2D((Math.random() * ((5)) - 2.5), Math.random() * ((300)) - 150));
+      mRocket.addCurAccToProcessAcc();
+    }
   }
 
   /**
@@ -192,7 +168,7 @@ public class FastRocketRunnable implements Runnable {
     // v * cos(alpha) + aX * t
     double newXSpeed = vX * cosAlpha + aX * TIME_INTERVAL;
     // v * sin(alpha) + (g + aY) * t
-    double newYSpeed = vY * sinAlpha + (g  + aY) * TIME_INTERVAL;
+    double newYSpeed = vY * sinAlpha + (g + aY) * TIME_INTERVAL;
     mRocket.setCurSpeed(new Coordinate2D(newXSpeed, newYSpeed));
 
     // calculate the fuel consumption according to the current acceleration
@@ -204,32 +180,5 @@ public class FastRocketRunnable implements Runnable {
    */
   private void calcNewFuelLevel() {
     mRocket.setCurFuelLevel(mRocket.getCurFuelLevel() - (RocketConstants.FUEL_PER_ACCELERATION * mRocket.getCurAcceleration().abs() * TIME_INTERVAL));
-  }
-
-  /**
-   * This method updates the specific progress box for each individual rocket
-   */
-  private void updateProgressIndicator() {
-    double d = calcDistanceToSurface();
-    String col = "rgba(" + RocketConstants.COLOR_PALETTE[mRocket.getRocketID()][1] + "," + 0.6 + ")";
-
-    CustomProgressVBox box = mInterface.mProgressIndicatorMap.get(mRocket.getRocketID());
-    box.setStyle(
-        "-fx-background-color: " + col + ";" +
-        "-fx-border-style: solid;" +
-        "-fx-border-width: 2;" +
-        "-fx-border-color: black;"
-    );
-    // update time Label
-    box.getLabelDistance().setText(String.format("%.2f", d < 0 ? 0 : d));
-    // set rocket label
-    box.getLabelRocketId().setText("Rocket" + mRocket.getRocketID() + ":");
-    //box.getLabelRocketId().setTextFill(RocketConstants.COLOR_PALETTE[mRocket.getRocketID()]);
-    // set fuel level
-    box.getProgressBarFuelLevel().setProgress(mRocket.getCurFuelLevel() / mRocket.mInitFuelLevel);
-    // set time label
-    box.getLabelTime().setText(mRocket.mTime > mPlanet.getMaxLandingTime() ?
-        String.valueOf(mPlanet.getMaxLandingTime()) : String.valueOf(mRocket.mTime));
-    box.getLabelSpeed().setText(String.format("%.2f", mRocket.getCurSpeed().abs()));
   }
 }

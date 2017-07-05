@@ -13,8 +13,19 @@ import javafx.stage.Stage;
  */
 public class ConfirmBox {
 
+  /**
+   * holds the boolean return value
+   */
   private static boolean mAnswer;
 
+  /**
+   * This method displays a confirm box with a given title, message, a YES- and a NO-Button. It returns
+   * a boolean value depending on the button click
+   *
+   * @param pTitle   the title of the window
+   * @param pMessage the displayed message
+   * @return true if YES is clicked, false if NO is clicked
+   */
   public static boolean display(String pTitle, String pMessage) {
     Stage stage = new Stage();
 

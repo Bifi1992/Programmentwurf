@@ -168,7 +168,7 @@ public class Interface extends Application {
   /**
    * holds a checkbox to toggle fly to goal mode
    */
-  CheckBox mFlyToGoalModeCheckBox = new CheckBox("the rocket tries to reach a goal");
+  CheckBox mFlyToGoalModeCheckBox = new CheckBox("Land at target position");
 
   /**
    * this method is called when the interface is launched
@@ -184,7 +184,7 @@ public class Interface extends Application {
     mStartScene = getStartScene();
     mSimScene = getSimScene();
     mFastSimScene = getFastSimScene();
-    mPrimaryStage.setTitle("Planet Lander");
+    mPrimaryStage.setTitle("Genetic Learner");
     mPrimaryStage.setOnCloseRequest(e -> {
       e.consume();
       closeProgram();
@@ -233,7 +233,7 @@ public class Interface extends Application {
 
     // right side - Rocket
     Label rocketLabel = new Label("Rocket");
-    CustomSliderVBox initDistanceSliderBox = new CustomSliderVBox(5, "Initial Distance: ", mSliderInitDistance, "km");
+    CustomSliderVBox initDistanceSliderBox = new CustomSliderVBox(5, "Initial Distance: ", mSliderInitDistance, "m");
     CustomSliderVBox initFuelLevelSliderBox = new CustomSliderVBox(5, "Initial Fuel Level: ", mSliderInitFuelLevel, "l");
     VBox rocketBox = new VBox(10, rocketLabel, initDistanceSliderBox, initFuelLevelSliderBox);
     rocketBox.setPrefSize(mScreenRes.getWidth() * 0.5, mScreenRes.getHeight() * 0.4);
@@ -249,9 +249,9 @@ public class Interface extends Application {
     mPopSizeDropDown.getSelectionModel().selectedItemProperty()
         .addListener((observable, oldValue, newValue) -> mSimScene = getSimScene());
 
-    mRadioButtonFastMode.setText("Fast mode");
+    mRadioButtonFastMode.setText("Fast Mode");
     mRadioButtonFastMode.setToggleGroup(mRadioButtonGroup);
-    mRadioButtonSlowMode.setText("Visual mode");
+    mRadioButtonSlowMode.setText("Visual Mode");
     mRadioButtonSlowMode.setToggleGroup(mRadioButtonGroup);
     mRadioButtonSlowMode.setSelected(true);
     Label generationsLabel = new Label("Number of Generations:");
@@ -260,13 +260,16 @@ public class Interface extends Application {
     Label popSizeLabel = new Label("Rockets per Population:");
     HBox popSizeVBox = new HBox(5, popSizeLabel, mPopSizeDropDown);
     popSizeVBox.setAlignment(Pos.CENTER_LEFT);
-    Label mutationRateLabel = new Label("Mutation rate:                 ");
+    Label mutationRateLabel = new Label("Mutation Rate:               ");
     HBox mutationRateHBox = new HBox(5, mutationRateLabel, mSpinnerMutationRate);
     mutationRateHBox.setAlignment(Pos.CENTER_LEFT);
-    Label modeLabel = new Label("Select calculation mode:");
-    VBox RadioButtonBox = new VBox(5, modeLabel, mRadioButtonFastMode, mRadioButtonSlowMode, mWriteToDocumentCheckBox, mFlyToGoalModeCheckBox);
+    Label modeLabel = new Label("Select Calculation Mode:");
+    VBox RadioButtonBox = new VBox(5, modeLabel, mRadioButtonFastMode, mRadioButtonSlowMode);
     RadioButtonBox.setAlignment(Pos.CENTER_LEFT);
-    VBox algoBox = new VBox(10, algoLabel, popSizeVBox, generationHBox, mutationRateHBox, RadioButtonBox);
+    VBox checkBoxBox = new VBox(5, mWriteToDocumentCheckBox, mFlyToGoalModeCheckBox);
+    checkBoxBox.setAlignment(Pos.CENTER_LEFT);
+    VBox algoBox = new VBox(10, algoLabel, popSizeVBox, generationHBox, mutationRateHBox, RadioButtonBox,
+        new Separator(Orientation.HORIZONTAL), checkBoxBox);
     algoBox.setPrefSize(mScreenRes.getWidth() * 0.5, mScreenRes.getHeight() * 0.4);
     algoBox.setAlignment(Pos.TOP_CENTER);
 
